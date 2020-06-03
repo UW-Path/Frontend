@@ -1,4 +1,4 @@
-# uwpath2.0
+# Frontend
 
 ## Project setup
 ```
