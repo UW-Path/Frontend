@@ -1,5 +1,6 @@
 <template>
     <div class="home-container">
+        <div class="chosen-major">Chosen Major is: {{chosenMajor}} </div>
         <div class="required-courses">
             <Course 
                 class="required-course" 
@@ -11,7 +12,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import Course from "./Course"
+import Course from "../components/Course"
 export default {
     name: "Home",
     components: {
@@ -20,7 +21,7 @@ export default {
     methods: {
         ...mapActions(["fetchCourses"])
     },
-    computed: mapGetters(["allCourses"]),
+    computed: mapGetters(["allCourses", "chosenMajor"]),
     created() {
         this.fetchCourses();
     }
@@ -30,6 +31,11 @@ export default {
 <style scoped>
 .home-container {
     padding: 1%;
+}
+
+.chosen-major {
+  text-align: left;
+  margin-bottom: 1rem;
 }
 
 .required-courses {
