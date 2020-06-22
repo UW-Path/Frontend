@@ -1,41 +1,30 @@
-<template>
-            
-
-<div class="landing-page-container">
-    <div id= "logo">UWPath</div>
-    <div class="main-section-container"> 
-        <div class="left-section-container">
-            <v-img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Solid_grey.svg/512px-Solid_grey.svg.png" class="image"></v-img>
-        </div>
-        <div class="right-section-container">
-
-            <div class="text-h3 title">UWPath</div>
-            <div class="text-h5 caption" >Plan your degree ahead</div>
-            <v-container>
-            <v-row>
-            <v-col class="textbox">
-                <v-autocomplete
-                    v-model="values"
-                    :items="allMajors"
-                    v-on:change="changeMajor"
-                    dense
-                    prepend-inner-icon="mdi-magnify"
-                    solo
-                    hide-details
-                    background-color=rgb(196,196,196)
-                    label="Find your program"
-                    height="3rem"
-                    color="black"
-                ></v-autocomplete>
-            </v-col>
-            <v-col cols="12" sm="5"></v-col>
-            </v-row>
-            </v-container>
-            <div>Can't find your program?</div>
-        </div>
-    </div>
-</div>
-
+<template>  
+    <v-container class="container">
+        <v-row no-gutters justify="center" align="center" class="center">
+                <v-col class="hidden-md-and-down" justify="end" >
+                    <div class="additional-info"></div>
+                </v-col>
+                <v-col class="centerpiece-container">
+                    <div class="text-h3 title">UWPath</div>
+                    <div class="text-h5 caption" >Plan your degree ahead</div>
+                    <v-autocomplete
+                        v-model="values"
+                        :items="allMajors"
+                        v-on:change="changeMajor"
+                        dense
+                        prepend-inner-icon="mdi-magnify"
+                        solo
+                        hide-details
+                        background-color="rgb(196,196,196)"
+                        class="autocomplete"
+                        label="Find your program"
+                        height="3rem"
+                        color="black"
+                    ></v-autocomplete>
+                    <div class="findprogram">Can't find your program?</div>
+                </v-col>
+        </v-row>
+    </v-container>
 </template>
 
 <script>
@@ -47,10 +36,6 @@ export default {
     methods: {
         ...mapActions(["fetchMajors"]),
         ...mapMutations(["setChosenMajor"]),
-        //this is later used for linking up the different course addresses
-        getMajorImage() {
-            return "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Solid_grey.svg/512px-Solid_grey.svg.png"
-        },
         changeMajor(event) {
             console.log("New major: ", this.findMajorByProgram(event))
             //state changes
@@ -67,43 +52,6 @@ export default {
 
 <style scoped>
 /* TODO: REFACTOR THESE PATHS */
-.home-container {
-    padding: 1%;
-}
-
-.main-section-container {
-    position: absolute;
-    top: 50%;
-    display: flex;
-    transform: translateY(-50%);
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-}
-
-.right-section-container {
-    text-align: left;
-    display: inline-block;
-    width: 800px;
-}
-.left-section-container {
-    margin-right: 5rem;
-    display: inline-block;
-    width: 500px;
-}
-
-.landing-page-container {
-    vertical-align: middle;
-    width: 100%;
-    height: 100%;
-}
-
-.image {
-    height: 700px;
-    width: 500px;
-    object-fit: cover;
-}
-
 #logo {
     position: fixed;
     font-weight: 200;
@@ -120,7 +68,36 @@ export default {
     margin-bottom: 1rem;
 }
 
-.textbox {
-    padding: 0px;
+.centerpiece-container {
+    margin: 2%;
+}
+
+.center {
+    text-align: left;
+    height: 100%;
+}
+
+.container {
+    height: 100%;
+    width: 100%;
+}
+
+.autocomplete {
+    max-width: 600px;
+}
+
+.findprogram {
+    margin-top: 1rem;
+    height: 3rem;
+}
+
+/* this is just a placeholder */
+.additional-info {
+    display: flex;
+    background-color: grey;
+    height: 650px;
+    width: 450px;
+    float: right;
+    margin: 4rem;
 }
 </style>
