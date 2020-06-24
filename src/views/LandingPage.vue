@@ -15,7 +15,6 @@
             <v-row>
             <v-col class="textbox">
                 <v-autocomplete
-                    v-model="values"
                     :items="allMajors"
                     v-on:change="changeMajor"
                     dense

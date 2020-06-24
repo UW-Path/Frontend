@@ -14,7 +14,7 @@ const getters = {
     findMajorByProgram: (state) => {
         return (program) => {
             return state.majors.find(obj => { return program == obj["program_name"]})["major_name"]
-    } 
+        } 
     }
 };
 
