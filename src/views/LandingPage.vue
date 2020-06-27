@@ -21,7 +21,7 @@
                         height="3rem"
                         color="black"
                     ></v-autocomplete>
-                    <div class="findprogram">Can't find your program?</div>
+                    <div class="findprogram" @click="FindProgram()">Can't find your program?</div>
                 </v-col>
         </v-row>
     </v-container>
@@ -46,6 +46,9 @@ export default {
     computed: mapGetters(["allMajors", "findMajorByProgram"]),
     created() {
         this.fetchMajors();
+    },
+    findProgram() {
+        console.log("find program clicked: WIP")
     }
 }
 </script>

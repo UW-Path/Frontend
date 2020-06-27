@@ -2,10 +2,12 @@
 
     <v-app id="app">
       <div id="nav">
-        <router-link to="/">Course Selection (Home)</router-link> |
+        <router-link to="/">Home</router-link> |
+        <router-link to="/CourseSelection">Course Selection</router-link> |
         <router-link to="/landing">Landing</router-link>
       </div>
       <router-view/>
+      <!-- <v-footer></v-footer> -->
     </v-app>
 </template>
 
@@ -20,7 +22,7 @@
 
 #nav {
   position: fixed;
-  top: 50px;
+  bottom: 50px;
   right: 50px;
 
   a {

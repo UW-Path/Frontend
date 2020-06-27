@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import LandingPage from '../views/LandingPage.vue'
+import CourseSelection from '../views/CourseSelectionPage.vue'
+
 
 Vue.use(VueRouter)
 
@@ -15,7 +17,12 @@ Vue.use(VueRouter)
     path: '/landing',
     name: 'Landing',
     component: LandingPage
-  }
+  },
+  {
+    path: '/CourseSelection',
+    name: 'CourseSelection',
+    component: CourseSelection
+  },
 ]
 
 const router = new VueRouter({
