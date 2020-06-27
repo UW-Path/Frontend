@@ -23,9 +23,6 @@ export default {
         ...mapActions(["fetchRequirements"])
     },
     computed: mapGetters(["requirements", "chosenMajor"]),
-    created() {
-        this.fetchRequirements();
-    }
 }
 </script>
 
@@ -34,7 +31,8 @@ export default {
     padding: 1%;
     width: 25%;
     height: 100%;
-    background-color: #bbbbbb;
+    background-color: #eeeeee;
+    overflow-y: scroll;
 }
 
 #main-panel {
@@ -46,7 +44,7 @@ export default {
     display: flex;
     padding: 1%;
     width: 100%;
-    height: 100%;
+    height: 90%;
 }
 
 .chosen-major {

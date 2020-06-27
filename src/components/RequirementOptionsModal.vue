@@ -1,8 +1,11 @@
 <template>
     <div>
-        <v-btn color="primary" dark @click.stop="enableDialog()">
-            {{ course.course_codes }}
-        </v-btn>
+        <!-- Required Course Block -->
+        <v-card class="course-list-block" @click.stop="enableDialog()">
+            <v-card-title> {{ course.course_codes }} </v-card-title>
+        </v-card>
+
+        <!-- Course Popup Modal -->
         <v-dialog v-model="dialog" max-width="1000">
             <v-card>
                 <v-container fluid class="modal-course-list-container">
@@ -20,9 +23,13 @@
                             </div>
                         </v-col>
 
-                        <v-col class="course-description-col" align="left">
-                            <v-card-title v-if="selectedCourse" class="course-title">{{ selectedCourse.course_code }}</v-card-title>
-                            <v-card-text v-if="selectedCourse">{{ selectedCourse.info }}</v-card-text>
+                        <v-col v-if="selectedCourse" class="course-description-col" align="left">
+                            <v-card-title class="course-title">{{ selectedCourse.course_code }}</v-card-title>
+                            <v-card-text>{{ selectedCourse.info + (selectedCourse.offering === "" ? "" :  " Offered in: " + selectedCourse.offering.slice(0,-1) + ".") + (selectedCourse.online ? " Offered Online." : "")}}</v-card-text>
+                            <v-card-text class="course-description-text">{{ "Credits: " + selectedCourse.credit }}</v-card-text>
+                            <v-card-text class="course-description-text" v-if="selectedCourse.prereqs !== ''">{{ "Prerequisites: " + selectedCourse.prereqs }}</v-card-text>
+                            <v-card-text class="course-description-text" v-if="selectedCourse.antireqs !== ''">{{ "Antirequisites: " + selectedCourse.antireqs }}</v-card-text>
+                            <v-card-text class="course-description-text" v-if="selectedCourse.coreqs !== ''">{{ "Corequisites: " + selectedCourse.antireqs }}</v-card-text>
                         </v-col>
                     </v-row>
                 </v-container>
@@ -59,13 +66,30 @@ export default {
             }
         }
     }
-  
 }
 </script>
 
 <style scoped>
+.course-list-block {
+    display: flex;
+    width: 100%;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    margin-top: 5%;
+
+}
+
 .course-description-col {
     border-left: 1px solid #dddddd;
+}
+
+.course-description-text {
+    margin: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
 .modal-actions {
@@ -79,7 +103,7 @@ export default {
 }
 
 .modal-course-list-container {
-    height: 330px;
+    min-height: 330px;
     margin: 0px;
 }
 
@@ -89,7 +113,7 @@ export default {
 
 .modal-course-list {
     width: 90%;
-    max-height: 200px;
+    max-height: 250px;
     height:auto;
     overflow-y: auto;
 }
@@ -102,7 +126,7 @@ export default {
 
 .modal-course:hover {
     cursor: pointer;
-    text-decoration: green;
+    font-weight: 550;
 }
 
 .course-title {

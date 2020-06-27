@@ -44,17 +44,17 @@ export default {
     components: {
     },
     methods: {
-        ...mapActions(["fetchMajors"]),
+        ...mapActions(["fetchMajors", "fetchRequirements"]),
         ...mapMutations(["setChosenMajor"]),
         //this is later used for linking up the different course addresses
         getMajorImage() {
             return "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Solid_grey.svg/512px-Solid_grey.svg.png"
         },
-        changeMajor(event) {
-            console.log("New major: ", this.findMajorByProgram(event))
+        changeMajor(programName) {
             //state changes
-            this.setChosenMajor(this.findMajorByProgram(event))
-            this.$router.push('/') 
+            this.setChosenMajor(programName)
+            this.fetchRequirements();
+            this.$router.push('/')   
         }
     },
     computed: mapGetters(["allMajors", "findMajorByProgram"]),
