@@ -2,8 +2,7 @@
 
     <v-app id="app">
       <div id="nav">
-        <router-link to="/">Home</router-link> |
-        <router-link to="/about">About</router-link> | 
+        <router-link to="/">Course Selection (Home)</router-link> |
         <router-link to="/landing">Landing</router-link>
       </div>
       <router-view/>
