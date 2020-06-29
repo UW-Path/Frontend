@@ -1,9 +1,29 @@
 <template>
-  <v-card class="card-container">
+  <v-card class="course-card">
     <v-list-item three-line>
       <v-list-item-content>
         <div class="overline mb-4">
-              <div class="problem-message">{{  courseData.status }}</div>
+          <!-- placeholder for course satisfying maj reqs -->
+                  <v-chip
+      color="light-blue"
+      label
+      x-small
+      text-color="white"
+      class="chip"
+    > 
+      M
+    </v-chip>
+    <!-- placeholder for course satisfying minor reqs -->
+                      <v-chip
+      color="light-green"
+      label
+      x-small
+      text-color="white"
+      class="chip"
+    > 
+      m
+    </v-chip>
+    <v-spacer></v-spacer>
               <v-btn icon class="delete-btn" x-small @click="deleteCourse(termIndex, courseIndex)" ></v-btn>
         </div>       
         <v-list-item-title class="headline mb-1">{{ courseData.name }}</v-list-item-title>
@@ -42,7 +62,11 @@ export default {
 
 
 <style  scoped>
-.card-container {
+.chip {
+  margin-right: 0.2em;
+}
+
+.card {
   margin-top: 0.75rem;
   text-align: left;
 }
@@ -51,7 +75,6 @@ export default {
   color: red;
   display: flex;
   align-items: center;
-  justify-content: space-between;
 }
 
 .delete-btn {

@@ -1,24 +1,18 @@
 <template>
   <div class="course-plan-container">
-    <div>
-      <div class="row button-bar">
-        <v-btn class="term-btn" :dark="editingEnabled" @click="toggleEditing()">Edit Terms</v-btn>
-      </div>
-    </div>
-     <v-divider class="divider"></v-divider>
     <v-row class="main-course-selection-panel">
-              <draggable class= "main-course-selection-panel-draggable" :list="getTable" :disabled="!editingEnabled" group="people" @change="log">
+              <draggable class= "main-drag" :list="getTable" group="term" @change="log">
 
       <template v-for="(term, termIndex) in getTable">  
         <v-card class="col-2 term-column" :key="termIndex">
         <div class="text-h6 term-title">{{ getTermList[termIndex] }}
 
-        <v-btn icon class="delete-btn" x-small v-if="editingEnabled" @click="deleteTerm(termIndex)">
+        <v-btn icon class="delete-btn" x-small @click="deleteTerm(termIndex)">
           <v-icon medium class="delete-term-btn">mdi-trash-can</v-icon>
         </v-btn>
 
         </div>
-        <draggable class="list-group draggable-column" :disabled="editingEnabled" :list="term.courses" group="people" @change="log">
+        <draggable class="list-group draggable-column" :disabled="editingEnabled" :list="term.courses" group="course" @change="log">
             <template v-for="(element, courseIndex) in term.courses">
               <CourseCard
                 class="list-group-item card"
@@ -81,7 +75,11 @@ export default {
 
 
 <style scoped>
-
+  .problem-message {
+    display: inline-block;
+    bottom: 0px;
+    right: 0px;
+  }
 
   .main-course-selection-panel {
     flex-wrap: nowrap;
@@ -103,10 +101,9 @@ export default {
 
   .term-column {
     background-color: lightgray;
-    margin-bottom: 1rem;
   }
 
-  .main-course-selection-panel-draggable {
+  .main-drag {
     display: flex;
     width: 100%;
   }

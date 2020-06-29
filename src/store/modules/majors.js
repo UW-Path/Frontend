@@ -6,9 +6,10 @@ const state = {
     majors: [],
     minors: ["minor1", "minor2", "minor3", "remove"],
     specialization: ["options1", "options2", "options3", "remove"],
-    chosenMajor: "No major",
-    chosenMinor: "No minor",
-    chosenSpecialization: "No specialization"
+    //array because there exists multiple major/minor/specs that can be chosen
+    chosenMajor: [],
+    chosenMinor: [],
+    chosenSpecialization: []
 };
 
 const getters = {
@@ -22,7 +23,7 @@ const getters = {
     findMajorByProgram: (state) => {
         return (program) => {
             return state.majors.find(obj => { return program == obj["program_name"]})["major_name"]
-    } 
+        } 
     }
 };
 
@@ -39,16 +40,22 @@ const mutations = {
         state.majors = majors["Major"]
     },
     setChosenMajor: (state, newMajor) => {
-        state.chosenMajor = newMajor
+        state.chosenMajor = []
+        state.chosenMajor.push(newMajor)
         console.log("set new major " + newMajor)
     },
     setChosenMinor: (state, newMinor) => {
-        state.chosenMinor = newMinor
+        state.chosenMinor = []
+        state.chosenMinor.push(newMinor) 
         console.log("set new minor " + newMinor)     
     },
     setChosenSpecialization: (state, chosenSpecialization) => {
-        state.chosenSpecialization = chosenSpecialization
+        state.chosenSpecialization = []
+        state.chosenSpecialization.push(chosenSpecialization)
         console.log("set new spec " + chosenSpecialization)     
+    },
+    addChosenMajor: (state, major) => {
+        state.chosenMajor.push(major)
     }
 };
 

@@ -29,18 +29,21 @@
 
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
+
+
 export default {
     name: "Home",
     components: {
     },
     methods: {
-        ...mapActions(["fetchMajors"]),
+        ...mapActions(["fetchMajors", "fetchRequirements"]),
         ...mapMutations(["setChosenMajor"]),
-        changeMajor(event) {
-            console.log("New major: ", this.findMajorByProgram(event))
+        //this is later used for linking up the different course addresses
+        changeMajor(programName) {
             //state changes
-            this.setChosenMajor(this.findMajorByProgram(event))
-            this.$router.push('/') 
+            this.setChosenMajor(programName)
+            this.fetchRequirements();
+            this.$router.push('/CourseSelection')   
         }
     },
     computed: mapGetters(["allMajors", "findMajorByProgram"]),
