@@ -1,18 +1,18 @@
 <template>
     <v-card id="selection-sidebar"> 
-        <v-card
-        v-if="requirements.length > 0"
-        class="text-h7 requirement-title"
-        >
-            Major Requirements
-        </v-card>
-        <draggable class= "main-drag" :list="requirements" group="course">
-        <template v-for="course in requirements">
-        <RequirementOptionsModal 
-            class="required-course"  
-            :key="course.courses_codes"
-            v-bind:course="course"/>
-        </template>
+        <v-list-item v-if="!requirements.length" id="no-program-message">
+            select a program to get a list of requirements
+        </v-list-item>
+
+        <draggable :list="requirements" group="course">
+            <template v-for="(requirement,index) in requirements">
+              <RequirementOptionsModal
+                class="list-group-item course-card"
+                :key="index"
+                :course="requirement"
+                :onSelectionBar="true"
+              />
+            </template>
         </draggable>
     </v-card> 
 </template>
@@ -20,12 +20,13 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import draggable from 'vuedraggable'
-import RequirementOptionsModal from "../RequirementOptionsModal"
+import RequirementOptionsModal from '../Modals/RequirementOptionsModal'
+
 export default {
     name: "SideBar",
     components: {
-        RequirementOptionsModal,
-        draggable
+        draggable,
+        RequirementOptionsModal
     },
     methods: {
         ...mapActions(["fetchRequirements"])
@@ -48,9 +49,16 @@ export default {
 }
 
 .requirement-title {
-    margin: 0.75rem;
+    margin: 0.75rem;    
     padding: 0.5rem;
 }
 
+.course-card {
+    margin: 1rem;
+    text-align: left;
+}
 
+#no-program-message {
+    color: grey !important;
+}
 </style>

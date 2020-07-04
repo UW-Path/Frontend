@@ -1,29 +1,26 @@
 <template>
     <div>
         <!-- Required Course Block -->
-        <!-- <v-card class="course-list-block" @click.stop="enableDialog()">
-            <v-card-title> {{ course.course_codes }} </v-card-title>
-        </v-card> -->
 
   <v-card class="course-list-block" @click.stop="enableDialog()">
     <v-list-item>
       <v-list-item-content>
         <div class="overline mb-4"  v-if="courseCodes.length > 1">
-              Select one below
-        </div>       
-        <v-list-item-subtitle v-for="(names, index) in courseCodes" :key="index" color="black">{{  names  }}</v-list-item-subtitle>
+              Select {{course.number_of_courses}} below
+        </div>
+        <template v-for="(names, index) in courseCodes" >
+            <v-list-item-subtitle  :key="index" class="selected-course-code" v-if="isSelected(names)">{{  names  }}</v-list-item-subtitle>
+            <v-list-item-subtitle  :key="index"  v-else>{{  names  }}</v-list-item-subtitle>
+        </template>       
+        
       </v-list-item-content>
     </v-list-item>
   </v-card>
-
 
         <!-- Course Popup Modal -->
         <v-dialog v-model="dialog" max-width="1000">
             <v-card>
                 <v-container fluid class="modal-course-list-container">
-                    <!-- <v-card-actions class="modal-actions">
-                        <v-btn color="green darken-1" text @click="dialog = false"> Select </v-btn>
-                    </v-card-actions> -->
                     <v-row class="modal-course-list-row">
                         <v-col align="center">
                             <v-text-field class="modal-search" v-model="searchtext" label="Search for a Course" prepend-inner-icon="mdi-magnify" hide-details="true" single-line outlined dense></v-text-field>
@@ -39,7 +36,7 @@
                             <v-card-title class="course-title">
                                 {{ selectedCourse.course_code }}
                                 <v-spacer></v-spacer>
-                                <v-btn color="green darken-1" class="select-btn" text @click="dialog = false"> Select </v-btn>
+                                <v-btn color="green darken-1" class="select-btn" text @click="selectCourse()"> Select </v-btn>
                             </v-card-title>
                             <v-card-text>{{ selectedCourse.info + (selectedCourse.offering === "" ? "" :  " Offered in: " + selectedCourse.offering.slice(0,-1) + ".") + (selectedCourse.online ? " Offered Online." : "")}}</v-card-text>
                             <v-card-text class="course-description-text">{{ "Credits: " + selectedCourse.credit }}</v-card-text>
@@ -51,11 +48,19 @@
                 </v-container>
             </v-card>
         </v-dialog>
+
+
     </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+// import draggable from 'vuedraggable'
+
 export default {
+    components: {
+        // draggable
+    },
     data () {
         return {
             dialog: false,
@@ -65,9 +70,19 @@ export default {
     },
     props: ["course"],
     methods: {
-        enableDialog() {
+        enableDialog: function() {
             if (this.course.course_choices.length > 1) this.dialog = true;
         },
+        selectCourse: function () {
+            this.course.selected_course = this.selectedCourse;
+            this.dialog = false;
+            // console.log("selected course", this.course.selected_course);
+        },
+        isSelected: function(courseCode) {
+            // console.log("isSelected", courseCode)
+            if (!this.course.selected_course) return false
+            return courseCode == this.course.selected_course.course_code;
+        }
     },
     computed: {
         filteredCourses: function () {
@@ -85,7 +100,11 @@ export default {
             return this.course.course_choices.map(choice => {
                 return choice.course_code
             })
-        }
+        },
+        hasSelected: function() {
+            return this.course.selected_course != undefined
+        },
+        ...mapGetters(["requirements", "chosenMajor"]),
     }
 }
 </script>
@@ -165,5 +184,9 @@ export default {
 
 .course-title {
     padding-top: 0px;
+}
+
+.selected-course-code {
+    font-weight: bold;
 }
 </style>

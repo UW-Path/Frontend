@@ -4,23 +4,8 @@
 const state = {
     table: [ 
         {
-            term: 1,
+            // term: 1,
             courses: [
-                {
-                    name: "CS 135",
-                    status: "Prereq not met",
-                    description: "Introduction to computer science"
-                },
-                {
-                    name: "MATH 136",
-                    status: "Prereq not met",
-                    description: "Introduction to computer science"
-                },
-                {
-                    name: "MATH 135",
-                    status: "Prereq not met",
-                    description: "Introduction to computer science"
-                }
             ]
         }
      ],
@@ -36,34 +21,46 @@ const getters = {
     getTermList: (state) => {
         return state.termList
     },
+    getCourse: (state) => (termIndex, courseIndex) => {
+        return state.table[termIndex].courses[courseIndex]
+    }
 };
 
 const actions = {
 };
 
 const mutations = {
-    addTerm: (state) => {
+    addTermToTable: (state) => {
         let newTerm = {
-            term: 0,
             courses: []
-        }
-        if (state.table.length != 0) {
-            newTerm.term = state.table[state.table.length - 1].term + 1
         }
         state.table.push(newTerm)
     },
-    deleteTerm: (state, index) => {
+    deleteTermFromTable: (state, deletedTerm) => {
+        let index = state.table.indexOf(deletedTerm)
+        console.log(index)
         state.table.splice(index, 1)
     },
-    deleteCourse: (state, termIndex, courseIndex) => {
-        state.table[termIndex].courses.splice(courseIndex, 1)
+    removeRequirementFromTable: (state, deletedReq) => {
+        // state.table[termIndex].courses.splice(courseIndex, 1)
+
+        for (let term of state.table) {
+            console.log(term)
+            let index = term.courses.indexOf(deletedReq)
+            
+            if (index != -1) {
+                term.courses.splice(index, 1)
+                return
+            }
+        }
     },
     addCourse: (state, termIndex) => {
-        state.table[termIndex].courses.push({
-            name: "MATH 135",
-            status: "Prereq not met",
-            description: "Introduction to computer science"
-        })
+        // state.table[termIndex].courses.push({
+        //     name: "MATH 135",
+        //     status: "Prereq not met",
+        //     description: "Introduction to computer science"
+        // })
+        void termIndex
     }
 };
 

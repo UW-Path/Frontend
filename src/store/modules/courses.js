@@ -17,7 +17,7 @@ async function parseRequirement(courseCode) {
                 code: split[0],
             }
         })
-        console.log("1 " +  courseCode, response.data)
+        // console.log("1 " +  courseCode, response.data)
         return response.data;
     } else if (courseCode.split("-").length === 2 && courseCode.split("-")[0].length > 0 && courseCode.split("-")[1].length > 0) {
         // Handles range case, eg CS 440-CS 498
@@ -29,7 +29,7 @@ async function parseRequirement(courseCode) {
                 code: split[0].split(" ")[0],
             }
         })
-        console.log("2 " +  courseCode, response.data)
+        // console.log("2 " +  courseCode, response.data)
         return response.data.map(element => { return new CourseInfo(element) });
     } else {
         // Handles normal course case, ege MATH 239
@@ -38,15 +38,13 @@ async function parseRequirement(courseCode) {
                 pk: courseCode,
             }
         });
-        console.log("3 " +  courseCode, response.data)
+        // console.log("3 " +  courseCode, response.data)
         return [new CourseInfo(response.data)];
     }
 }
 
 const state = {
     requirements: [],
-    minorrequirements: [],
-    specificationrequirements: [],
 };
 
 const getters = {
@@ -66,30 +64,39 @@ const actions = {
             }
         });
         var requirements = [];
-        console.log("requirements ", response.data)
+        // console.log("requirements ", response.data)
         // Go over all the course requirements
         for (var requirement of response.data.requirements) {
             // Create object to store requirement information
-            var parsed_requirement = new CourseRequirement({
+            var parsed_requirement = {
                 course_codes: requirement.course_codes,
                 course_choices: [],
-                selected_course: "",
-            })
+                number_of_courses: requirement.number_of_courses,
+                major: [getters.chosenMajor[0]],
+            }
             // Split the requirement into its individual courses and parse each of them
             var required_courses = requirement.course_codes.split(", ")
             for (var course of required_courses) {
                 parsed_requirement.course_choices = parsed_requirement.course_choices.concat(await parseRequirement(course))
             }
-            for (var i = 0; i < requirement.number_of_courses; i++) {
-                requirements.push(parsed_requirement)
-            }
+
+            requirements.push(new CourseRequirement(parsed_requirement))
+            // for (var i = 0; i < requirement.number_of_courses; i++) {
+            //     requirements.push(parsed_requirement)
+            // }
         }
-        commit('setCourses', requirements);
+        commit('setRequirements', requirements);
     },
 };
 
 const mutations = {
-    setCourses: (state, requirements) => {state.requirements = requirements},
+    setRequirements: (state, requirements) => {
+        state.requirements = requirements
+        console.log("final set requirements", requirements)
+    },
+    addRequirement: (state, newRequirement) => {
+        state.requirements.push(newRequirement)
+    },
     clearCourses: (state) => {state.requirements = []}
 };
 

@@ -8,7 +8,6 @@
                     <div class="text-h3 title">UWPath</div>
                     <div class="text-h5 caption" >Plan your degree ahead</div>
                     <v-autocomplete
-                        v-model="values"
                         :items="allMajors"
                         v-on:change="changeMajor"
                         dense
@@ -21,7 +20,7 @@
                         height="3rem"
                         color="black"
                     ></v-autocomplete>
-                    <div class="findprogram" @click="FindProgram()">Can't find your program?</div>
+                    <div class="findprogram" @click="findProgram()">Can't find your program?</div>
                 </v-col>
         </v-row>
     </v-container>
@@ -29,8 +28,6 @@
 
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
-
-
 export default {
     name: "Home",
     components: {
@@ -44,14 +41,14 @@ export default {
             this.setChosenMajor(programName)
             this.fetchRequirements();
             this.$router.push('/CourseSelection')   
+        },
+        findProgram() {
+            console.log("find program clicked: WIP")
         }
     },
     computed: mapGetters(["allMajors", "findMajorByProgram"]),
     created() {
         this.fetchMajors();
-    },
-    findProgram() {
-        console.log("find program clicked: WIP")
     }
 }
 </script>

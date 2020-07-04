@@ -13,7 +13,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import RequirementOptionsModal from "../components/RequirementOptionsModal"
+import RequirementOptionsModal from "../components/Modals/RequirementOptionsModal"
 export default {
     name: "Home",
     components: {

@@ -1,6 +1,5 @@
 <template>
  <v-app-bar
-      
       color="white"
     >
             <v-toolbar-title class="program-titles" v-for="(major,index) in chosenMajor" :key="index">{{ major }}</v-toolbar-title>
@@ -10,18 +9,7 @@
         <v-icon>mdi-plus-circle-outline</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
-
-      <!-- <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn> -->
-      <v-btn text>
-          Contact Us
-          </v-btn>
-<!-- 
-      <v-btn icon>
-        <v-icon>mdi-heart</v-icon>
-      </v-btn> -->
-
+      <v-btn text> Contact Us </v-btn>
 
     </v-app-bar>
 </template>
@@ -34,10 +22,7 @@ export default {
     name: "ProgramSelectionBar",
     data: function () {
         return {
-            programSelectionHidden: true,
-            selectedMajor: [],
-            selectedMinor: [],
-            selectedSpecialization: []
+            programSelectionHidden: true
         }
     },
     components: {
