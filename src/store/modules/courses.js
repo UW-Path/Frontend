@@ -6,6 +6,15 @@ const backend_api = "http://127.0.0.1:8000"
 
 // Fetch course information of a single course code (eg MATH 239 or PHYS 300-)
 async function parseRequirement(courseCode) {
+    //handle the exceptions [e.g. NON-MATH]
+    if (courseCode == "NON-MATH") {
+        return [new CourseInfo({
+            course_name: "Course not offered by the Faculty of Math",
+            course_code: "NON-MATH"
+        })]
+    }
+
+
     var split;
     if (courseCode[courseCode.length - 1] === "-") {
         // Handles X00's case, eg PHYS 300-
@@ -64,7 +73,7 @@ const actions = {
             }
         });
         var requirements = [];
-        // console.log("requirements ", response.data)
+        console.log("requirements ", response.data)
         // Go over all the course requirements
         for (var requirement of response.data.requirements) {
             // Create object to store requirement information
@@ -75,15 +84,14 @@ const actions = {
                 major: [getters.chosenMajor[0]],
             }
             // Split the requirement into its individual courses and parse each of them
-            var required_courses = requirement.course_codes.split(", ")
+            var required_courses = requirement.course_codes.split(/,\s|\sor\s/)
+            
+            console.log(required_courses)
             for (var course of required_courses) {
                 parsed_requirement.course_choices = parsed_requirement.course_choices.concat(await parseRequirement(course))
             }
 
             requirements.push(new CourseRequirement(parsed_requirement))
-            // for (var i = 0; i < requirement.number_of_courses; i++) {
-            //     requirements.push(parsed_requirement)
-            // }
         }
         commit('setRequirements', requirements);
     },
