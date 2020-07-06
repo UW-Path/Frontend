@@ -4,7 +4,7 @@
                 <v-col class="hidden-md-and-down" justify="end" >
                     <div class="additional-info"></div>
                 </v-col>
-                <v-col class="centerpiece-container">
+                <v-col class="centerpiece-container" data-aos="fade-up" data-aos-duration="1200">
                     <div class="text-h3 title">UWPath</div>
                     <div class="text-h5 caption" >Plan your degree ahead</div>
                     <v-autocomplete
@@ -103,4 +103,6 @@ export default {
     float: right;
     margin: 4rem;
 }
+
+
 </style>
