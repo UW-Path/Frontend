@@ -23,7 +23,7 @@
       text-color="white"
       class="chip"
     > 
-      minor
+      Minor
     </v-chip>
     <v-chip
       v-if="this.courseData.course_choices.length > 1"
@@ -51,15 +51,23 @@
       <v-list-item-content>
         <div class="overline mb-4">
               <div  v-if="courseData.course_choices.length > 1">
-                Select {{courseData.number_of_courses}} below
+                Select {{courseData.number_of_courses}}
                 </div> 
                   <v-spacer></v-spacer>
               <v-btn icon class="delete-btn" x-small @click="deleteCourse()" v-if="!onSelectionBar" ></v-btn>
         </div>
-        <template v-for="(code, index) in courseData.course_codes" >
-            <v-list-item-subtitle  :key="index" class="selected-course-code" v-if="isSelected(code)">{{  code  }}</v-list-item-subtitle>
-            <v-list-item-subtitle  :key="index" v-else>{{  code  }}</v-list-item-subtitle>
-        </template>       
+        <div v-if="courseData.course_codes.length <= 3">
+          <template v-for="(code, index) in courseData.course_codes" >
+              <v-list-item-subtitle  :key="index" class="selected-course-code" v-if="isSelected(code)">{{  code  }}</v-list-item-subtitle>
+              <v-list-item-subtitle  :key="index" v-else>{{  code  }}</v-list-item-subtitle>
+          </template>
+        </div>    
+        <div v-else>
+          <template v-for="(code, index) in courseData.course_codes.slice(0,3)" >
+              <v-list-item-subtitle  :key="index" class="selected-course-code" v-if="isSelected(code)">{{  code  }}</v-list-item-subtitle>
+              <v-list-item-subtitle  :key="index" v-else>{{  code  }}<b v-if="index==2">...</b> </v-list-item-subtitle>
+          </template>
+        </div>    
         
       </v-list-item-content>
     </v-list-item>
