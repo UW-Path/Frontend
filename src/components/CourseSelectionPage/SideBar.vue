@@ -4,21 +4,21 @@
             select a program to get a list of requirements
         </v-list-item>
 
-        <draggable :list="requirements" group="course">
-            <template v-for="(requirement,index) in requirements">
+        <draggable :list="requirements" :group="{ name: 'course', pull: pullFunction }" :clone="clone" :change="change">
               <RequirementOptionsModal
                 class="list-group-item course-card"
+                v-for="(requirement,index) in requirements"
                 :key="index"
                 :course="requirement"
                 :onSelectionBar="true"
+                @mousedown.native="lastClickdownReq = requirement"
               />
-            </template>
         </draggable>
     </v-card> 
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 import draggable from 'vuedraggable'
 import RequirementOptionsModal from '../Modals/RequirementOptionsModal'
 
@@ -28,8 +28,34 @@ export default {
         draggable,
         RequirementOptionsModal
     },
+    data() {
+        return {
+            lastClickdownReq: null
+        }
+    },
     methods: {
-        ...mapActions(["fetchRequirements"])
+        ...mapActions(["fetchRequirements"]),
+        ...mapMutations(["deleteRequirement", "collapseRequirements"]),
+        pullFunction: function() {
+            console.log("pullFunction", event)
+
+            // if (this.requirement[event._loopId])
+            return this.lastClickdownReq.number_of_courses == 0 ? true : "clone"
+        },
+        clone: function(event) {
+            console.log("clone", event)
+
+            let clone = JSON.parse(JSON.stringify(event))
+            clone.number_of_courses = 1
+            event.number_of_courses--
+            // if (event.number_of_courses == 0) this.deleteRequirement(event)
+
+            return clone
+        },
+        change: function(event) {
+            console.log("change", event)
+            this.collapseRequirements()
+        }
     },
     computed: mapGetters(["requirements", "chosenMajor"]),
 }

@@ -99,11 +99,37 @@ const actions = {
 
 const mutations = {
     setRequirements: (state, requirements) => {
-        state.requirements = requirements
-        console.log("final set requirements", requirements)
+        // state.requirements = requirements
+        state.requirements = [ requirements[requirements.length - 4] ]
+        console.log("final set requirements", state.requirements)
     },
     addRequirement: (state, newRequirement) => {
+        console.log("new state", state.requirements)
+        for (let req of state.requirements) {
+            console.log(req)
+            console.log(req.id, newRequirement.id)
+            if (newRequirement.id == req.id) {
+                req.number_of_courses++
+                return
+            }
+        }
         state.requirements.push(newRequirement)
+        console.log("new state", state.requirements)
+    },
+    deleteRequirement: (state, requirement) => {
+        let index = state.requirements.indexOf(requirement)
+        state.requirements.splice(index, 1)
+    },
+    //this collapses duplicate requirements that share the same id
+    collapseRequirements: (state) => {
+        for (let i = 0; i < state.requirements.length;i++) {
+            for (let j = i + 1; j < state.requirements.length;j++) {
+                if (state.requirements[i].id == state.requirements[j].id) {
+                    state.requirements[i].number_of_courses++
+                    state.requirement.splice(j, 1)
+                }
+            }
+        }
     },
     clearCourses: (state) => {state.requirements = []}
 };
