@@ -100,7 +100,7 @@ const actions = {
 const mutations = {
     setRequirements: (state, requirements) => {
         // state.requirements = requirements
-        state.requirements = [ requirements[requirements.length - 4] ]
+        state.requirements = requirements
         console.log("final set requirements", state.requirements)
     },
     addRequirement: (state, newRequirement) => {
