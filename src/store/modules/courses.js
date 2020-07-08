@@ -17,6 +17,10 @@ async function parseRequirement(courseCode) {
                 code: split[0],
             }
         })
+        .catch(err => {
+            console.log(err);
+            return [];
+        });
         // console.log("1 " +  courseCode, response.data)
         return response.data;
     } else if (courseCode.split("-").length === 2 && courseCode.split("-")[0].length > 0 && courseCode.split("-")[1].length > 0) {
@@ -29,6 +33,10 @@ async function parseRequirement(courseCode) {
                 code: split[0].split(" ")[0],
             }
         })
+        .catch(err => {
+            console.log(err);
+            return [];
+        });
         // console.log("2 " +  courseCode, response.data)
         return response.data.map(element => { return new CourseInfo(element) });
     } else {
@@ -37,6 +45,10 @@ async function parseRequirement(courseCode) {
             params: {
                 pk: courseCode,
             }
+        })
+        .catch(err => {
+            console.log(err);
+            return [];
         });
         // console.log("3 " +  courseCode, response.data)
         return [new CourseInfo(response.data)];
@@ -62,7 +74,11 @@ const actions = {
                 option: "",
                 minor: ""
             }
-        });
+        })
+        .catch(err => {
+            console.log(err);
+            return;
+        })
         var requirements = [];
         // console.log("requirements ", response.data)
         // Go over all the course requirements
