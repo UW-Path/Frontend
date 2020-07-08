@@ -47,6 +47,13 @@ export default {
 
             let clone = JSON.parse(JSON.stringify(event))
             clone.number_of_courses = 1
+            if (event.selected_course != null){
+                clone.selected_course = event.selected_course
+                event.selected_course = null
+            }
+            else{
+                clone.selected_course = null
+            }
             event.number_of_courses--
             // if (event.number_of_courses == 0) this.deleteRequirement(event)
 
