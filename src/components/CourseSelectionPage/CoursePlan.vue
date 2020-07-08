@@ -4,7 +4,7 @@
       <draggable class= "main-drag" :list="getTable" group="term" @change="log">
 
       <template v-for="(term, termIndex) in getTable">  
-        <v-card class="col-2 term-column" :key="termIndex" @mouseenter="termMouseOver(termIndex)" @mouseleave="termMouseExit()">
+        <v-card class="col-sm-3 col-md-2 term-column" :key="termIndex" @mouseenter="termMouseOver(termIndex)" @mouseleave="termMouseExit()">
         <div class="text-h6 term-title">{{ getTermList[termIndex] }}
 
         <v-btn icon class="delete-btn" x-small @click="deleteTerm(term)">
@@ -26,14 +26,13 @@
         <AddCourseCard :termIndex="termIndex" v-if="termHovered == termIndex"/>
       </v-card >
       </template>
-                    <v-card class="col-2 term-column add-term-btn"  @click="addTermToTable">
+          <v-card class="col-2 term-column add-term-btn"  @click="addTermToTable">
           <div class="text-h7">
             Add a Term
           </div>
-            <v-icon medium >mdi-plus-circle</v-icon>
+          <v-icon medium >mdi-plus-circle</v-icon>
         </v-card>
-              </draggable>
-
+      </draggable>
     </v-row>    
   </div>
 
@@ -146,6 +145,5 @@ export default {
   .divider {
     margin-bottom: 1rem;
   }
-
 
 </style>

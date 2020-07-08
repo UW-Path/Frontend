@@ -103,6 +103,4 @@ export default {
     float: right;
     margin: 4rem;
 }
-
-
 </style>

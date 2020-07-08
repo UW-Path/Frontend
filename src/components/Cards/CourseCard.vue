@@ -40,7 +40,7 @@
     <v-spacer></v-spacer>
               <v-btn icon class="delete-btn" x-small @click="deleteCourse()" v-if="!onSelectionBar"></v-btn>
         </div>       
-        <v-list-item-title class="headline mb-1">{{ courseData.selected_course.course_code }}</v-list-item-title>
+        <v-list-item-title class="headline text-md-h6 ">{{ courseData.selected_course.course_code }}</v-list-item-title>
         <v-list-item-subtitle>{{ courseData.selected_course.course_name }}</v-list-item-subtitle>
       </v-list-item-content>
     </v-list-item>

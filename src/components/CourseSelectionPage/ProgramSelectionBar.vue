@@ -6,7 +6,7 @@
             <v-toolbar-title class="program-titles"  v-for="(minor,index) in chosenMinor" :key="index">{{ minor }}</v-toolbar-title>
             <v-toolbar-title class="program-titles"  v-for="(spec,index) in chosenSpecialization" :key="index">{{ spec }}</v-toolbar-title>
             <v-btn icon>
-        <v-icon>mdi-plus-circle-outline</v-icon>
+        <ProgramSelectionModal></ProgramSelectionModal>
       </v-btn>
       <v-spacer></v-spacer>
       <v-btn text> Contact Us </v-btn>
@@ -17,7 +17,8 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-// import Course from "../components/Course"
+import ProgramSelectionModal from '../Modals/ProgramSelectionModal'
+
 export default {
     name: "ProgramSelectionBar",
     data: function () {
@@ -26,6 +27,7 @@ export default {
         }
     },
     components: {
+        ProgramSelectionModal
     },
     props: {
     },
