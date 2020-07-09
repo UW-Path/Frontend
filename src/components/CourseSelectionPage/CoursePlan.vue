@@ -61,7 +61,6 @@ export default {
   methods: {
     ...mapMutations(["addTermToTable", "deleteTermFromTable", "addRequirement"]),
     log: function() {
-      // window.console.log(evt);
       console.log(this.getTable)
     },
     termMouseOver(termIndex) {
