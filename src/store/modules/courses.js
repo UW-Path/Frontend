@@ -72,7 +72,6 @@ async function parseRequirement(courseCode) {
                     code: split[0].split(" ")[0],
                 }
             })
-            // console.log("2 " +  courseCode, response.data)
             return response.data.map(element => { return new CourseInfo(element) });
         } else {
             // Handles normal course case, ege MATH 239
@@ -81,7 +80,6 @@ async function parseRequirement(courseCode) {
                     pk: courseCode,
                 }
             });
-            // console.log("3 " +  courseCode, response.data)
             return [new CourseInfo(response.data)];
         }
     }
@@ -121,8 +119,6 @@ const actions = {
 
             // Split the requirement into its individual courses and parse each of them
             var required_courses = requirement.course_codes.split(/,\s|\sor\s/)
-            
-            
            
             for (var course of required_courses) {
                 parsed_requirement.course_choices = parsed_requirement.course_choices.concat(await parseRequirement(course))
@@ -137,6 +133,7 @@ const actions = {
 const mutations = {
     setRequirements: (state, requirements) => {
         // state.requirements = requirements
+        // state.requirements = [requirements[requirements.length - 4] ]
         state.requirements = requirements
         console.log("final set requirements", state.requirements)
     },
@@ -157,14 +154,52 @@ const mutations = {
         let index = state.requirements.indexOf(requirement)
         state.requirements.splice(index, 1)
     },
+    sortRequirements: (state) => {
+            // void state
+        console.log("SORT!", state.requirements)
+        //sort by alphabetical order or number of courses
+        state.requirements.sort((a, b) => {
+            console.log("a: ", a.course_choices)
+            console.log("b: ", b.course_choices)
+
+            //reqs with multiple choices go to the bottom
+            if (a.course_choices.length != b.course_choices.length) return a.course_choices.length - b.course_choices.length
+            //compare the course code and the course code and the course year
+            console.log("hit2")
+            let choiceA = a.course_choices[0].course_code.split(" ")
+            let choiceB = b.course_choices[0].course_code.split(" ")
+            console.log("hit3")
+            if (parseInt(choiceA[1][0]) != parseInt(choiceB[1][0])) return parseInt(choiceA[1][0]) - parseInt(choiceB[1][0])
+            return choiceA[0].localeCompare(choiceB[0])
+        })
+    },
     //this collapses duplicate requirements that share the same id
     collapseRequirements: (state) => {
         for (let i = 0; i < state.requirements.length;i++) {
             for (let j = i + 1; j < state.requirements.length;j++) {
                 if (state.requirements[i].id == state.requirements[j].id) {
-                    state.requirements[i].number_of_courses++
-                    state.requirement.splice(j, 1)
+                    state.requirements[i].number_of_courses += state.requirements[j].number_of_courses
+                    state.requirements.splice(j, 1)
                 }
+            }
+        }
+    },
+    decrementRequirementByID: (state, id) => {
+        void state
+        // this collapses the requirement first so that there is only 1 id
+        for (let i = 0; i < state.requirements.length;i++) {
+            for (let j = i + 1; j < state.requirements.length;j++) {
+                if (state.requirements[i].id == state.requirements[j].id) {
+                    state.requirements[i].number_of_courses += state.requirements[j].number_of_courses
+                    state.requirements.splice(j, 1)
+                }
+            }
+        }
+        //decrement hte id
+        for (let i = 0; i < state.requirements.length;i++) {
+            if (state.requirements[i].id == id) {
+                state.requirements[i].number_of_courses--
+                return
             }
         }
     },

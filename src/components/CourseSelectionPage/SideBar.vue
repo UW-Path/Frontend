@@ -3,8 +3,7 @@
         <v-list-item v-if="!requirements.length" id="no-program-message">
             select a program to get a list of requirements
         </v-list-item>
-
-        <draggable :list="requirements" :group="{ name: 'course', pull: pullFunction }" :clone="clone" :change="change">
+        <draggable class="draggable-column" :list="requirements" :group="{ name: 'course', pull: pullFunction }" :clone="clone" @change="change">
               <RequirementOptionsModal
                 class="list-group-item course-card"
                 v-for="(requirement,index) in requirements"
@@ -35,33 +34,26 @@ export default {
     },
     methods: {
         ...mapActions(["fetchRequirements"]),
-        ...mapMutations(["deleteRequirement", "collapseRequirements"]),
+        ...mapMutations(["deleteRequirement", "collapseRequirements", "sortRequirements"]),
+        //card is not cloned if it only has one list and that 
         pullFunction: function() {
-            console.log("pullFunction", event)
-
-            // if (this.requirement[event._loopId])
-            return this.lastClickdownReq.number_of_courses == 0 ? true : "clone"
+            return this.lastClickdownReq.number_of_courses == 1 || this.lastClickdownReq.course_choices.length == 1 ? true : "clone"
         },
+        //clones the event, this only works iff the 
         clone: function(event) {
-            console.log("clone", event)
-
+            if (event.course_choices.length == 1) {
+                return event
+            }
             let clone = JSON.parse(JSON.stringify(event))
-            clone.number_of_courses = 1
-            if (event.selected_course != null){
-                clone.selected_course = event.selected_course
-                event.selected_course = null
-            }
-            else{
-                clone.selected_course = null
-            }
-            event.number_of_courses--
-            // if (event.number_of_courses == 0) this.deleteRequirement(event)
-
             return clone
         },
         change: function(event) {
-            console.log("change", event)
+            if (!event.added) return
+            let changedReq = event.added.element
+            changedReq.inRequirementBar = true
+            console.log("changeback", event)
             this.collapseRequirements()
+            this.sortRequirements()
         }
     },
     computed: mapGetters(["requirements", "chosenMajor"]),
@@ -93,5 +85,9 @@ export default {
 
 #no-program-message {
     color: grey !important;
+}
+
+.draggable-column {
+    /* height: 90%; */
 }
 </style>
