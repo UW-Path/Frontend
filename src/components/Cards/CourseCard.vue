@@ -98,6 +98,7 @@ export default {
         return 0
     },
     deleteCourse: function() {
+      console.log(this.courseData)
       if (this.courseData.major.length || this.courseData.minor.length || this.courseData.option.length) 
         this.addRequirement(this.courseData)
       this.removeRequirementFromTable(this.courseData)

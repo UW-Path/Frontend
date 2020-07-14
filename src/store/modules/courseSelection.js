@@ -78,7 +78,6 @@ const mutations = {
     },
     removeRequirementFromTable: (state, deletedReq) => {
         // state.table[termIndex].courses.splice(courseIndex, 1)
-
         for (let term of state.table) {
             console.log(term)
             let index = term.courses.indexOf(deletedReq)

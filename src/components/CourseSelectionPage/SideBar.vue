@@ -3,22 +3,21 @@
         <v-list-item v-if="!requirements.length" id="no-program-message">
             select a program to get a list of requirements
         </v-list-item>
-
-        <draggable :list="requirements" group="course">
-            <template v-for="(requirement,index) in requirements">
+        <draggable class="draggable-column" :list="requirements" :group="{ name: 'course', pull: pullFunction }" :clone="clone" @change="change">
               <RequirementOptionsModal
                 class="list-group-item course-card"
+                v-for="(requirement,index) in requirements"
                 :key="index"
                 :course="requirement"
                 :onSelectionBar="true"
+                @mousedown.native="lastClickdownReq = requirement"
               />
-            </template>
         </draggable>
     </v-card> 
 </template>
 
 <script>
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 import draggable from 'vuedraggable'
 import RequirementOptionsModal from '../Modals/RequirementOptionsModal'
 
@@ -28,8 +27,34 @@ export default {
         draggable,
         RequirementOptionsModal
     },
+    data() {
+        return {
+            lastClickdownReq: null
+        }
+    },
     methods: {
-        ...mapActions(["fetchRequirements"])
+        ...mapActions(["fetchRequirements"]),
+        ...mapMutations(["deleteRequirement", "collapseRequirements", "sortRequirements"]),
+        //card is not cloned if it only has one list and that 
+        pullFunction: function() {
+            return this.lastClickdownReq.number_of_courses == 1 || this.lastClickdownReq.course_choices.length == 1 ? true : "clone"
+        },
+        //clones the event, this only works iff the 
+        clone: function(event) {
+            if (event.course_choices.length == 1) {
+                return event
+            }
+            let clone = JSON.parse(JSON.stringify(event))
+            return clone
+        },
+        change: function(event) {
+            if (!event.added) return
+            let changedReq = event.added.element
+            changedReq.inRequirementBar = true
+            console.log("changeback", event)
+            this.collapseRequirements()
+            this.sortRequirements()
+        }
     },
     computed: mapGetters(["requirements", "chosenMajor"]),
 }
@@ -60,5 +85,9 @@ export default {
 
 #no-program-message {
     color: grey !important;
+}
+
+.draggable-column {
+    /* height: 90%; */
 }
 </style>
