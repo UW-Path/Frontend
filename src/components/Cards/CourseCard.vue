@@ -98,8 +98,11 @@ export default {
         return 0
     },
     deleteCourse: function() {
-      if (this.courseData.major.length || this.courseData.minor.length || this.courseData.option.length) 
+      console.log(this.courseData)
+      if (this.courseData.major.length || this.courseData.minor.length || this.courseData.option.length) {
         this.addRequirement(this.courseData)
+      }
+      this.courseData.inRequirementBar = true
       this.removeRequirementFromTable(this.courseData)
     },
     isSelected: function(courseCode) {

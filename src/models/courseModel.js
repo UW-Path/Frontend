@@ -39,12 +39,13 @@ export class CourseRequirement {
         this.specialization = data && data.specialization ? data.specialization : []
         this.overriden = false
         this.id = requirementId++
+        //this shows that the courseRequimrent is currently in the requirement bar
+        this.inRequirementBar = data && data.inRequirementBar ?  data.inRequirementBar  : true
     }
 }
 
 export class Term {
     constructor (data) {
         void data 
-        // WIP
     }
 }

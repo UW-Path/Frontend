@@ -17,7 +17,6 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
-// import Course from "../components/Course"
 export default {
     name: "ProgramSelectionBar",
     data: function () {
