@@ -57,7 +57,7 @@ export default {
     data () {
         return {
             searchtext: "",
-            selectedCourse: this.course.selected_course ? this.course.selected_course : this.course.course_choices[0],
+            selectedCourse: this.course.selected_course && this.course.selected_course.course_code !== "WAITING" ? this.course.selected_course : this.course.course_choices[0],
             dialog: false
         }
     },

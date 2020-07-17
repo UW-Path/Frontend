@@ -1,6 +1,6 @@
 <template>
   <v-card class="course-card">
-    <template v-if="this.courseData.selected_course">
+    <template v-if="this.courseData.selected_course && this.courseData.selected_course.course_code !== 'WAITING'">
     <v-list-item three-line>
       <v-list-item-content>
         <div class="overline mb-4">

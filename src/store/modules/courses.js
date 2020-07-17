@@ -1,7 +1,6 @@
 import axios from "axios";
 import {CourseInfo, CourseRequirement} from '../../models/courseModel'
 
-
 const backend_api = "http://127.0.0.1:8000"
 
 
@@ -41,7 +40,6 @@ async function parseRequirement(courseCode) {
             split = courseCode.split(" ");
             
             if(split[1] === "LAB"){
-        
                 response = await axios.get(backend_api + "/api/course-info/filter", {
                     params: {
                         start: Number(split[2].slice(0, -1)),
@@ -109,7 +107,6 @@ const actions = {
             return;
         })
         var requirements = [];
-        console.log("requirements ", response.data)
         // Go over all the course requirements
         for (var requirement of response.data.requirements) {
             // Create object to store requirement information
@@ -119,14 +116,12 @@ const actions = {
                 number_of_courses: requirement.number_of_courses,
                 major: [getters.chosenMajor[0]],
             }
-
             // Split the requirement into its individual courses and parse each of them
             var required_courses = requirement.course_codes.split(/,\s|\sor\s/)
            
             for (var course of required_courses) {
                 parsed_requirement.course_choices = parsed_requirement.course_choices.concat(await parseRequirement(course))
             }
-
             requirements.push(new CourseRequirement(parsed_requirement))
         }
         commit('setRequirements', requirements);
@@ -135,10 +130,7 @@ const actions = {
 
 const mutations = {
     setRequirements: (state, requirements) => {
-        // state.requirements = requirements
-        // state.requirements = [requirements[requirements.length - 4] ]
         state.requirements = requirements
-        console.log("final set requirements", state.requirements)
     },
     addRequirement: (state, newRequirement) => {
         console.log("new state", state.requirements)

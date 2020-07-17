@@ -1,4 +1,7 @@
-// import axios from "axios";
+import axios from "axios";
+import TrieSearch from "trie-search"
+const backend_api = "http://127.0.0.1:8000"
+
 //need to move the routes to the configs
 
 const state = {
@@ -45,10 +48,12 @@ const state = {
         }       
      ],
      //TODO: need to figure out naming later
-     termList: ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B", "5A", "5B"]
+     termList: ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B", "5A", "5B"],
+     checklistRequirements: [],
 };
 
 const getters = {
+    checklistRequirements: (state) => state.checklistRequirements,
     getTable: (state) => {return state.table},
     isFull: (state) => {
         return state.table.length >= state.termList.length
@@ -61,10 +66,117 @@ const getters = {
     }
 };
 
+function getRequirementFullfillmentSize(requirement) {
+    var required_courses = requirement.course_codes.split(/,\s|\sor\s/)
+    var sizeScore = 0;
+    for (var course of required_courses) {
+        if (course[course.length - 1] === "-") {
+            sizeScore += 50;
+        } else if (course.split("-").length === 2 && course.split("-")[0].length > 0 && course.split("-")[1].length > 0) {
+            sizeScore += 30;
+        } else {
+            sizeScore += 1;
+        }
+    }
+    return sizeScore;
+}
+
 const actions = {
+    fillOutCheckList({ commit, getters }) {
+        axios.get(backend_api + "/api/requirements/requirements", {
+            params: {
+                major: getters.chosenMajor[0],
+                option: "",
+                minor: ""
+            }
+        })
+        .then(response => {
+            var selectedCourses = new TrieSearch([['selected_course', 'course_code'], ['selected_course', 'course_number']], {
+                idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
+            });
+            var usedCourses = new TrieSearch([['selected_course', 'course_code'], ['selected_course', 'course_number']], {
+                idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
+            });
+            for (var term of getters.getTable) {
+                selectedCourses.addAll(term.courses)
+            }
+            var requirements = response.data.requirements
+            // Since a single course could apply to multiple different requirements, we need to keep track of
+            // courses that we have already "used up" to fulfill another requirement. This way we dont double count any courses.
+            // We should prioritize requirements that have smaller subsets of possible courses to fill them.
+            requirements.sort((req1, req2) => {
+                var req1Score = getRequirementFullfillmentSize(req1)
+                var req2Score = getRequirementFullfillmentSize(req2)
+                if (req1Score < req2Score) {
+                    return -1;
+                } else if (req1Score > req2Score) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
+            for (var requirement of requirements) {
+                var required_courses = requirement.course_codes.split(/,\s|\sor\s/)
+                var numMatchedCourses = 0;
+                var matchedCourses = [];
+                for (var course of required_courses) {
+                    if (course[course.length - 1] === "-") {
+                        // Handles X00's case, eg PHYS 300-
+                        let possibleMatches = selectedCourses.get([course.split(" ")[0], course.split(" ")[1][0]], TrieSearch.UNION_REDUCER)
+                        for (let match of possibleMatches) {
+                            if (usedCourses.get(match.selected_course.course_code).length === 0) {
+                                numMatchedCourses++;
+                                matchedCourses.push(match)
+                                if (numMatchedCourses >= requirement.number_of_courses) break;
+                            }
+                        }
+                    } else if (course.split("-").length === 2 && course.split("-")[0].length > 0 && course.split("-")[1].length > 0) {
+                        // Handles range case, eg CS 440-CS 498
+                        let possibleMatches = [];
+                        var start = Math.floor(course.split("-")[0].split(" ")[1]/100);
+                        var end = Math.floor(course.split("-")[1].split(" ")[1]/100);
+                        for (var i = start; i <= end; i++) {
+                            possibleMatches = possibleMatches.concat(selectedCourses.get([course.split("-")[0].split(" ")[0], i.toString()], TrieSearch.UNION_REDUCER))
+                        }
+                        for (let match of possibleMatches) {
+                            if (match.selected_course.course_number <= course.split("-")[1].split(" ")[1] && match.selected_course.course_number >= course.split("-")[0].split(" ")[1] && usedCourses.get(match.selected_course.course_code).length === 0) {
+                                numMatchedCourses++
+                                matchedCourses.push(match)
+                                if (numMatchedCourses >= requirement.number_of_courses) break;
+                            }
+                        }
+                    } else {
+                        // Handles normal course case, ege MATH 239
+                        let possibleMatches = selectedCourses.get(course)
+                        for (let match of possibleMatches) {
+                            if (usedCourses.get(match.selected_course.course_code).length === 0) {
+                                numMatchedCourses++;
+                                matchedCourses.push(selectedCourses.get(course)[0])
+                                break;
+                            }
+                        }
+                    }
+                    if (numMatchedCourses >= requirement.number_of_courses) break;
+                }
+                if (numMatchedCourses >= requirement.number_of_courses) {
+                    requirement.met = true;
+                    usedCourses.addAll(matchedCourses);
+                }
+            }
+            commit('setChecklistRequirements', requirements);
+
+        })
+        .catch(err => {
+            console.log(err);
+            return;
+        })
+    }
 };
 
 const mutations = {
+    setChecklistRequirements: (state, checklistRequirements) => {
+        state.checklistRequirements = checklistRequirements
+    },
     addTermToTable: (state) => {
         let newTerm = {
             courses: []
@@ -73,13 +185,11 @@ const mutations = {
     },
     deleteTermFromTable: (state, deletedTerm) => {
         let index = state.table.indexOf(deletedTerm)
-        console.log(index)
         state.table.splice(index, 1)
     },
     removeRequirementFromTable: (state, deletedReq) => {
         // state.table[termIndex].courses.splice(courseIndex, 1)
         for (let term of state.table) {
-            console.log(term)
             let index = term.courses.indexOf(deletedReq)
             
             if (index != -1) {

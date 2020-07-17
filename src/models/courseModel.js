@@ -23,7 +23,7 @@ export class CourseInfo {
 }
 
 /**
- * One course requirement, may contan multiple course informations 
+ * One course requirement, may contain multiple course informations
  */
 export class CourseRequirement {
     constructor(data) {
@@ -31,7 +31,7 @@ export class CourseRequirement {
         this.course_choices = data && data.course_choices ? data.course_choices : []
         this.course_codes = data && data.course_codes ? data.course_codes.split(",") : []
         //if there only exist one course in the requirement, then it is not a choice anymore
-        this.selected_course = data && data.course_choices.length == 1? data.course_choices[0] : undefined
+        this.selected_course = data && data.course_choices.length == 1? data.course_choices[0] : {course_code: "WAITING", course_number: 42}
         
         //the majors or minors that this requirement is part of
         this.major = data && data.major ? data.major : []
