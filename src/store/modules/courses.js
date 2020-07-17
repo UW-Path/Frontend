@@ -95,36 +95,47 @@ const actions = {
         if (getters.chosenMajor === "No major") {
             return
         }
-        const response = await axios.get(backend_api + "/api/requirements/requirements", {
+        axios.get(backend_api + "/api/requirements/requirements", {
             params: {
                 major: getters.chosenMajor[0],
                 option: "",
                 minor: ""
             }
         })
+        .then(response => {
+            var requirements = [];
+            // Go over all the course requirements
+            for (var requirement of response.data.requirements) {
+                let promises = [];
+                // Create object to store requirement information
+                let parsed_requirement = {
+                    course_codes: requirement.course_codes,
+                    course_choices: [],
+                    number_of_courses: requirement.number_of_courses,
+                    major: [getters.chosenMajor[0]],
+                }
+                // Split the requirement into its individual courses and parse each of them
+                let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
+                for (let course of required_courses) {
+                    promises.push(parseRequirement(course))
+                }
+                Promise.all(promises)
+                .then(choices => {
+                    for (let choice of choices) {
+                        parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
+                    }
+                    requirements.push(new CourseRequirement(parsed_requirement))
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+            }
+            commit('setRequirements', requirements);
+        })
         .catch(err => {
             console.log(err);
             return;
         })
-        var requirements = [];
-        // Go over all the course requirements
-        for (var requirement of response.data.requirements) {
-            // Create object to store requirement information
-            var parsed_requirement = {
-                course_codes: requirement.course_codes,
-                course_choices: [],
-                number_of_courses: requirement.number_of_courses,
-                major: [getters.chosenMajor[0]],
-            }
-            // Split the requirement into its individual courses and parse each of them
-            var required_courses = requirement.course_codes.split(/,\s|\sor\s/)
-           
-            for (var course of required_courses) {
-                parsed_requirement.course_choices = parsed_requirement.course_choices.concat(await parseRequirement(course))
-            }
-            requirements.push(new CourseRequirement(parsed_requirement))
-        }
-        commit('setRequirements', requirements);
     },
 };
 
