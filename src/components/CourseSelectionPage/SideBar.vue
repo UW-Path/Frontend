@@ -45,6 +45,7 @@ export default {
                 return event
             }
             let clone = JSON.parse(JSON.stringify(event))
+            clone.selected_course = null
             return clone
         },
         change: function(event) {

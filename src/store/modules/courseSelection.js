@@ -1,49 +1,36 @@
 // import axios from "axios";
 //need to move the routes to the configs
 
+
+const defaultTable = [ 
+    {
+        courses: []
+    },
+    {
+        courses: []
+    },
+    {
+        courses: []
+    },
+    {
+        courses: []
+    },
+    {
+        courses: []
+    },
+    {
+        courses: []
+    },
+    {
+        courses: []
+    },
+    {
+        courses: []
+    }       
+ ]
+
 const state = {
-    table: [ 
-        {
-            // term: 1,
-            courses: [
-            ]
-        },
-        {
-            // term: 1,
-            courses: [
-            ]
-        },
-        {
-            // term: 1,
-            courses: [
-            ]
-        },
-        {
-            // term: 1,
-            courses: [
-            ]
-        },
-        {
-            // term: 1,
-            courses: [
-            ]
-        },
-        {
-            // term: 1,
-            courses: [
-            ]
-        },
-        {
-            // term: 1,
-            courses: [
-            ]
-        },
-        {
-            // term: 1,
-            courses: [
-            ]
-        }       
-     ],
+    table: defaultTable,
      //TODO: need to figure out naming later
      termList: ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B", "5A", "5B"]
 };
@@ -77,11 +64,9 @@ const mutations = {
         state.table.splice(index, 1)
     },
     removeRequirementFromTable: (state, deletedReq) => {
-        // state.table[termIndex].courses.splice(courseIndex, 1)
         for (let term of state.table) {
             console.log(term)
             let index = term.courses.indexOf(deletedReq)
-            
             if (index != -1) {
                 term.courses.splice(index, 1)
                 return
@@ -89,12 +74,17 @@ const mutations = {
         }
     },
     addCourse: (state, termIndex) => {
-        // state.table[termIndex].courses.push({
-        //     name: "MATH 135",
-        //     status: "Prereq not met",
-        //     description: "Introduction to computer science"
-        // })
         void termIndex
+    },
+    validateCourse : (state) => {
+        //validate the 
+
+        void state 
+
+
+    },
+    clearTable: (state) => {
+        state.table = JSON.parse(JSON.stringify(defaultTable))
     }
 };
 

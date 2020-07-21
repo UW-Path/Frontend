@@ -25,6 +25,16 @@
     > 
       Minor
     </v-chip>
+        <v-chip
+      v-if="this.courseData.specialization.length > 0"
+      color="light-green"
+      label
+      x-small
+      text-color="white"
+      class="chip"
+    > 
+      Option
+    </v-chip>
     <v-chip
       v-if="this.courseData.course_choices.length > 1"
       color="red"
