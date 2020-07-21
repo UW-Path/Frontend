@@ -35,7 +35,6 @@ export default {
     methods: {
         ...mapActions(["fetchMajors", "fetchRequirements"]),
         ...mapMutations(["setChosenMajor"]),
-        //this is later used for linking up the different course addresses
         changeMajor(programName) {
             //state changes
             this.setChosenMajor(programName)
@@ -49,7 +48,7 @@ export default {
     computed: mapGetters(["allMajors", "findMajorByProgram"]),
     created() {
         this.fetchMajors();
-    }
+    },
 }
 </script>
 

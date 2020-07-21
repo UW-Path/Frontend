@@ -3,7 +3,8 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import LandingPage from '../views/LandingPage.vue'
 import CourseSelection from '../views/CourseSelectionPage.vue'
-
+import PageNotFoundPage from '../views/PageNotFoundPage.vue'
+import ContactPage from '../views/ContactPage.vue'
 
 Vue.use(VueRouter)
 
@@ -22,6 +23,16 @@ Vue.use(VueRouter)
     path: '/CourseSelection',
     name: 'CourseSelection',
     component: CourseSelection
+  },
+  {
+    path: '/Contact',
+    name: 'ContactPage',
+    component: ContactPage
+  },
+  {
+    path: '*',
+    name: 'PageNotFoundPage',
+    component: PageNotFoundPage
   },
 ]
 

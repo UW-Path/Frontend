@@ -4,10 +4,9 @@ import {CourseInfo, CourseRequirement} from '../../models/courseModel'
 
 const backend_api = "http://127.0.0.1:8000"
 
-
 // Fetch course information of a single course code (eg MATH 239 or PHYS 300-)
 async function parseRequirement(courseCode) {
-    var hasNumber = /\d/;
+    let hasNumber = /\d/;
     if (!hasNumber.test(courseCode)){
         //handle the exceptions [e.g. NON-MATH]
             
@@ -35,7 +34,7 @@ async function parseRequirement(courseCode) {
         }
     }
     else{
-        var split;
+        let split;
         if (courseCode[courseCode.length - 1] === "-") {
             // Handles X00's case, eg PHYS 300-
             let response;
@@ -101,16 +100,19 @@ const actions = {
         const response = await axios.get(backend_api + "/api/requirements/requirements", {
             params: {
                 major: getters.chosenMajor[0],
-                option: "",
-                minor: ""
+                //return
+                option: getters.chosenSpecialization.length != 0 ? getters.chosenSpecialization[0] : "",
+                //
+                minor: getters.chosenMinor.length != 0 ? getters.chosenMinor[0] : ""
             }
         });
-        var requirements = [];
+        let requirements = [];
         console.log("requirements ", response.data)
         // Go over all the course requirements
-        for (var requirement of response.data.requirements) {
+        //major requirements
+        for (let requirement of response.data.requirements) {
             // Create object to store requirement information
-            var parsed_requirement = {
+            let parsed_requirement = {
                 course_codes: requirement.course_codes,
                 course_choices: [],
                 number_of_courses: requirement.number_of_courses,
@@ -118,27 +120,73 @@ const actions = {
             }
 
             // Split the requirement into its individual courses and parse each of them
-            var required_courses = requirement.course_codes.split(/,\s|\sor\s/)
+            let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
            
-            for (var course of required_courses) {
+            for (let course of required_courses) {
                 parsed_requirement.course_choices = parsed_requirement.course_choices.concat(await parseRequirement(course))
             }
 
             requirements.push(new CourseRequirement(parsed_requirement))
         }
+
+        //minor requirments
+        if (response.data.minor_requirements) {
+            for (let requirement of response.data.minor_requirements) {
+                // Create object to store requirement information
+                let parsed_requirement = {
+                    course_codes: requirement.course_codes,
+                    course_choices: [],
+                    number_of_courses: requirement.number_of_courses,
+                    minor: [getters.chosenMinor[0]],
+                }
+    
+                // Split the requirement into its individual courses and parse each of them
+                let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
+               
+                for (let course of required_courses) {
+                    parsed_requirement.course_choices = parsed_requirement.course_choices.concat(await parseRequirement(course))
+                }
+    
+                requirements.push(new CourseRequirement(parsed_requirement))
+            }
+        } 
+
+
+        //option requirments
+        if (response.data.option_requirements) {
+            for (let requirement of response.data.option_requirements) {
+                // Create object to store requirement information
+                let parsed_requirement = {
+                    course_codes: requirement.course_codes,
+                    course_choices: [],
+                    number_of_courses: requirement.number_of_courses,
+                    specialization: [getters.chosenSpecialization[0]],
+                }
+    
+                // Split the requirement into its individual courses and parse each of them
+                let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
+               
+                for (let course of required_courses) {
+                    parsed_requirement.course_choices = parsed_requirement.course_choices.concat(await parseRequirement(course))
+                }
+    
+                requirements.push(new CourseRequirement(parsed_requirement))
+            }
+        }
+
+        
         commit('setRequirements', requirements);
+        commit('setMinor', response.data["minor_list"]);
+        commit('setSpecialization', response.data["option_list"]);
     },
 };
 
 const mutations = {
     setRequirements: (state, requirements) => {
-        // state.requirements = requirements
-        // state.requirements = [requirements[requirements.length - 4] ]
         state.requirements = requirements
         console.log("final set requirements", state.requirements)
     },
     addRequirement: (state, newRequirement) => {
-        console.log("new state", state.requirements)
         for (let req of state.requirements) {
             console.log(req)
             console.log(req.id, newRequirement.id)
@@ -148,27 +196,18 @@ const mutations = {
             }
         }
         state.requirements.push(newRequirement)
-        console.log("new state", state.requirements)
     },
     deleteRequirement: (state, requirement) => {
         let index = state.requirements.indexOf(requirement)
         state.requirements.splice(index, 1)
     },
     sortRequirements: (state) => {
-            // void state
-        console.log("SORT!", state.requirements)
-        //sort by alphabetical order or number of courses
         state.requirements.sort((a, b) => {
-            console.log("a: ", a.course_choices)
-            console.log("b: ", b.course_choices)
-
             //reqs with multiple choices go to the bottom
             if (a.course_choices.length != b.course_choices.length) return a.course_choices.length - b.course_choices.length
             //compare the course code and the course code and the course year
-            console.log("hit2")
             let choiceA = a.course_choices[0].course_code.split(" ")
             let choiceB = b.course_choices[0].course_code.split(" ")
-            console.log("hit3")
             if (parseInt(choiceA[1][0]) != parseInt(choiceB[1][0])) return parseInt(choiceA[1][0]) - parseInt(choiceB[1][0])
             return choiceA[0].localeCompare(choiceB[0])
         })
