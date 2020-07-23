@@ -2,9 +2,11 @@
     <div class="program-checklist">
         <div class="checklist-section">
             <p class="checklist-title">All Degree Requirements</p>
-            <div class="requirements-list" v-for="requirement in checklistRequirements" :key="requirement.id">
-                <v-checkbox v-if="requirement.number_of_courses > 1 || requirement.course_codes.split(',').length > 1" class="requirement-checkbox" :label="requirement.number_of_courses + ' of ' + requirement.course_codes" color="green" :input-value="requirement.met"></v-checkbox>
-                <v-checkbox v-else class="requirement-checkbox" :label="requirement.course_codes" color="green" :input-value="requirement.met"></v-checkbox>
+            <div class="requirements-list">
+                <div class="requirements-list-item" v-for="requirement in checklistRequirements" :key="requirement.id">
+                    <v-checkbox v-if="requirement.number_of_courses > 1 || requirement.course_codes.split(',').length > 1" class="requirement-checkbox" :label="requirement.number_of_courses + ' of ' + requirement.course_codes" color="green" :input-value="requirement.met"></v-checkbox>
+                    <v-checkbox v-else class="requirement-checkbox" :label="requirement.course_codes" color="green" :input-value="requirement.met"></v-checkbox>
+                </div>
             </div>
         </div>
     </div>
@@ -35,6 +37,7 @@ export default {
 .checklist-title {
     font-size: 18px;
     font-weight: 500;
+    text-align: left;
 }
 
 .program-checklist {
@@ -50,10 +53,16 @@ export default {
     overflow-y: scroll;
 }
 
-.requirements-list {
+.requirements-list-item {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    flex: 1 0 50%;
+}
+
+.requirements-list {
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .requirement-checkbox {
