@@ -94,4 +94,12 @@ export default {
     height: 100%;
     overflow-y: auto;
 }
+
+
+@media only screen and (max-width: 3000px) {
+  .course-selection-container {
+    min-width: 95%;
+  }
+}
+
 </style>

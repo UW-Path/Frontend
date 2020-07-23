@@ -2,184 +2,164 @@
     <div>
         <!-- Required Course Block -->
 
-  <v-card class="course-list-block" @click.stop="enableDialog()">
-    <v-list-item>
-      <v-list-item-content>
-        <div class="overline mb-4"  v-if="courseCodes.length > 1">
-              Select {{course.number_of_courses}} below
-        </div>
-        <template v-for="(names, index) in courseCodes" >
-            <v-list-item-subtitle  :key="index" class="selected-course-code" v-if="isSelected(names)">{{  names  }}</v-list-item-subtitle>
-            <v-list-item-subtitle  :key="index"  v-else>{{  names  }}</v-list-item-subtitle>
-        </template>       
-        
-      </v-list-item-content>
-    </v-list-item>
-  </v-card>
+    <v-btn icon @click="enableDialog()">
+        <v-icon>mdi-plus-circle-outline</v-icon>
+      </v-btn>
 
         <!-- Course Popup Modal -->
-        <v-dialog v-model="dialog" max-width="1000">
+        <v-dialog v-model="dialog" max-width="800">
             <v-card>
-                <v-container fluid class="modal-course-list-container">
-                    <v-row class="modal-course-list-row">
-                        <v-col align="center">
-                            <v-text-field class="modal-search" v-model="searchtext" label="Search for a Course" prepend-inner-icon="mdi-magnify" hide-details="true" single-line outlined dense></v-text-field>
-                            <div class="modal-course-list">
-                                <div class="modal-course" v-for="course in filteredCourses" :key="course.course_id"
-                                    v-on:click="selectedCourse = course">
-                                    {{course.course_code + ": " + course.course_name}}
-                                </div>
-                            </div>
-                        </v-col>
+                <v-container fluid class="modal-course-list-container" align="center">
+                                                         <v-row class="modal-course-list-row" col>
+                           <div class="text-h4 title">Specify Your Degree</div>
+                    </v-row>
 
-                        <v-col v-if="selectedCourse" class="course-description-col" align="left">
-                            <v-card-title class="course-title">
-                                {{ selectedCourse.course_code }}
-                                <v-spacer></v-spacer>
-                                <v-btn color="green darken-1" class="select-btn" text @click="selectCourse()"> Select </v-btn>
-                            </v-card-title>
-                            <v-card-text>{{ selectedCourse.info + (selectedCourse.offering === "" ? "" :  " Offered in: " + selectedCourse.offering.slice(0,-1) + ".") + (selectedCourse.online ? " Offered Online." : "")}}</v-card-text>
-                            <v-card-text class="course-description-text">{{ "Credits: " + selectedCourse.credit }}</v-card-text>
-                            <v-card-text class="course-description-text" v-if="selectedCourse.prereqs !== ''">{{ "Prerequisites: " + selectedCourse.prereqs }}</v-card-text>
-                            <v-card-text class="course-description-text" v-if="selectedCourse.antireqs !== ''">{{ "Antirequisites: " + selectedCourse.antireqs }}</v-card-text>
-                            <v-card-text class="course-description-text" v-if="selectedCourse.coreqs !== ''">{{ "Corequisites: " + selectedCourse.antireqs }}</v-card-text>
+                    <v-row class="modal-course-list-row" col>
+                            
+                        <v-col align="center flex-centerise">
+                            <div class="auto-complete-title"> Major</div> 
+                    <v-autocomplete
+                        :disabled="inConfirmation"
+                        :items="allMajors"
+                        v-on:change="selectMajor"
+                        dense
+                        prepend-inner-icon="mdi-magnify"
+                        solo
+                        hide-details
+                        background-color="rgb(196,196,196)"
+                        class="autocomplete"
+                        label="Search Major"
+                        height="3rem"
+                        color="black"
+                    ></v-autocomplete>
+                        </v-col>
+                    </v-row>
+                    <v-row class="modal-course-list-row">
+                        <v-col align="center flex-centerise">
+                            <div class="auto-complete-title"> Minor</div> 
+                    <v-autocomplete
+                        :disabled="inConfirmation"
+                        :items="allMinors"
+                        v-on:change="selectMinor"
+                        dense
+                        prepend-inner-icon="mdi-magnify"
+                        solo
+                        hide-details
+                        background-color="rgb(196,196,196)"
+                        class="autocomplete"
+                        label="Search Minor"
+                        height="3rem"
+                        color="black"
+                    ></v-autocomplete>
+                        </v-col>
+                    </v-row>
+                    <v-row class="modal-course-list-row">
+                        <v-col align="center flex-centerise">
+                            <div class="auto-complete-title"> Joint/Option</div> 
+                    <v-autocomplete
+                        :disabled="inConfirmation"
+                        :items="allSpecializations"
+                        v-on:change="selectSpec"
+                        dense
+                        prepend-inner-icon="mdi-magnify"
+                        solo
+                        hide-details
+                        background-color="rgb(196,196,196)"
+                        class="autocomplete"
+                        label="Search Specialization"
+                        height="3rem"
+                        color="black"
+                    ></v-autocomplete>
+                        </v-col>
+                    </v-row>
+                    <v-row class="modal-course-list-row">
+                        <v-col class="confirm-container" v-if="!inConfirmation">
+                            <v-btn @click="select()" :disabled="inConfirmation">Select Requirement</v-btn>
+                        </v-col>
+                        <v-col class="flex-centerise confirm-container" v-if="inConfirmation">
+                            <div class="confirm-elements confirm-text">
+                                Confirm? (changes will be overwritten)
+                            </div>
+                             <v-icon large color="light-green"  @click="confirmSelection()">mdi-checkbox-marked-circle</v-icon>
+                             <v-icon large color="red"  @click="cancelSelection()">mdi-close-circle</v-icon>
                         </v-col>
                     </v-row>
                 </v-container>
             </v-card>
         </v-dialog>
-
-
     </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions, mapMutations } from "vuex";
 // import draggable from 'vuedraggable'
 
 export default {
     components: {
-        // draggable
     },
     data () {
         return {
             dialog: false,
+            inConfirmation: false,
+            newMajor: "",
+            newMinor: "",
+            newSpec: "",
             searchtext: "",
-            selectedCourse: this.course.course_choices[0],
         }
     },
-    props: ["course"],
+    name: "ProgramSelectionModal",
     methods: {
+        ...mapActions(["fetchRequirements"]),
+        ...mapMutations(["setChosenMinor", "setChosenMajor", "setChosenSpecialization", "clearTable", "clearCourses"]),
         enableDialog: function() {
-            if (this.course.course_choices.length > 1) this.dialog = true;
+            this.dialog = true;
+            this.inConfirmation = false;
         },
-        selectCourse: function () {
-            this.course.selected_course = this.selectedCourse;
-            this.dialog = false;
-            // console.log("selected course", this.course.selected_course);
+        changeMajor: function() {
+            return true
         },
-        isSelected: function(courseCode) {
-            // console.log("isSelected", courseCode)
-            if (!this.course.selected_course) return false
-            return courseCode == this.course.selected_course.course_code;
-        }
+        select: function() {
+            this.inConfirmation = true;
+        },
+        selectMajor: function (major) {
+            console.log("new major", major)
+            this.newMajor = major
+        },
+        selectMinor: function (minor) {
+            console.log("new minor", minor)
+            this.newMinor = minor
+        },
+        selectSpec: function (spec) {
+            console.log("spec", spec)
+            this.newSpec = spec
+        },
+        confirmSelection: function() {
+            console.log("confirm selection")
+            this.inConfirmation = false;
+            this.dialog = false
+            if(this.newMajor != "") this.setChosenMajor(this.newMajor)
+            if(this.newMinor != "") this.setChosenMinor(this.newMinor)
+            if(this.newSpec != "") this.setChosenSpecialization(this.newSpec)
+            this.clearCourses()
+            this.clearTable()
+            this.fetchRequirements()
+        },
+        cancelSelection: function() {
+            this.inConfirmation = false;
+        },
+        
+        
     },
-    computed: {
-        filteredCourses: function () {
-            if (this.searchText === "") return this.course.course_choices;
-            else {
-                return this.course.course_choices.filter((choice => {
-                    var matchCode = choice.course_code.toLowerCase().includes(this.searchtext.toLowerCase()) || choice.course_code.toLowerCase().includes(this.searchtext.toLowerCase())
-                    var matchDescription = choice.info.toLowerCase().includes(this.searchtext.toLowerCase());
-                    var matchName = choice.course_name.toLowerCase().includes(this.searchtext.toLowerCase());
-                    return matchCode || matchDescription || matchName;
-                }))
-            }
-        },
-        courseCodes: function () {
-            return this.course.course_choices.map(choice => {
-                return choice.course_code
-            })
-        },
-        hasSelected: function() {
-            return this.course.selected_course != undefined
-        },
-        ...mapGetters(["requirements", "chosenMajor"]),
-    }
+    computed: mapGetters(["allMajors", "allMinors", "allSpecializations", 
+                            "chosenMajor", "chosenMinor", "chosenSpecialization"]),
 }
 </script>
 
 <style scoped>
-.course-list-block {
-    display: flex;
-    width: 100%;
-    /* height: 50px; */
-    justify-content: center;
-    align-items: center;
-    overflow-y: hidden;
-    overflow-x: hidden;
-    margin-top: 5%;
-
-}
-
-.overline {
-  color: red;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.course-description-col {
-    /* border-left: 1px solid #dddddd; */
-}
-
-.select-btn {
-    padding: 0px !important;
-}
-
-.course-description-text {
-    margin: 0px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-
-.modal-actions {
-    position: absolute;
-    right: 0px;
-}
 
 .modal-course-list-row {
-    height: 100%;
-    width: 100%;
-}
-
-.modal-course-list-container {
-    min-height: 330px;
-    margin: 0px;
-}
-
-.modal-search {
-    width: 90%;
-}
-
-.modal-course-list {
-    margin-top: 1rem;
-    /* margin-bottom: 1rem; */
-    width: 90%;
-    max-height: 250px;
-    height:auto;
-    overflow-y: auto;
-}
-
-.modal-course {
-    margin-top: 5%;
-    /* border-bottom: 1px solid #999999; */
-    text-align: left;
-}
-
-.modal-course:hover {
-    cursor: pointer;
-    font-weight: 550;
+    margin-left: 5%;
+    margin-right: 5%;
 }
 
 .course-title {
@@ -188,5 +168,41 @@ export default {
 
 .selected-course-code {
     font-weight: bold;
+}
+
+.flex-centerise {
+    vertical-align: middle;
+}
+
+.title {
+    text-align: left;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.confirm-container {
+    text-align: left;
+}
+
+.confirm-elements {
+    display: inline-block;
+}
+
+.confirm-button {
+    margin-right: 0;
+}
+
+.confirm-text {
+    color: grey;
+    margin-right: 0.5rem;
+}
+
+.select-btn {
+    height: 100%;
+}
+
+.auto-complete-title {
+    text-align: left;
+    color: rgb(140, 140, 140)
 }
 </style>

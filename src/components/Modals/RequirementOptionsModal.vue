@@ -10,14 +10,14 @@
         />
 
         <!-- Course Popup Modal -->
-        <v-dialog v-model="dialog" max-width="1000">
+        <v-dialog v-model="dialog" :max-width="isChoice() ? 1200 : 700">
             <v-card>
                 <v-container fluid class="modal-course-list-container">
                     <v-row class="modal-course-list-row">
-                        <v-col align="center">
-                            <v-text-field class="modal-search" v-model="searchtext" label="Search for a Course" prepend-inner-icon="mdi-magnify" hide-details="true" single-line outlined dense></v-text-field>
+                        <v-col align="center" v-if="isChoice()">
+                            <v-text-field v-if="this.course.course_choices.length > 7" class="modal-search" v-model="searchtext" label="Search for a Course" prepend-inner-icon="mdi-magnify" hide-details="true" single-line outlined dense></v-text-field>
                             <div class="modal-course-list">
-                                <div class="modal-course" v-for="course in filteredCourses" :key="course.course_id"
+                                <div class="modal-course" v-for="(course, index) in filteredCourses" :key="index"
                                     v-on:click="selectedCourse = course">
                                     {{course.course_code + ": " + course.course_name}}
                                 </div>
@@ -28,8 +28,15 @@
                             <v-card-title class="course-title">
                                 {{ selectedCourse.course_code }}
                                 <v-spacer></v-spacer>
-                                <v-btn color="green darken-1" class="select-btn" text @click="selectCourse()" v-if="selectedCourse != this.course.selected_course"> Select </v-btn>
-                                <v-btn color="red darken-1" class="select-btn" text @click="deselectCourse()" v-else> Deselect </v-btn>
+                                <template v-if="isChoice()">
+                                    <v-btn class="select-btn" text @click="selectCourse()" v-if="selectedCourse != this.course.selected_course" icon large>
+                                        <v-icon>mdi-plus-circle</v-icon>
+                                    </v-btn>
+                                    <v-btn class="select-btn" text @click="deselectCourse()" v-else icon large>
+                                        <v-icon>mdi-minus-circle</v-icon>
+                                    </v-btn>
+                                </template>
+
 
                             </v-card-title>
                             <v-card-text>{{ selectedCourse.info + (selectedCourse.offering === "" ? "" :  " Offered in: " + selectedCourse.offering.slice(0,-1) + ".") + (selectedCourse.online ? " Offered Online." : "")}}</v-card-text>
@@ -73,6 +80,7 @@ export default {
         },
         selectCourse: function () {
             this.course.selected_course = this.selectedCourse;
+            console.log("selected course", this.course)
             this.dialog = false;
         },
         deselectCourse() {
@@ -81,6 +89,9 @@ export default {
         isSelected: function(courseCode) {
             if (!this.course.selected_course) return false
             return courseCode == this.course.selected_course.course_code;
+        },
+        isChoice() {
+            return this.course.course_choices.length > 1
         }
     },
     computed: {
@@ -162,7 +173,7 @@ export default {
     /* margin-bottom: 1rem; */
     width: 90%;
     max-height: 250px;
-    height:auto;
+    /* height:auto; */
     overflow-y: auto;
 }
 
