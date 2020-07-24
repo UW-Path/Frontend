@@ -34,11 +34,11 @@ const defaultTable = [
 
 const state = {
     table: defaultTable,
-     //TODO: need to figure out naming later
-     termList: ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B", "5A", "5B"],
-     checklistMajorRequirements: [],
-     checklistMinorRequirements: [],
-     checklistOptionRequirements: [],
+    //TODO: need to figure out naming later
+    termList: ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B", "5A", "5B"],
+    checklistMajorRequirements: [],
+    checklistMinorRequirements: [],
+    checklistOptionRequirements: [],
 };
 
 const getters = {
@@ -171,7 +171,7 @@ const actions = {
             console.log(err);
             return;
         })
-    }
+    },
 };
 
 const mutations = {
@@ -206,12 +206,33 @@ const mutations = {
     addCourse: (state, termIndex) => {
         void termIndex
     },
-    validateCourse : (state) => {
-        //validate the 
-
-        void state 
-
-
+    validateCourses : (state) => {
+        let listOfCoursesTaken = [];
+        for (let i = 0; i < state.table.length; i++) {
+            let currentTermCourses = state.table[i].courses.filter(course => {
+                return course.selected_course.course_code !== "WAITING";
+            }).map(course => {
+                return course.selected_course.course_code;
+            });
+            for (let requirement of state.table[i].courses) {
+                if (requirement.selected_course.course_code !== "WAITING") {
+                    axios.get(backend_api + "/api/meets_prereqs/get", {
+                        params: {
+                            list_of_courses_taken: listOfCoursesTaken,
+                            current_term_courses: currentTermCourses,
+                            pk: requirement.selected_course.course_code,
+                        }
+                    })
+                    .then(response => {
+                        requirement.prereqs_met = response.data.can_take;
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+                }
+            }
+            listOfCoursesTaken = listOfCoursesTaken.concat(currentTermCourses);
+        }
     },
     clearTable: (state) => {
         state.table = JSON.parse(JSON.stringify(defaultTable))

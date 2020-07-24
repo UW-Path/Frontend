@@ -41,6 +41,7 @@ export class CourseRequirement {
         this.id = requirementId++
         //this shows that the courseRequimrent is currently in the requirement bar
         this.inRequirementBar = data && data.inRequirementBar ?  data.inRequirementBar  : true
+        this.prereqs_met = data && data.prereqs_met ? data.prereqs_met : false
     }
 }
 

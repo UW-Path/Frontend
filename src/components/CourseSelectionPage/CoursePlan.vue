@@ -13,15 +13,15 @@
 
         </div>
         <draggable class="list-group draggable-column" :disabled="editingEnabled" :list="term.courses" group="course" @change="change"> 
-            <template v-for="(requirement, courseIndex) in term.courses">
-              <RequirementOptionsModal
-                class="list-group-item card"
-                :key="courseIndex"
-                :course="requirement"
-                :onSelectionBar="false"
-              />
-            </template>
-        <AddCourseCard :termIndex="termIndex" v-if="termHovered == termIndex"/>
+          <template v-for="(requirement, courseIndex) in term.courses">
+            <RequirementOptionsModal
+              class="list-group-item card"
+              :key="courseIndex"
+              :course="requirement"
+              :onSelectionBar="false"
+            />
+          </template>
+          <AddCourseCard :termIndex="termIndex" v-if="termHovered == termIndex"/>
 
         </draggable>
       </v-card >
@@ -59,7 +59,7 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["addTermToTable", "deleteTermFromTable", "addRequirement", "decrementRequirementByID"]),
+    ...mapMutations(["addTermToTable", "deleteTermFromTable", "addRequirement", "decrementRequirementByID", "validateCourses"]),
     termMouseOver(termIndex) {
       this.termHovered = termIndex;
     },
@@ -74,14 +74,15 @@ export default {
       this.deleteTermFromTable(term)
     },
     change(event) {
+        this.validateCourses();
         //we only check add events
-        if (!event.added) return
-        let changedReq = event.added.element
+        if (!event.added) return;
+        let changedReq = event.added.element;
+        changedReq.inRequirementBar = false;
           //whenever a course card is moved from requirements bar then we decrement the stuff from
         if (changedReq.course_choices.length > 1 && changedReq.inRequirementBar) {
-          changedReq.number_of_courses = 1 
-          changedReq.inRequirementBar = false
-          this.decrementRequirementByID(changedReq.id)
+          changedReq.number_of_courses = 1;
+          this.decrementRequirementByID(changedReq.id);
         }
     }
   },
