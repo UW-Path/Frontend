@@ -20,10 +20,10 @@
                 <tab class="primary-tab" title="Program Checklist">
                     <v-container class="course-selection-container">
                         <v-row class="main-row">
-                            <v-col class="checklist-side-bar" cols="12" md="3">
+                            <!-- <v-col class="checklist-side-bar" cols="12" md="3">
                                 <program-checklist-side-bar/>
-                            </v-col>
-                            <v-col class="main-panel" cols="12" md="9">
+                            </v-col> -->
+                            <v-col class="main-panel">
                                 <program-checklist/>
                             </v-col>
                         </v-row>
@@ -38,7 +38,7 @@
 import CoursePlan from '../components/CourseSelectionPage/CoursePlan.vue'
 import ProgramSelectionBar from '../components/CourseSelectionPage/ProgramSelectionBar.vue'
 import ProgramChecklist from '../components/ProgramChecklistPage/ProgramChecklist.vue'
-import ProgramChecklistSideBar from '../components/ProgramChecklistPage/ProgramChecklistSideBar.vue'
+//import ProgramChecklistSideBar from '../components/ProgramChecklistPage/ProgramChecklistSideBar.vue'
 import SideBar from '../components/CourseSelectionPage/SideBar.vue'
 
 import { Tabs, Tab } from 'vue-slim-tabs'
@@ -50,7 +50,7 @@ export default {
         ProgramSelectionBar,
         SideBar,
         ProgramChecklist,
-        ProgramChecklistSideBar,
+        //ProgramChecklistSideBar,
         Tabs,
         Tab
     },

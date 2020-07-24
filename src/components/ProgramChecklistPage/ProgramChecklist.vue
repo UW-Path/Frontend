@@ -64,11 +64,10 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    margin: 2%;
     padding: 3%;
     background-color: #EFEFEF;
-    width: 96%;
-    height: 96%;
+    width: 100%;
+    height: 100%;
     max-height: 96%;
     overflow-y: scroll;
 }
