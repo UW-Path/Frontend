@@ -1,6 +1,6 @@
 <template>
   <v-card class="course-card">
-    <template v-if="this.courseData.selected_course">
+    <template v-if="this.courseData.selected_course && this.courseData.selected_course.course_code !== 'WAITING'">
     <v-list-item three-line>
       <v-list-item-content>
         <div class="overline mb-4">
@@ -49,8 +49,8 @@
 
     <v-spacer></v-spacer>
               <v-btn icon class="delete-btn" x-small @click="deleteCourse()" v-if="!onSelectionBar"></v-btn>
-        </div>       
-        <v-list-item-title class="headline mb-1">{{ courseData.selected_course.course_code }}</v-list-item-title>
+        </div>
+        <v-list-item-title class="headline mb-1" v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met && !courseData.inRequirementBar, course_card_prereqs_failed: !courseData.prereqs_met && !courseData.inRequirementBar}">{{ courseData.selected_course.course_code }}</v-list-item-title>
         <v-list-item-subtitle>{{ courseData.selected_course.course_name }}</v-list-item-subtitle>
       </v-list-item-content>
     </v-list-item>
@@ -152,5 +152,13 @@ export default {
 
 .delete-btn:hover {
   background-color: rgb(255, 122, 122);
+}
+
+.course_card_prereqs_met {
+  color: green;
+}
+
+.course_card_prereqs_failed {
+  color: red;
 }
 </style>

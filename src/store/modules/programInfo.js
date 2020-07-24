@@ -29,11 +29,18 @@ const getters = {
 };
 
 const actions = {
-    async fetchMajors({ commit }) {
-        const response = await axios.get(backend_api + "/api/requirements/unique_major");
-        //fill up the minor and options 
-        console.log("Majors fetched: ", response.data["Major"])
-        commit('setMajor', response.data["Major"]);
+    fetchMajors({ commit }) {
+        axios.get(backend_api + "/api/requirements/unique_major")
+        .then(response => {
+            //fill up the minor and options
+            console.log("Majors fetched: ", response.data["Major"])
+            commit('setMajor', response.data["Major"]);
+
+        })
+        .catch(err => {
+            console.log(err);
+            return;
+        })
     },
 };
 

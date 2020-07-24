@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 import CourseCard from "../Cards/CourseCard";
 
 export default {
@@ -64,7 +64,7 @@ export default {
     data () {
         return {
             searchtext: "",
-            selectedCourse: this.course.selected_course != null ? this.course.selected_course : this.course.course_choices[0],
+            selectedCourse: this.course.selected_course && this.course.selected_course.course_code !== "WAITING" ? this.course.selected_course : this.course.course_choices[0],
             dialog: false
         }
     },
@@ -75,13 +75,14 @@ export default {
         onSelectionBar: Boolean
     },
     methods: {
+        ...mapMutations(["validateCourses"]),
         enableDialog: function() {
             this.dialog = true;
         },
         selectCourse: function () {
             this.course.selected_course = this.selectedCourse;
-            console.log("selected course", this.course)
             this.dialog = false;
+            this.validateCourses()
         },
         deselectCourse() {
             this.course.selected_course = undefined;

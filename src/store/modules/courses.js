@@ -1,15 +1,13 @@
 import axios from "axios";
 import {CourseInfo, CourseRequirement} from '../../models/courseModel'
 
-
 const backend_api = "http://127.0.0.1:8000"
 
 // Fetch course information of a single course code (eg MATH 239 or PHYS 300-)
 async function parseRequirement(courseCode) {
     let hasNumber = /\d/;
     if (!hasNumber.test(courseCode)){
-        //handle the exceptions [e.g. NON-MATH]
-            
+        // Handle the exceptions [e.g. NON-MATH]
         if (courseCode == "NON-MATH") {
             return [new CourseInfo({
                 course_name: "Course not offered by the Faculty of Math",
@@ -41,7 +39,6 @@ async function parseRequirement(courseCode) {
             split = courseCode.split(" ");
             
             if(split[1] === "LAB"){
-        
                 response = await axios.get(backend_api + "/api/course-info/filter", {
                     params: {
                         start: Number(split[2].slice(0, -1)),
@@ -100,9 +97,7 @@ const actions = {
         const response = await axios.get(backend_api + "/api/requirements/requirements", {
             params: {
                 major: getters.chosenMajor[0],
-                //return
                 option: getters.chosenSpecialization.length != 0 ? getters.chosenSpecialization[0] : "",
-                //
                 minor: getters.chosenMinor.length != 0 ? getters.chosenMinor[0] : ""
             }
         });
@@ -111,6 +106,7 @@ const actions = {
         // Go over all the course requirements
         //major requirements
         for (let requirement of response.data.requirements) {
+            let promises = [];
             // Create object to store requirement information
             let parsed_requirement = {
                 course_codes: requirement.course_codes,
@@ -121,17 +117,25 @@ const actions = {
 
             // Split the requirement into its individual courses and parse each of them
             let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
-           
             for (let course of required_courses) {
-                parsed_requirement.course_choices = parsed_requirement.course_choices.concat(await parseRequirement(course))
+                promises.push(parseRequirement(course))
             }
-
-            requirements.push(new CourseRequirement(parsed_requirement))
+            Promise.all(promises)
+            .then(choices => {
+                for (let choice of choices) {
+                    parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
+                }
+                requirements.push(new CourseRequirement(parsed_requirement))
+            })
+            .catch(err => {
+                console.log(err)
+            })
         }
 
         //minor requirments
         if (response.data.minor_requirements) {
             for (let requirement of response.data.minor_requirements) {
+                let promises = [];
                 // Create object to store requirement information
                 let parsed_requirement = {
                     course_codes: requirement.course_codes,
@@ -142,12 +146,19 @@ const actions = {
     
                 // Split the requirement into its individual courses and parse each of them
                 let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
-               
                 for (let course of required_courses) {
-                    parsed_requirement.course_choices = parsed_requirement.course_choices.concat(await parseRequirement(course))
+                    promises.push(parseRequirement(course))
                 }
-    
-                requirements.push(new CourseRequirement(parsed_requirement))
+                Promise.all(promises)
+                .then(choices => {
+                    for (let choice of choices) {
+                        parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
+                    }
+                    requirements.push(new CourseRequirement(parsed_requirement))
+                })
+                .catch(err => {
+                    console.log(err)
+                })
             }
         } 
 
@@ -155,6 +166,7 @@ const actions = {
         //option requirments
         if (response.data.option_requirements) {
             for (let requirement of response.data.option_requirements) {
+                let promises = [];
                 // Create object to store requirement information
                 let parsed_requirement = {
                     course_codes: requirement.course_codes,
@@ -165,16 +177,21 @@ const actions = {
     
                 // Split the requirement into its individual courses and parse each of them
                 let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
-               
                 for (let course of required_courses) {
-                    parsed_requirement.course_choices = parsed_requirement.course_choices.concat(await parseRequirement(course))
+                    promises.push(parseRequirement(course))
                 }
-    
-                requirements.push(new CourseRequirement(parsed_requirement))
+                Promise.all(promises)
+                .then(choices => {
+                    for (let choice of choices) {
+                        parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
+                    }
+                    requirements.push(new CourseRequirement(parsed_requirement))
+                })
+                .catch(err => {
+                    console.log(err)
+                })
             }
         }
-
-        
         commit('setRequirements', requirements);
         commit('setMinor', response.data["minor_list"]);
         commit('setSpecialization', response.data["option_list"]);
@@ -184,7 +201,6 @@ const actions = {
 const mutations = {
     setRequirements: (state, requirements) => {
         state.requirements = requirements
-        console.log("final set requirements", state.requirements)
     },
     addRequirement: (state, newRequirement) => {
         for (let req of state.requirements) {
