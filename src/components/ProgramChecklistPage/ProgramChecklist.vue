@@ -1,11 +1,31 @@
 <template>
     <div class="program-checklist">
         <div class="checklist-section">
-            <p class="checklist-title">All Degree Requirements</p>
-            <div class="requirements-list">
-                <div class="requirements-list-item" v-for="requirement in checklistRequirements" :key="requirement.id">
-                    <v-checkbox v-if="requirement.number_of_courses > 1 || requirement.course_codes.split(',').length > 1" class="requirement-checkbox" :label="requirement.number_of_courses + ' of ' + requirement.course_codes" color="green" :input-value="requirement.met"></v-checkbox>
-                    <v-checkbox v-else class="requirement-checkbox" :label="requirement.course_codes" color="green" :input-value="requirement.met"></v-checkbox>
+            <div v-if="checklistMajorRequirements.length > 0">
+                <p class="checklist-title">Major Requirements</p>
+                <div class="requirements-list">
+                    <div class="requirements-list-item" v-for="requirement in checklistMajorRequirements" :key="requirement.id">
+                        <v-checkbox v-if="requirement.number_of_courses > 1 || requirement.course_codes.split(',').length > 1" class="requirement-checkbox" :label="requirement.number_of_courses + ' of ' + requirement.course_codes" color="green" :input-value="requirement.met"></v-checkbox>
+                        <v-checkbox v-else class="requirement-checkbox" :label="requirement.course_codes" color="green" :input-value="requirement.met"></v-checkbox>
+                    </div>
+                </div>
+            </div>
+            <div v-if="checklistMinorRequirements.length > 0">
+                <p class="checklist-title">Minor Requirements</p>
+                <div class="requirements-list">
+                    <div class="requirements-list-item" v-for="requirement in checklistMinorRequirements" :key="requirement.id">
+                        <v-checkbox v-if="requirement.number_of_courses > 1 || requirement.course_codes.split(',').length > 1" class="requirement-checkbox" :label="requirement.number_of_courses + ' of ' + requirement.course_codes" color="green" :input-value="requirement.met"></v-checkbox>
+                        <v-checkbox v-else class="requirement-checkbox" :label="requirement.course_codes" color="green" :input-value="requirement.met"></v-checkbox>
+                    </div>
+                </div>
+            </div>
+            <div v-if="checklistOptionRequirements.length > 0">
+                <p class="checklist-title">Option Requirements</p>
+                <div class="requirements-list">
+                    <div class="requirements-list-item" v-for="requirement in checklistOptionRequirements" :key="requirement.id">
+                        <v-checkbox v-if="requirement.number_of_courses > 1 || requirement.course_codes.split(',').length > 1" class="requirement-checkbox" :label="requirement.number_of_courses + ' of ' + requirement.course_codes" color="green" :input-value="requirement.met"></v-checkbox>
+                        <v-checkbox v-else class="requirement-checkbox" :label="requirement.course_codes" color="green" :input-value="requirement.met"></v-checkbox>
+                    </div>
                 </div>
             </div>
         </div>
@@ -22,13 +42,13 @@ export default {
         }
     },
     methods: {
-        ...mapActions(["fillOutCheckList"])
+        ...mapActions(["fillOutChecklist"])
     },
     computed: {
-        ...mapGetters(["checklistRequirements"]),
+        ...mapGetters(["checklistMajorRequirements", "checklistMinorRequirements", "checklistOptionRequirements"]),
     },
     mounted() {
-        this.fillOutCheckList();
+        this.fillOutChecklist();
     }
     
 }

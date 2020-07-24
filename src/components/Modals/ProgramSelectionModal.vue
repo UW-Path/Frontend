@@ -109,7 +109,7 @@ export default {
     },
     name: "ProgramSelectionModal",
     methods: {
-        ...mapActions(["fetchRequirements"]),
+        ...mapActions(["fetchRequirements", "fillOutChecklist"]),
         ...mapMutations(["setChosenMinor", "setChosenMajor", "setChosenSpecialization", "clearTable", "clearCourses"]),
         enableDialog: function() {
             this.dialog = true;
@@ -143,6 +143,7 @@ export default {
             this.clearCourses()
             this.clearTable()
             this.fetchRequirements()
+            this.fillOutChecklist()
         },
         cancelSelection: function() {
             this.inConfirmation = false;

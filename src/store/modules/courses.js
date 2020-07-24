@@ -97,9 +97,7 @@ const actions = {
         const response = await axios.get(backend_api + "/api/requirements/requirements", {
             params: {
                 major: getters.chosenMajor[0],
-                //return
                 option: getters.chosenSpecialization.length != 0 ? getters.chosenSpecialization[0] : "",
-                //
                 minor: getters.chosenMinor.length != 0 ? getters.chosenMinor[0] : ""
             }
         });

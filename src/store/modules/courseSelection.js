@@ -36,11 +36,15 @@ const state = {
     table: defaultTable,
      //TODO: need to figure out naming later
      termList: ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B", "5A", "5B"],
-     checklistRequirements: [],
+     checklistMajorRequirements: [],
+     checklistMinorRequirements: [],
+     checklistOptionRequirements: [],
 };
 
 const getters = {
-    checklistRequirements: (state) => state.checklistRequirements,
+    checklistMajorRequirements: (state) => state.checklistMajorRequirements,
+    checklistMinorRequirements: (state) => state.checklistMinorRequirements,
+    checklistOptionRequirements: (state) => state.checklistOptionRequirements,
     getTable: (state) => {return state.table},
     isFull: (state) => {
         return state.table.length >= state.termList.length
@@ -68,90 +72,100 @@ function getRequirementFullfillmentSize(requirement) {
     return sizeScore;
 }
 
+function ParseRequirementsForChecklist(requirements, selectedCourses) {
+    var usedCourses = new TrieSearch([['selected_course', 'course_code'], ['selected_course', 'course_number']], {
+        idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
+    });
+    // Since a single course could apply to multiple different requirements, we need to keep track of
+    // courses that we have already "used up" to fulfill another requirement. This way we dont double count any courses.
+    // We should prioritize requirements that have smaller subsets of possible courses to fill them.
+    requirements.sort((req1, req2) => {
+        var req1Score = getRequirementFullfillmentSize(req1)
+        var req2Score = getRequirementFullfillmentSize(req2)
+        if (req1Score < req2Score) {
+            return -1;
+        } else if (req1Score > req2Score) {
+            return 1;
+        } else {
+            return 0;
+        }
+    });
+    for (var requirement of requirements) {
+        var required_courses = requirement.course_codes.split(/,\s|\sor\s/)
+        var numMatchedCourses = 0;
+        var matchedCourses = [];
+        for (var course of required_courses) {
+            if (course[course.length - 1] === "-") {
+                // Handles X00's case, eg PHYS 300-
+                let possibleMatches = selectedCourses.get([course.split(" ")[0], course.split(" ")[1][0]], TrieSearch.UNION_REDUCER)
+                for (let match of possibleMatches) {
+                    if (usedCourses.get(match.selected_course.course_code).length === 0) {
+                        numMatchedCourses++;
+                        matchedCourses.push(match)
+                        if (numMatchedCourses >= requirement.number_of_courses) break;
+                    }
+                }
+            } else if (course.split("-").length === 2 && course.split("-")[0].length > 0 && course.split("-")[1].length > 0) {
+                // Handles range case, eg CS 440-CS 498
+                let possibleMatches = [];
+                var start = Math.floor(course.split("-")[0].split(" ")[1]/100);
+                var end = Math.floor(course.split("-")[1].split(" ")[1]/100);
+                for (var i = start; i <= end; i++) {
+                    possibleMatches = possibleMatches.concat(selectedCourses.get([course.split("-")[0].split(" ")[0], i.toString()], TrieSearch.UNION_REDUCER))
+                }
+                for (let match of possibleMatches) {
+                    if (match.selected_course.course_number <= course.split("-")[1].split(" ")[1] && match.selected_course.course_number >= course.split("-")[0].split(" ")[1] && usedCourses.get(match.selected_course.course_code).length === 0) {
+                        numMatchedCourses++
+                        matchedCourses.push(match)
+                        if (numMatchedCourses >= requirement.number_of_courses) break;
+                    }
+                }
+            } else {
+                // Handles normal course case, ege MATH 239
+                let possibleMatches = selectedCourses.get(course)
+                for (let match of possibleMatches) {
+                    if (usedCourses.get(match.selected_course.course_code).length === 0) {
+                        numMatchedCourses++;
+                        matchedCourses.push(selectedCourses.get(course)[0])
+                        break;
+                    }
+                }
+            }
+            if (numMatchedCourses >= requirement.number_of_courses) break;
+        }
+        if (numMatchedCourses >= requirement.number_of_courses) {
+            requirement.met = true;
+            usedCourses.addAll(matchedCourses);
+        }
+    }
+    return requirements;
+}
+
 const actions = {
-    fillOutCheckList({ commit, getters }) {
+    fillOutChecklist({ commit, getters }) {
         axios.get(backend_api + "/api/requirements/requirements", {
             params: {
                 major: getters.chosenMajor[0],
-                option: "",
-                minor: ""
+                option: getters.chosenSpecialization.length != 0 ? getters.chosenSpecialization[0] : "",
+                minor: getters.chosenMinor.length != 0 ? getters.chosenMinor[0] : ""
             }
         })
         .then(response => {
             var selectedCourses = new TrieSearch([['selected_course', 'course_code'], ['selected_course', 'course_number']], {
                 idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
             });
-            var usedCourses = new TrieSearch([['selected_course', 'course_code'], ['selected_course', 'course_number']], {
-                idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
-            });
             for (var term of getters.getTable) {
                 selectedCourses.addAll(term.courses)
             }
-            var requirements = response.data.requirements
-            // Since a single course could apply to multiple different requirements, we need to keep track of
-            // courses that we have already "used up" to fulfill another requirement. This way we dont double count any courses.
-            // We should prioritize requirements that have smaller subsets of possible courses to fill them.
-            requirements.sort((req1, req2) => {
-                var req1Score = getRequirementFullfillmentSize(req1)
-                var req2Score = getRequirementFullfillmentSize(req2)
-                if (req1Score < req2Score) {
-                    return -1;
-                } else if (req1Score > req2Score) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            });
-            for (var requirement of requirements) {
-                var required_courses = requirement.course_codes.split(/,\s|\sor\s/)
-                var numMatchedCourses = 0;
-                var matchedCourses = [];
-                for (var course of required_courses) {
-                    if (course[course.length - 1] === "-") {
-                        // Handles X00's case, eg PHYS 300-
-                        let possibleMatches = selectedCourses.get([course.split(" ")[0], course.split(" ")[1][0]], TrieSearch.UNION_REDUCER)
-                        for (let match of possibleMatches) {
-                            if (usedCourses.get(match.selected_course.course_code).length === 0) {
-                                numMatchedCourses++;
-                                matchedCourses.push(match)
-                                if (numMatchedCourses >= requirement.number_of_courses) break;
-                            }
-                        }
-                    } else if (course.split("-").length === 2 && course.split("-")[0].length > 0 && course.split("-")[1].length > 0) {
-                        // Handles range case, eg CS 440-CS 498
-                        let possibleMatches = [];
-                        var start = Math.floor(course.split("-")[0].split(" ")[1]/100);
-                        var end = Math.floor(course.split("-")[1].split(" ")[1]/100);
-                        for (var i = start; i <= end; i++) {
-                            possibleMatches = possibleMatches.concat(selectedCourses.get([course.split("-")[0].split(" ")[0], i.toString()], TrieSearch.UNION_REDUCER))
-                        }
-                        for (let match of possibleMatches) {
-                            if (match.selected_course.course_number <= course.split("-")[1].split(" ")[1] && match.selected_course.course_number >= course.split("-")[0].split(" ")[1] && usedCourses.get(match.selected_course.course_code).length === 0) {
-                                numMatchedCourses++
-                                matchedCourses.push(match)
-                                if (numMatchedCourses >= requirement.number_of_courses) break;
-                            }
-                        }
-                    } else {
-                        // Handles normal course case, ege MATH 239
-                        let possibleMatches = selectedCourses.get(course)
-                        for (let match of possibleMatches) {
-                            if (usedCourses.get(match.selected_course.course_code).length === 0) {
-                                numMatchedCourses++;
-                                matchedCourses.push(selectedCourses.get(course)[0])
-                                break;
-                            }
-                        }
-                    }
-                    if (numMatchedCourses >= requirement.number_of_courses) break;
-                }
-                if (numMatchedCourses >= requirement.number_of_courses) {
-                    requirement.met = true;
-                    usedCourses.addAll(matchedCourses);
-                }
+            if (response.data.requirements) {
+                commit('setChecklistMajorRequirements', ParseRequirementsForChecklist(response.data.requirements, selectedCourses));
             }
-            commit('setChecklistRequirements', requirements);
-
+            if (response.data.minor_requirements) {
+                commit('setChecklistMinorRequirements', ParseRequirementsForChecklist(response.data.minor_requirements, selectedCourses));
+            }
+            if (response.data.option_requirements) {
+                commit('setChecklistOptionRequirements', ParseRequirementsForChecklist(response.data.option_requirements, selectedCourses));
+            }
         })
         .catch(err => {
             console.log(err);
@@ -161,8 +175,14 @@ const actions = {
 };
 
 const mutations = {
-    setChecklistRequirements: (state, checklistRequirements) => {
-        state.checklistRequirements = checklistRequirements
+    setChecklistMajorRequirements: (state, checklistMajorRequirements) => {
+        state.checklistMajorRequirements = checklistMajorRequirements
+    },
+    setChecklistMinorRequirements: (state, checklistMinorRequirements) => {
+        state.checklistMinorRequirements = checklistMinorRequirements
+    },
+    setChecklistOptionRequirements: (state, checklistOptionRequirements) => {
+        state.checklistOptionRequirements = checklistOptionRequirements
     },
     addTermToTable: (state) => {
         let newTerm = {
