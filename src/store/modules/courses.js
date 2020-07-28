@@ -1,14 +1,14 @@
 import axios from "axios";
 import {CourseInfo, CourseRequirement} from '../../models/courseModel'
 
-const backend_api = "http://127.0.0.1:8000"
+const backend_api = "http://0.0.0.0:8000";
 
 // Fetch course information of a single course code (eg MATH 239 or PHYS 300-)
 async function parseRequirement(courseCode) {
     let hasNumber = /\d/;
     if (!hasNumber.test(courseCode)){
         // Handle the exceptions [e.g. NON-MATH]
-        if (courseCode == "NON-MATH") {
+        if (courseCode === "NON-MATH") {
             return [new CourseInfo({
                 course_name: "Course not offered by the Faculty of Math",
                 course_code: "NON-MATH"
@@ -27,7 +27,7 @@ async function parseRequirement(courseCode) {
                     end: 499,
                     code: courseCode,
                 }
-            })
+            });
             return response.data.map(element => { return new CourseInfo(element) });
         }
     }
@@ -67,7 +67,7 @@ async function parseRequirement(courseCode) {
                     end: Number(split[1].split(" ")[1]),
                     code: split[0].split(" ")[0],
                 }
-            })
+            });
             return response.data.map(element => { return new CourseInfo(element) });
         } else {
             // Handles normal course case, ege MATH 239
@@ -97,12 +97,12 @@ const actions = {
         const response = await axios.get(backend_api + "/api/requirements/requirements", {
             params: {
                 major: getters.chosenMajor[0],
-                option: getters.chosenSpecialization.length != 0 ? getters.chosenSpecialization[0] : "",
-                minor: getters.chosenMinor.length != 0 ? getters.chosenMinor[0] : ""
+                option: getters.chosenSpecialization.length !== 0 ? getters.chosenSpecialization[0] : "",
+                minor: getters.chosenMinor.length !== 0 ? getters.chosenMinor[0] : ""
             }
         });
         let requirements = [];
-        console.log("requirements ", response.data)
+        console.log("requirements ", response.data);
         // Go over all the course requirements
         //major requirements
         for (let requirement of response.data.requirements) {
@@ -142,7 +142,7 @@ const actions = {
                     course_choices: [],
                     number_of_courses: requirement.number_of_courses,
                     minor: [getters.chosenMinor[0]],
-                }
+                };
     
                 // Split the requirement into its individual courses and parse each of them
                 let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
@@ -173,7 +173,7 @@ const actions = {
                     course_choices: [],
                     number_of_courses: requirement.number_of_courses,
                     specialization: [getters.chosenSpecialization[0]],
-                }
+                };
     
                 // Split the requirement into its individual courses and parse each of them
                 let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
@@ -204,10 +204,10 @@ const mutations = {
     },
     addRequirement: (state, newRequirement) => {
         for (let req of state.requirements) {
-            console.log(req)
-            console.log(req.id, newRequirement.id)
-            if (newRequirement.id == req.id) {
-                req.number_of_courses++
+            console.log(req);
+            console.log(req.id, newRequirement.id);
+            if (newRequirement.id === req.id) {
+                req.number_of_courses++;
                 return
             }
         }
@@ -220,11 +220,11 @@ const mutations = {
     sortRequirements: (state) => {
         state.requirements.sort((a, b) => {
             //reqs with multiple choices go to the bottom
-            if (a.course_choices.length != b.course_choices.length) return a.course_choices.length - b.course_choices.length
+            if (a.course_choices.length !== b.course_choices.length) return a.course_choices.length - b.course_choices.length
             //compare the course code and the course code and the course year
             let choiceA = a.course_choices[0].course_code.split(" ")
             let choiceB = b.course_choices[0].course_code.split(" ")
-            if (parseInt(choiceA[1][0]) != parseInt(choiceB[1][0])) return parseInt(choiceA[1][0]) - parseInt(choiceB[1][0])
+            if (parseInt(choiceA[1][0]) !== parseInt(choiceB[1][0])) return parseInt(choiceA[1][0]) - parseInt(choiceB[1][0])
             return choiceA[0].localeCompare(choiceB[0])
         })
     },
@@ -232,7 +232,7 @@ const mutations = {
     collapseRequirements: (state) => {
         for (let i = 0; i < state.requirements.length;i++) {
             for (let j = i + 1; j < state.requirements.length;j++) {
-                if (state.requirements[i].id == state.requirements[j].id) {
+                if (state.requirements[i].id === state.requirements[j].id) {
                     state.requirements[i].number_of_courses += state.requirements[j].number_of_courses
                     state.requirements.splice(j, 1)
                 }
@@ -240,11 +240,11 @@ const mutations = {
         }
     },
     decrementRequirementByID: (state, id) => {
-        void state
+        void state;
         // this collapses the requirement first so that there is only 1 id
         for (let i = 0; i < state.requirements.length;i++) {
             for (let j = i + 1; j < state.requirements.length;j++) {
-                if (state.requirements[i].id == state.requirements[j].id) {
+                if (state.requirements[i].id === state.requirements[j].id) {
                     state.requirements[i].number_of_courses += state.requirements[j].number_of_courses
                     state.requirements.splice(j, 1)
                 }
@@ -252,7 +252,7 @@ const mutations = {
         }
         //decrement hte id
         for (let i = 0; i < state.requirements.length;i++) {
-            if (state.requirements[i].id == id) {
+            if (state.requirements[i].id === id) {
                 state.requirements[i].number_of_courses--
                 return
             }
