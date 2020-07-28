@@ -4,9 +4,6 @@ var requirementId = 0
  * Information about one course
  */
 export class CourseInfo {
-    
-
-
     constructor(data) {
         // console.log("data", data)
         this.antireqs = data && data.antireqs ? data.antireqs.split(",") : []
@@ -31,13 +28,11 @@ export class CourseInfo {
 export class CourseRequirement {
     constructor(data) {
         this.number_of_courses = data && data.number_of_courses? data.number_of_courses : 0
-        this.course_choices = data && data.course_choices ? data.course_choices : []
-        
+        this.course_choices = data && data.course_choices ? data.course_choices : []        
         this.course_codes = this.course_choices.map(choice => {
             return choice.course_code
         })
         //if there only exist one course in the requirement, then it is not a choice anymore
-        this.selected_course = 
         this.selected_course = data && (data.course_choices.length == 1 || data.selected_course) ? data.course_choices[0] : {course_code: "WAITING", course_number: 42}
 
         //the majors or minors that this requirement is part of

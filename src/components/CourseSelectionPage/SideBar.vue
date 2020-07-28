@@ -51,7 +51,6 @@ export default {
             else {
                 clone.deselect()
             }
-
             return clone
         },
         change: function(event) {

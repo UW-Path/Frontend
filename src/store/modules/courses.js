@@ -31,7 +31,6 @@ async function parseRequirement(courseCode) {
             return response.data.map(element => { return new CourseInfo(element) });
         }
     }
-    //Handles the main functions
     else{
         let split;
         if (courseCode[courseCode.length - 1] === "-") {
@@ -218,8 +217,6 @@ const actions = {
                 commit('setSpecialization', response.data["option_list"]);
             }
         })
-
-        
     },
 };
 
@@ -241,7 +238,6 @@ const mutations = {
             state.requirements.push(req)
         }
     },
-    
     deleteRequirement: (state, requirement) => {
         let index = state.requirements.indexOf(requirement)
         state.requirements.splice(index, 1)
@@ -281,7 +277,6 @@ const mutations = {
                 }
             }
         }
-        //decrement the id
         for (let i = 0; i < state.requirements.length;i++) {
             if (state.requirements[i].id == id) {
                 state.requirements[i].number_of_courses--

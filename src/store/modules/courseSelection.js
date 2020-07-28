@@ -218,7 +218,6 @@ const mutations = {
             for (let requirement of state.table[i].courses) {
                 //there if course has not been selected yet then dont do anything
                 if (!requirement.selected_course) continue
-
                 if (requirement.selected_course.course_code !== "WAITING") {
                     axios.get(backend_api + "/api/meets_prereqs/get", {
                         params: {
