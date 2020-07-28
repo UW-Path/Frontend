@@ -1,29 +1,29 @@
 <template>
   <div class="course-plan-container">
     <v-row class="main-course-selection-panel">
-      <draggable class= "main-drag" :list="getTable" group="term" @change="log">
+      <draggable class= "main-drag" :list="getTable" group="term">
 
       <template v-for="(term, termIndex) in getTable">  
         <v-card class="col-sm-3 col-md-2 term-column" :key="termIndex" @mouseenter="termMouseOver(termIndex)" @mouseleave="termMouseExit()">
         <div class="text-h6 term-title">{{ getTermList[termIndex] }}
 
-        <v-btn icon class="delete-btn" x-small @click="deleteTerm(term)">
+        <v-btn icon class="delete-btn" small @click="deleteTerm(term)">
           <v-icon medium class="delete-term-btn" v-if="termHovered == termIndex">mdi-trash-can</v-icon>
         </v-btn>
 
         </div>
-        <draggable class="list-group draggable-column" :disabled="editingEnabled" :list="term.courses" group="course" @change="log"> 
-            <template v-for="(requirement, courseIndex) in term.courses">
-              <RequirementOptionsModal
-                class="list-group-item card"
-                :key="courseIndex"
-                :course="requirement"
-                :onSelectionBar="false"
-              />
-            </template>
-           
+        <draggable class="list-group draggable-column" :disabled="editingEnabled" :list="term.courses" group="course" @change="change"> 
+          <template v-for="(requirement, courseIndex) in term.courses">
+            <RequirementOptionsModal
+              class="list-group-item card"
+              :key="courseIndex"
+              :course="requirement"
+              :onSelectionBar="false"
+            />
+          </template>
+          <AddCourseCard :termIndex="termIndex" v-if="termHovered == termIndex"/>
+
         </draggable>
-        <AddCourseCard :termIndex="termIndex" v-if="termHovered == termIndex"/>
       </v-card >
       </template>
           <v-card class="col-2 term-column add-term-btn"  @click="addTermToTable">
@@ -58,20 +58,12 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["addTermToTable", "deleteTermFromTable", "addRequirement"]),
-    log: function() {
-      // window.console.log(evt);
-      console.log(this.getTable)
-    },
+    ...mapMutations(["addTermToTable", "deleteTermFromTable", "addRequirement", "decrementRequirementByID", "validateCourses"]),
     termMouseOver(termIndex) {
       this.termHovered = termIndex;
     },
     termMouseExit() {
       this.termHovered = -1;
-    },
-    cloneCard(card) {
-      console.log("tryna clone", card)
-      return false
     },
     deleteTerm(term) {
       for (let req of term.courses) {
@@ -79,9 +71,21 @@ export default {
           this.addRequirement(req)
       }
       this.deleteTermFromTable(term)
+    },
+    change(event) {
+        this.validateCourses();
+        //we only check add events
+        if (!event.added) return;
+        let changedReq = event.added.element;
+        
+        // console.log("change event", changedReq)
+        if (changedReq.course_choices.length > 1 && changedReq.inRequirementBar) {
+          changedReq.number_of_courses = 1;
+          this.decrementRequirementByID(changedReq.id);
+        }
+        changedReq.inRequirementBar = false;
     }
   },
-  //computed getters and styles
   computed: {
     ...mapGetters(["getTable", "isFull", "getTermList"]),
   }
@@ -99,7 +103,7 @@ export default {
   .main-course-selection-panel {
     flex-wrap: nowrap;
     overflow: auto;
- flex-grow : 1;
+  
     height: 100%;
   }
 
@@ -146,4 +150,8 @@ export default {
     margin-bottom: 1rem;
   }
 
+  .draggable-column {
+    height: 90%;
+    width: 100%;
+  }
 </style>

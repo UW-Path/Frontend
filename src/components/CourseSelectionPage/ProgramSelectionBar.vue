@@ -1,24 +1,18 @@
 <template>
- <v-app-bar
-      color="white"
-    >
-            <v-toolbar-title class="program-titles" v-for="(major,index) in chosenMajor" :key="index">{{ major }}</v-toolbar-title>
-            <v-toolbar-title class="program-titles"  v-for="(minor,index) in chosenMinor" :key="index">{{ minor }}</v-toolbar-title>
-            <v-toolbar-title class="program-titles"  v-for="(spec,index) in chosenSpecialization" :key="index">{{ spec }}</v-toolbar-title>
-            <v-btn icon>
-        <ProgramSelectionModal></ProgramSelectionModal>
-      </v-btn>
-      <v-spacer></v-spacer>
-      <v-btn text> Contact Us </v-btn>
-
+    <v-app-bar color="white">
+        <v-toolbar-title class="program-titles" v-for="(major) in chosenMajor" :key="major">{{ major }}</v-toolbar-title>
+        <v-toolbar-title class="program-titles"  v-for="(minor) in chosenMinor" :key="minor">{{ minor }}</v-toolbar-title>
+        <v-toolbar-title class="program-titles"  v-for="(spec) in chosenSpecialization" :key="spec">{{ spec }}</v-toolbar-title>
+        <ProgramSelectionModal/>
+        <v-spacer></v-spacer>
+        <v-btn text> Contact Us </v-btn>
     </v-app-bar>
 </template>
 
 
 <script>
+import ProgramSelectionModal from "../Modals/ProgramSelectionModal"
 import { mapGetters, mapMutations } from "vuex";
-import ProgramSelectionModal from '../Modals/ProgramSelectionModal'
-
 export default {
     name: "ProgramSelectionBar",
     data: function () {
@@ -32,7 +26,7 @@ export default {
     props: {
     },
     methods: {
-        ...mapMutations(["setChosenMajor", "setChosenMinor", "setChosenSpecialization",]),
+        ...mapMutations(["setChosenMajor", "setChosenMinor", "setChosenSpecialization"]),
         toggleSelection: function () {
             this.programSelectionHidden = !this.programSelectionHidden
         }

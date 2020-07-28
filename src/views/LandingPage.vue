@@ -8,6 +8,7 @@
                     <div class="text-h3 title">UWPath</div>
                     <div class="text-h5 caption" >Plan your degree ahead</div>
                     <v-autocomplete
+                        :disabled="inConfirmation"
                         :items="allMajors"
                         v-on:change="changeMajor"
                         dense
@@ -20,7 +21,12 @@
                         height="3rem"
                         color="black"
                     ></v-autocomplete>
-                    <div class="findprogram" @click="findProgram()">Can't find your program?</div>
+                    <div class="findprogram" @click="findProgram()" v-if="!inConfirmation">Can't find your program?</div>
+                    <div v-if="inConfirmation">
+                        <div class="confirmation-msg"> It seems like you have already selected a major, are you sure to overwrite?</div>
+                        <v-icon large color="light-green"  @click="confirmSelection()">mdi-checkbox-marked-circle</v-icon>
+                        <v-icon large color="red"  @click="cancelSelection()">mdi-close-circle</v-icon>
+                    </div>
                 </v-col>
         </v-row>
     </v-container>
@@ -32,24 +38,46 @@ export default {
     name: "Home",
     components: {
     },
-    methods: {
-        ...mapActions(["fetchMajors", "fetchRequirements"]),
-        ...mapMutations(["setChosenMajor"]),
-        //this is later used for linking up the different course addresses
-        changeMajor(programName) {
-            //state changes
-            this.setChosenMajor(programName)
-            this.fetchRequirements();
-            this.$router.push('/CourseSelection')   
-        },
-        findProgram() {
-            console.log("find program clicked: WIP")
+    data() {
+        return {
+            inConfirmation: false,
+            selectedProgram: ""
         }
     },
-    computed: mapGetters(["allMajors", "findMajorByProgram"]),
+    methods: {
+        ...mapActions(["fetchMajors", "fetchRequirements"]),
+        ...mapMutations(["setChosenMajor", "clearTable", "clearCourses"]),
+        changeMajor(programName) {
+            this.selectedProgram = programName
+            if (this.chosenMajor.length > 0) this.inConfirmation = true
+            else this.confirmSelection()
+        },
+        findProgram() {
+            //WIP
+            console.log("find program clicked: WIP")
+        },
+        confirmSelection() {
+            this.inConfirmation = false
+            this.setChosenMajor(this.selectedProgram)
+            //clear the sidebar and the courses
+            this.clearCourses()
+            this.clearTable()
+            this.fetchRequirements({
+                addMajor: true,
+                addMinor: false,
+                addOption: false
+            })
+            this.$router.push('/CourseSelection')   
+        },
+        cancelSelection() {
+            this.inConfirmation = false
+        }
+        
+    },
+    computed: mapGetters(["allMajors", "findMajorByProgram", "chosenMajor"]),
     created() {
         this.fetchMajors();
-    }
+    },
 }
 </script>
 
@@ -102,5 +130,10 @@ export default {
     width: 450px;
     float: right;
     margin: 4rem;
+}
+
+.confirmation-msg {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
 }
 </style>

@@ -10,12 +10,12 @@
         />
 
         <!-- Course Popup Modal -->
-        <v-dialog v-model="dialog" max-width="1000">
+        <v-dialog v-model="dialog" :max-width="isChoice() ? 1200 : 700">
             <v-card>
                 <v-container fluid class="modal-course-list-container">
                     <v-row class="modal-course-list-row">
-                        <v-col align="center">
-                            <v-text-field class="modal-search" v-model="searchtext" label="Search for a Course" prepend-inner-icon="mdi-magnify" hide-details="true" single-line outlined dense></v-text-field>
+                        <v-col align="center" v-if="isChoice()">
+                            <v-text-field v-if="this.course.course_choices.length > 7" class="modal-search" v-model="searchtext" label="Search for a Course" prepend-inner-icon="mdi-magnify" hide-details="true" single-line outlined dense></v-text-field>
                             <div class="modal-course-list">
                                 <div class="modal-course" v-for="(course,index) in filteredCourses" :key="index"
                                     v-on:click="selectedCourse = course">
@@ -28,8 +28,15 @@
                             <v-card-title class="course-title">
                                 {{ selectedCourse.course_code }}
                                 <v-spacer></v-spacer>
-                                <v-btn color="green darken-1" class="select-btn" text @click="selectCourse()" v-if="selectedCourse != this.course.selected_course"> Select </v-btn>
-                                <v-btn color="red darken-1" class="select-btn" text @click="deselectCourse()" v-else> Deselect </v-btn>
+                                <template v-if="isChoice()">
+                                    <v-btn class="select-btn" text @click="selectCourse()" v-if="selectedCourse != this.course.selected_course" icon large>
+                                        <v-icon>mdi-plus-circle</v-icon>
+                                    </v-btn>
+                                    <v-btn class="select-btn" text @click="deselectCourse()" v-else icon large>
+                                        <v-icon>mdi-minus-circle</v-icon>
+                                    </v-btn>
+                                </template>
+
 
                             </v-card-title>
                             <v-card-subtitle class="course-name">
@@ -53,7 +60,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapMutations } from "vuex";
 import CourseCard from "../Cards/CourseCard";
 
 export default {
@@ -64,7 +71,7 @@ export default {
     data () {
         return {
             searchtext: "",
-            selectedCourse: this.course.selected_course ? this.course.selected_course : this.course.course_choices[0],
+            selectedCourse: this.course.selected_course && this.course.selected_course.course_code !== "WAITING" ? this.course.selected_course : this.course.course_choices[0],
             dialog: false
         }
     },
@@ -75,19 +82,24 @@ export default {
         onSelectionBar: Boolean
     },
     methods: {
+        ...mapMutations(["validateCourses"]),
         enableDialog: function() {
             this.dialog = true;
         },
         selectCourse: function () {
             this.course.selected_course = this.selectedCourse;
             this.dialog = false;
+            this.validateCourses()
         },
         deselectCourse() {
-            this.course.selected_course = undefined;
+            this.course.deselect();
         },
         isSelected: function(courseCode) {
             if (!this.course.selected_course) return false
             return courseCode == this.course.selected_course.course_code;
+        },
+        isChoice() {
+            return this.course.course_choices.length > 1
         }
     },
     computed: {
@@ -181,7 +193,7 @@ export default {
     /* margin-bottom: 1rem; */
     width: 90%;
     max-height: 250px;
-    height:auto;
+    /* height:auto; */
     overflow-y: auto;
 }
 
