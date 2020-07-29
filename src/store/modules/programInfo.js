@@ -32,10 +32,8 @@ const actions = {
     fetchMajors({ commit }) {
         axios.get(backend_api + "/api/requirements/unique_major")
         .then(response => {
-            //fill up the minor and options
-            console.log("Majors fetched: ", response.data["Major"])
+            console.log("majors list", response.data)
             commit('setMajor', response.data["Major"]);
-
         })
         .catch(err => {
             console.log(err);

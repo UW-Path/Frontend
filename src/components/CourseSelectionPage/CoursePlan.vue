@@ -4,7 +4,7 @@
       <draggable class= "main-drag" :list="getTable" group="term">
 
       <template v-for="(term, termIndex) in getTable">  
-        <v-card class="col-2 term-column" :key="termIndex" @mouseenter="termMouseOver(termIndex)" @mouseleave="termMouseExit()">
+        <v-card class="col-sm-3 col-md-2 term-column" :key="termIndex" @mouseenter="termMouseOver(termIndex)" @mouseleave="termMouseExit()">
         <div class="text-h6 term-title">{{ getTermList[termIndex] }}
 
         <v-btn icon class="delete-btn" small @click="deleteTerm(term)">
@@ -26,14 +26,13 @@
         </draggable>
       </v-card >
       </template>
-                   <v-card class="col-2 term-column add-term-btn"  @click="addTermToTable">
+          <v-card class="col-2 term-column add-term-btn"  @click="addTermToTable">
           <div class="text-h7">
             Add a Term
           </div>
           <v-icon medium >mdi-plus-circle</v-icon>
         </v-card>
-              </draggable>
-
+      </draggable>
     </v-row>    
   </div>
 
@@ -78,15 +77,13 @@ export default {
         //we only check add events
         if (!event.added) return;
         let changedReq = event.added.element;
-        changedReq.inRequirementBar = false;
-          //whenever a course card is moved from requirements bar then we decrement the stuff from
         if (changedReq.course_choices.length > 1 && changedReq.inRequirementBar) {
           changedReq.number_of_courses = 1;
           this.decrementRequirementByID(changedReq.id);
         }
+        changedReq.inRequirementBar = false;
     }
   },
-  //computed getters and styles
   computed: {
     ...mapGetters(["getTable", "isFull", "getTermList"]),
   }

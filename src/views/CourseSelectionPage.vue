@@ -1,5 +1,5 @@
 <template>
-    <v-container class="course-selection-container">
+    <v-container class="course-selection-container my-1">
         <v-row >
             <program-selection-bar/>
         </v-row>
@@ -8,10 +8,10 @@
                 <tab class="primary-tab" title="Course Plan">
                     <v-container class="course-selection-container">
                         <v-row class="main-row">
-                            <v-col class="side-bar" cols="12" md="3">
+                            <v-col class="side-bar" cols="12" lg="2" md="2" sm="3">
                                 <side-bar/>
                             </v-col>
-                            <v-col class="main-panel" cols="12" md="9">
+                            <v-col class="main-panel" cols="12" lg="10" md="10" sm="9">
                                 <course-plan/>
                             </v-col>
                         </v-row>
@@ -20,9 +20,6 @@
                 <tab class="primary-tab" title="Program Checklist">
                     <v-container class="course-selection-container">
                         <v-row class="main-row">
-                            <!-- <v-col class="checklist-side-bar" cols="12" md="3">
-                                <program-checklist-side-bar/>
-                            </v-col> -->
                             <v-col class="main-panel">
                                 <program-checklist/>
                             </v-col>
@@ -38,7 +35,6 @@
 import CoursePlan from '../components/CourseSelectionPage/CoursePlan.vue'
 import ProgramSelectionBar from '../components/CourseSelectionPage/ProgramSelectionBar.vue'
 import ProgramChecklist from '../components/ProgramChecklistPage/ProgramChecklist.vue'
-//import ProgramChecklistSideBar from '../components/ProgramChecklistPage/ProgramChecklistSideBar.vue'
 import SideBar from '../components/CourseSelectionPage/SideBar.vue'
 
 import { Tabs, Tab } from 'vue-slim-tabs'
