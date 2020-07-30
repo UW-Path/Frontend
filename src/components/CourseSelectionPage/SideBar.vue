@@ -70,7 +70,7 @@ export default {
     display: flex;
     flex-direction: column;
     width: 100%;
-    background-color: rgb(230, 230, 230);
+    background-color: #A0BDD6;
     overflow-y: scroll;
 }
 
@@ -89,7 +89,7 @@ export default {
 }
 
 #no-program-message {
-    color: grey !important;
+    color: #071223 !important;
 }
 
 .draggable-column {

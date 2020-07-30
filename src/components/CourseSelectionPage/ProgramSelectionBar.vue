@@ -1,11 +1,11 @@
 <template>
-    <v-app-bar color="white">
+    <v-app-bar color="#4A75AD">
         <v-toolbar-title class="program-titles" v-for="(major) in chosenMajor" :key="major">{{ major }}</v-toolbar-title>
-        <v-toolbar-title class="program-titles"  v-for="(minor) in chosenMinor" :key="minor">{{ minor }}</v-toolbar-title>
-        <v-toolbar-title class="program-titles"  v-for="(spec) in chosenSpecialization" :key="spec">{{ spec }}</v-toolbar-title>
+        <v-toolbar-title class="program-titles minor"    v-for="(minor) in chosenMinor" :key="minor">{{ minor }}</v-toolbar-title>
+        <v-toolbar-title class="program-titles spec"  v-for="(spec) in chosenSpecialization" :key="spec">{{ spec }}</v-toolbar-title>
         <ProgramSelectionModal/>
         <v-spacer></v-spacer>
-        <v-btn text> Contact Us </v-btn>
+        <v-btn text color="white"> Contact Us </v-btn>
     </v-app-bar>
 </template>
 
@@ -41,5 +41,17 @@ export default {
 .program-titles {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
+    color:ghostwhite; 
 }
+
+.minor{
+    font-size:1.1em;
+    color:#ffff8d;
+}
+
+.spec{
+    color:#ffff8d;
+    font-size:1.1em;
+}
+
 </style>

@@ -1,6 +1,6 @@
 <template>
 
-    <v-app id="app">
+    <v-app id="app" style="overflow-y: hidden;">
       <div id="nav">
         <router-link to="/">Home</router-link> |
         <router-link to="/CourseSelection">Course Selection</router-link> |
@@ -23,8 +23,8 @@
 
 #nav {
   position: fixed;
-  bottom: 50px;
-  right: 50px;
+  bottom: 2%;
+  right: 3%;
 
   a {
     font-weight: bold;
@@ -38,5 +38,21 @@
 
 body {
   height: 100vh;
+}
+
+  
+::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+  background-color: #FFD646;
+}
+
+::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+  background-color: #F5F5F5;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #FFD646;
 }
 </style>
