@@ -1,6 +1,6 @@
 <template>
 <div>
-<v-btn @click="enableDialog()" small>Add a minor, option, etc. <v-icon>mdi-plus-circle-outline</v-icon></v-btn>
+<v-btn @click="enableDialog()" small><v-icon class="add-major-btn">mdi-plus-circle</v-icon>Add a minor/option</v-btn>
 <v-dialog v-model="dialog" max-width="800">
     <v-card>
         <v-container fluid class="modal-course-list-container" align="center">
@@ -207,4 +207,11 @@ export default {
     text-align: left;
     color: rgb(140, 140, 140)
 }
+
+.add-major-btn{
+    margin-right: 0.3em;
+    color: #5C8CE9 !important;
+}
+
+
 </style>

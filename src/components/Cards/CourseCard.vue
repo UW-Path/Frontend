@@ -3,24 +3,24 @@
     <template v-if="this.courseData.selected_course && this.courseData.selected_course.course_code !== 'WAITING'">
       <v-list-item three-line>
         <v-list-item-content>
-          <div class="overline mb-4">
-            <v-chip v-if="this.courseData.major.length > 0" color="light-blue" label x-small text-color="white" class="chip"> 
+          <div class="overline mb-2">
+            <v-chip v-if="this.courseData.major.length > 0" color="light-blue" label text-color="white" class="chip"> 
                 Major
             </v-chip>
-            <v-chip v-if="this.courseData.minor.length > 0" color="light-green" label x-small text-color="white" class="chip"> 
+            <v-chip v-if="this.courseData.minor.length > 0" color="light-green" label text-color="white" class="chip"> 
               Minor
             </v-chip>
-            <v-chip v-if="this.courseData.specialization.length > 0" color="light-green" label x-small text-color="white" class="chip"> 
+            <v-chip v-if="this.courseData.specialization.length > 0" color="light-green" label text-color="white" class="chip"> 
               Option
             </v-chip>
-            <v-chip v-if="this.courseData.course_choices.length > 1" color="red" label x-small text-color="white" class="chip"> 
+            <v-chip v-if="this.courseData.course_choices.length > 1" color="red" label text-color="white" class="chip"> 
               Choice
             </v-chip>
             <v-spacer></v-spacer>
-            <v-btn icon class="delete-btn" x-small @click="deleteCourse()" v-if="!onSelectionBar"></v-btn>
+            <v-btn icon class="delete-btn" @click="deleteCourse()" v-if="!onSelectionBar"></v-btn>
           </div>
-          <v-list-item-title class="headline mb-1" v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met && !courseData.inRequirementBar, course_card_prereqs_failed: !courseData.prereqs_met && !courseData.inRequirementBar}">{{ courseData.selected_course.course_code }}</v-list-item-title>
-          <v-list-item-subtitle>{{ courseData.selected_course.course_name }}</v-list-item-subtitle>
+          <v-list-item-title class="mb-1 course-card-font" v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met && !courseData.inRequirementBar, course_card_prereqs_failed: !courseData.prereqs_met && !courseData.inRequirementBar}">{{ courseData.selected_course.course_code }}</v-list-item-title>
+          <v-list-item-subtitle style="font-size: 0.7em;">{{ courseData.selected_course.course_name }}</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
     </template>
@@ -92,10 +92,12 @@ export default {
   padding-left: 0.3rem;
   padding-right: 0.3rem;
   text-align: center;
+  height: 1.6em !important;
+  font-size: 0.8em !important;
 }
 
 .card {
-  margin-top: 0.75rem;
+  margin-top: 0.50rem;
   text-align: left;
 }
 
@@ -111,6 +113,8 @@ export default {
   display: block;
   border-width: thin;
   margin: 0px;
+  height: 10px !important;
+  width: 10px !important;
 }
 
 .delete-btn:hover {
@@ -123,5 +127,14 @@ export default {
 
 .course_card_prereqs_failed {
   color: red;
+}
+
+.course-card-font{
+  font-size:0.5 rem !important;
+}
+
+.course-card{
+  max-height: 6em;
+
 }
 </style>

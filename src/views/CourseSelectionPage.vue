@@ -50,6 +50,9 @@ export default {
         Tabs,
         Tab
     },
+    data: () => ({
+        tab: "plan"
+    }),
 }
 </script>
 
@@ -57,6 +60,7 @@ export default {
 <style scoped>
 
 .primary-tabs {
+    margin-top: 0.5em;
     width: 100%;
     height: 100%;
 }
