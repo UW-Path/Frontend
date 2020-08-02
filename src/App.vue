@@ -23,7 +23,7 @@
 
 #nav {
   position: fixed;
-  bottom: 2%;
+  bottom: 1%;
   right: 3%;
 
   a {
