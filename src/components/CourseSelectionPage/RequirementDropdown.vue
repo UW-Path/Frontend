@@ -166,6 +166,7 @@ export default {
 .title {
     text-align: left;
     padding-left: 24px;
+    padding-right: 24px;
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
     font-size: 1rem !important;
