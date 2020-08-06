@@ -2,7 +2,7 @@
 <div>
     <div v-for="(program, index) in programArray" :key="index">      
         <div class="title">{{ program.info.program_name }}</div>
-        <v-expansion-panels multiple flat>
+        <v-expansion-panels multiple>
             <v-expansion-panel class="expansion-panel" v-if="program.firstYear.length">
                 <v-expansion-panel-header>100s Courses</v-expansion-panel-header>
                 <v-expansion-panel-content>

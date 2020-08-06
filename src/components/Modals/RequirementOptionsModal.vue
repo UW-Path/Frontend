@@ -102,8 +102,14 @@ export default {
             if (!this.course.selected_course) return false
             return courseCode == this.course.selected_course.course_code;
         },
-        isChoice() {
+        isChoice: function() {
             return this.course.course_choices.length > 1
+        },
+        close: function() {
+            
+        },
+        open: function() {
+            
         }
     },
     computed: {

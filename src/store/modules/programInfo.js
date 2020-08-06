@@ -1,4 +1,5 @@
 import axios from "axios";
+import { MajorInfo, MinorInfo, OptionInfo } from "../../models/ProgramInfoModel"
 //need to move the routes to the configs
 const backend_api = "http://localhost:8000"
 
@@ -8,18 +9,12 @@ const state = {
     minors: [],
     specialization: [],
     //array to support the possibility of having multiple major/minor/specs that can be chosen
-    chosenMajor: [],
-    chosenMinor: [],
-    chosenSpecialization: []
 };
 
 const getters = {
     allMajors: (state) => {return state.majors },
     allMinors: (state) => { return state.minors },  
     allSpecializations: (state) => { return state.specialization },
-    chosenMajor: (state) => { return state.chosenMajor },
-    chosenMinor: (state) => { return state.chosenMinor },
-    chosenSpecialization: (state) => { return state.chosenSpecialization },
     //finds the major that maches to a give program name
     findMajorByProgram: (state) => {
         return (program) => {
@@ -55,13 +50,13 @@ const actions = {
 
 const mutations = {
     setMajor: (state, majors) => {
-        state.majors = majors
+        state.majors = majors.map(major => { return new MajorInfo(major) })
     },
     setMinor: (state, minors) => {
-        state.minors = minors
+        state.minors = minors.map(minor => { return new MinorInfo(minor) })
     },
     setSpecialization: (state, specialization) => {
-        state.specialization = specialization
+        state.specialization = specialization.map(spec => { return new OptionInfo(spec) })
     }
 };
 
