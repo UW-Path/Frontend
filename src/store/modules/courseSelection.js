@@ -33,7 +33,7 @@ const defaultTable = [
  ]
 
 const state = {
-    table: defaultTable,
+    table: JSON.parse(JSON.stringify(defaultTable)),
     //TODO: need to figure out naming later
     termList: ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B", "5A", "5B"],
     checklistMajorRequirements: [],
@@ -203,6 +203,7 @@ const mutations = {
             }
         }
     },
+    //WIP
     addCourse: (state, termIndex) => {
         void termIndex
     },
@@ -215,6 +216,8 @@ const mutations = {
                 return course.selected_course.course_code;
             });
             for (let requirement of state.table[i].courses) {
+                //there if course has not been selected yet then dont do anything
+                if (!requirement.selected_course) continue
                 if (requirement.selected_course.course_code !== "WAITING") {
                     axios.get(backend_api + "/api/meets_prereqs/get", {
                         params: {
@@ -232,6 +235,20 @@ const mutations = {
                 }
             }
             listOfCoursesTaken = listOfCoursesTaken.concat(currentTermCourses);
+        }
+    },
+    clearMinorFromTable: (state) => {
+        for (let term of state.table) {
+            term.courses = term.courses.filter(req => {
+                return req.minor.length == 0
+            })
+        }
+    },
+    clearOptionTable: (state) => {
+        for (let term of state.table) {
+            term.courses = term.courses.filter(req => {
+                return req.specialization.length == 0
+            })
         }
     },
     clearTable: (state) => {

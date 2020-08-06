@@ -28,25 +28,31 @@ export class CourseInfo {
 export class CourseRequirement {
     constructor(data) {
         this.number_of_courses = data && data.number_of_courses? data.number_of_courses : 0
-        this.course_choices = data && data.course_choices ? data.course_choices : []
-        this.course_codes = data && data.course_codes ? data.course_codes.split(",") : []
+        this.course_choices = data && data.course_choices ? data.course_choices : []        
+        this.course_codes = this.course_choices.map(choice => {
+            return choice.course_code
+        })
         //if there only exist one course in the requirement, then it is not a choice anymore
-        this.selected_course = data && data.course_choices.length == 1? data.course_choices[0] : {course_code: "WAITING", course_number: 42}
-        
+        this.selected_course = data && (data.course_choices.length == 1 || data.selected_course) ? data.course_choices[0] : {course_code: "WAITING", course_number: 42}
+
         //the majors or minors that this requirement is part of
         this.major = data && data.major ? data.major : []
         this.minor = data && data.minor ? data.minor : []
         this.specialization = data && data.specialization ? data.specialization : []
-        this.overriden = false
-        this.id = requirementId++
+        this.overriden = data && data.overriden ? data.overriden : false
+        this.id = data && data.id ? data.id : requirementId++
         //this shows that the courseRequimrent is currently in the requirement bar
         this.inRequirementBar = data && data.inRequirementBar ?  data.inRequirementBar  : true
         this.prereqs_met = data && data.prereqs_met ? data.prereqs_met : false
     }
-}
 
-export class Term {
-    constructor (data) {
-        void data 
+    //this selects the course 
+    deselect() {
+        if (this.course_choices.length == 1) return
+        this.selected_course = {course_code: "WAITING", course_number: 42}
+    }
+
+    isSelected() {
+        return this.selected_course.course_code != "WAITING"
     }
 }

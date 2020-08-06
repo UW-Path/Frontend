@@ -19,8 +19,8 @@
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
 import draggable from 'vuedraggable'
-import RequirementOptionsModal from '../Modals/RequirementOptionsModal'
-
+import RequirementOptionsModal from '../Modals/RequirementOptionsModal' 
+import { CourseRequirement } from '../../models/courseModel.js' 
 export default {
     name: "SideBar",
     components: {
@@ -39,20 +39,24 @@ export default {
         pullFunction: function() {
             return this.lastClickdownReq.number_of_courses == 1 || this.lastClickdownReq.course_choices.length == 1 ? true : "clone"
         },
-        //clones the event, this only works iff the 
         clone: function(event) {
             if (event.course_choices.length == 1) {
                 return event
             }
-            let clone = JSON.parse(JSON.stringify(event))
-            clone.selected_course = null
+            //create a deep copy of the requirement
+            let clone = new CourseRequirement(JSON.parse(JSON.stringify(event)))
+            if (clone.isSelected()) {
+                event.deselect()
+            }
+            else {
+                clone.deselect()
+            }
             return clone
         },
         change: function(event) {
             if (!event.added) return
             let changedReq = event.added.element
             changedReq.inRequirementBar = true
-            console.log("changeback", event)
             this.collapseRequirements()
             this.sortRequirements()
         }
@@ -66,7 +70,7 @@ export default {
     display: flex;
     flex-direction: column;
     width: 100%;
-    background-color: rgb(230, 230, 230);
+    background-color: #A0BDD6;
     overflow-y: scroll;
 }
 
@@ -85,7 +89,7 @@ export default {
 }
 
 #no-program-message {
-    color: grey !important;
+    color: #071223 !important;
 }
 
 .draggable-column {

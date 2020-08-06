@@ -17,7 +17,7 @@
                         <v-col align="center" v-if="isChoice()">
                             <v-text-field v-if="this.course.course_choices.length > 7" class="modal-search" v-model="searchtext" label="Search for a Course" prepend-inner-icon="mdi-magnify" hide-details="true" single-line outlined dense></v-text-field>
                             <div class="modal-course-list">
-                                <div class="modal-course" v-for="(course, index) in filteredCourses" :key="index"
+                                <div class="modal-course" v-for="(course,index) in filteredCourses" :key="index"
                                     v-on:click="selectedCourse = course">
                                     {{course.course_code + ": " + course.course_name}}
                                 </div>
@@ -39,6 +39,13 @@
 
 
                             </v-card-title>
+                            <v-card-subtitle class="course-name">
+                                    {{ selectedCourse.course_name}}
+                            </v-card-subtitle>
+                            <v-card-subtitle class="course-info-subheading">
+                                    Credits: {{ selectedCourse.credit }} | ID: {{ selectedCourse.course_id }} | uwflow
+                            </v-card-subtitle>
+
                             <v-card-text>{{ selectedCourse.info + (selectedCourse.offering === "" ? "" :  " Offered in: " + selectedCourse.offering.slice(0,-1) + ".") + (selectedCourse.online ? " Offered Online." : "")}}</v-card-text>
                             <v-card-text class="course-description-text">{{ "Credits: " + selectedCourse.credit }}</v-card-text>
                             <v-card-text class="course-description-text" v-if="selectedCourse.prereqs !== ''">{{ "Prerequisites: " + selectedCourse.prereqs }}</v-card-text>
@@ -85,7 +92,7 @@ export default {
             this.validateCourses()
         },
         deselectCourse() {
-            this.course.selected_course = undefined;
+            this.course.deselect();
         },
         isSelected: function(courseCode) {
             if (!this.course.selected_course) return false
@@ -130,8 +137,20 @@ export default {
     overflow-y: hidden;
     overflow-x: hidden;
     margin-top: 5%;
+}
+
+.course-name {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    color: rgb(51, 153, 255) !important;
 
 }
+
+.course-info-subheading {
+    padding-top: 0px;
+}
+
+
 
 .overline {
   color: red;
