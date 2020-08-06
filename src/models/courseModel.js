@@ -32,8 +32,9 @@ export class CourseRequirement {
         this.course_codes = this.course_choices.map(choice => {
             return choice.course_code
         })
+        this.course_codes_raw = data && data.course_codes ? data.course_codes : ""
         //if there only exist one course in the requirement, then it is not a choice anymore
-        this.selected_course = data && (data.course_choices.length == 1 || data.selected_course) ? data.course_choices[0] : {course_code: "WAITING", course_number: 42}
+        this.selected_course = data && data.course_choices && (data.course_choices.length == 1 || data.selected_course) ? data.course_choices[0] : {course_code: "WAITING", course_number: 42}
 
         //the majors or minors that this requirement is part of
         this.major = data && data.major ? data.major : []
@@ -44,6 +45,7 @@ export class CourseRequirement {
         //this shows that the courseRequimrent is currently in the requirement bar
         this.inRequirementBar = data && data.inRequirementBar ?  data.inRequirementBar  : true
         this.prereqs_met = data && data.prereqs_met ? data.prereqs_met : false
+        this.number_of_prereqs_met = data && data.number_of_prereqs_met ? data.number_of_prereqs_met : 0
     }
 
     //this selects the course 
