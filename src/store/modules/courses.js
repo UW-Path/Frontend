@@ -79,10 +79,29 @@ async function parseRequirement(courseCode) {
                 return null
             })
             //Laurier queries are unavailable, so this is necessary
-            if (response == null) return [ new CourseInfo({
-                course_code: courseCode,
-                info: "Information about this course is unavailable. Please"
-            }) ]
+            if (response == null){ 
+                if (courseCode.includes("W")){
+                    //laurier couse
+                    return [ new CourseInfo({ course_code: courseCode, 
+                                                info: "Information about this course is unavailable. Please refer to https://loris.wlu.ca/register/ssb/registration for more details.",
+                                                credit: 'N/A', 
+                                                prereqs: 'N/A',
+                                                antireqs: 'N/A',
+                                                coreqs: 'N/A',
+                                                online: false
+                                            })]
+                }
+                else{
+                    return [ new CourseInfo({ course_code: courseCode, info: "Information about this course is unavailable.",
+                                    credit: 'N/A', 
+                                    prereqs: 'N/A',
+                                    antireqs: 'N/A',
+                                    coreqs: 'N/A',
+                                    online: false
+                                }),
+                                ]
+                }
+            }
             return [new CourseInfo(response.data)];
         }
     }
