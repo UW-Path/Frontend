@@ -1,14 +1,14 @@
 import axios from "axios";
 import {CourseInfo, CourseRequirement} from '../../models/courseModel'
 
-const backend_api = "http://127.0.0.1:8000"
+const backend_api = "http://0.0.0.0:8000";
 
 // Fetch course information of a single course code (eg MATH 239 or PHYS 300-)
 async function parseRequirement(courseCode) {
     let hasNumber = /\d/;
     if (!hasNumber.test(courseCode)){
         // Handle the exceptions [e.g. NON-MATH]
-        if (courseCode == "NON-MATH") {
+        if (courseCode === "NON-MATH") {
             return [new CourseInfo({
                 course_name: "Course not offered by the Faculty of Math",
                 course_code: "NON-MATH"
@@ -27,7 +27,7 @@ async function parseRequirement(courseCode) {
                     end: 499,
                     code: courseCode,
                 }
-            })
+            });
             return response.data.map(element => { return new CourseInfo(element) });
         }
     }
@@ -66,7 +66,7 @@ async function parseRequirement(courseCode) {
                     end: Number(split[1].split(" ")[1]),
                     code: split[0].split(" ")[0],
                 }
-            })
+            });
             return response.data.map(element => { return new CourseInfo(element) });
         } else {
             // Handles normal course case, ege MATH 239
@@ -105,8 +105,8 @@ const actions = {
         const response = await axios.get(backend_api + "/api/requirements/requirements", {
             params: {
                 major: getters.chosenMajor[0],
-                option: getters.chosenSpecialization.length != 0 ? getters.chosenSpecialization[0] : "",
-                minor: getters.chosenMinor.length != 0 ? getters.chosenMinor[0] : ""
+                option: getters.chosenSpecialization.length !== 0 ? getters.chosenSpecialization[0] : "",
+                minor: getters.chosenMinor.length !== 0 ? getters.chosenMinor[0] : ""
             }
         });
         let choices_fetched_promises = [];
@@ -259,7 +259,7 @@ const mutations = {
     collapseRequirements: (state) => {
         for (let i = 0; i < state.requirements.length;i++) {
             for (let j = i + 1; j < state.requirements.length;j++) {
-                if (state.requirements[i].id == state.requirements[j].id) {
+                if (state.requirements[i].id === state.requirements[j].id) {
                     state.requirements[i].number_of_courses += state.requirements[j].number_of_courses
                     state.requirements.splice(j, 1)
                 }
@@ -267,18 +267,18 @@ const mutations = {
         }
     },
     decrementRequirementByID: (state, id) => {
-        void state
+        void state;
         // this collapses the requirement first so that there is only 1 id
         for (let i = 0; i < state.requirements.length;i++) {
             for (let j = i + 1; j < state.requirements.length;j++) {
-                if (state.requirements[i].id == state.requirements[j].id) {
+                if (state.requirements[i].id === state.requirements[j].id) {
                     state.requirements[i].number_of_courses += state.requirements[j].number_of_courses
                     state.requirements.splice(j, 1)
                 }
             }
         }
         for (let i = 0; i < state.requirements.length;i++) {
-            if (state.requirements[i].id == id) {
+            if (state.requirements[i].id === id) {
                 state.requirements[i].number_of_courses--
                 return
             }
