@@ -3,7 +3,7 @@
     <template v-if="this.courseData.selected_course && this.courseData.selected_course.course_code !== 'WAITING'">
       <v-list-item three-line>
         <v-list-item-content>
-          <div class="overline mb-2">
+          <div class="overline mb-1">
             <v-chip v-if="this.courseData.major.length > 0" color="light-blue" label text-color="white" class="chip"> 
                 Major
             </v-chip>
@@ -19,7 +19,7 @@
             <v-spacer></v-spacer>
             <v-btn icon class="delete-btn" @click="deleteCourse()" v-if="!onSelectionBar"></v-btn>
           </div>
-          <v-list-item-title class="mb-1" style="font-size: 2.5vh;" v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met && !courseData.inRequirementBar, course_card_prereqs_failed: !courseData.prereqs_met && !courseData.inRequirementBar}">{{ courseData.selected_course.course_code }}</v-list-item-title>
+          <v-list-item-title style="font-size: 2.5vh;" v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met && !courseData.inRequirementBar, course_card_prereqs_failed: !courseData.prereqs_met && !courseData.inRequirementBar}">{{ courseData.selected_course.course_code }}</v-list-item-title>
           <v-list-item-subtitle style="font-size: 1.5vh;">{{ courseData.selected_course.course_name }}</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
@@ -27,7 +27,7 @@
     <template v-else>
       <v-list-item>
         <v-list-item-content>
-          <div class="overline mb-2">
+          <div class="overline mb-1">
             <div  v-if="courseData.course_choices.length > 1"> Select {{courseData.number_of_courses}} </div> 
             <v-spacer></v-spacer>
             <v-btn icon class="delete-btn" x-small @click="deleteCourse()" v-if="!onSelectionBar" ></v-btn>

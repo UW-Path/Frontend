@@ -6,6 +6,22 @@ const backend_api = "http://127.0.0.1:8000"
 // Fetch course information of a single course code (eg MATH 239 or PHYS 300-)
 async function parseRequirement(courseCode) {
     let hasNumber = /\d/;
+    // Engineering specific
+    if (courseCode.includes("TE")){
+        return [new CourseInfo({
+            course_name: "Technical Elective",
+            course_code: courseCode,
+            info: "Please refer to degree requirement page for more information. (Click on program title)"
+        })]
+    }
+    else if (courseCode.includes("CSE")){
+        return [new CourseInfo({
+            course_name: "Complementary Studies Elective",
+            course_code: courseCode,
+            info: "Please refer to degree requirement page for more information. (Click on program title)"
+        })]
+    }
+
     if (!hasNumber.test(courseCode)){
         // Handle the exceptions [e.g. NON-MATH]
         if (courseCode == "NON-MATH") {
