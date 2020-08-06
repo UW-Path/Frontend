@@ -1,8 +1,6 @@
 import axios from "axios";
 import {CourseInfo, CourseRequirement} from '../../models/courseModel'
 
-const backend_api = "http://0.0.0.0:8000";
-
 // Fetch course information of a single course code (eg MATH 239 or PHYS 300-)
 async function parseRequirement(courseCode) {
     let hasNumber = /\d/;
@@ -21,7 +19,7 @@ async function parseRequirement(courseCode) {
             })]
         }
         else{
-            const response = await axios.get(backend_api + "/api/course-info/filter", {
+            const response = await axios.get("/api/course-info/filter", {
                 params: {
                     start: 0,
                     end: 499,
@@ -39,7 +37,7 @@ async function parseRequirement(courseCode) {
             split = courseCode.split(" ");
             
             if(split[1] === "LAB"){
-                response = await axios.get(backend_api + "/api/course-info/filter", {
+                response = await axios.get("/api/course-info/filter", {
                     params: {
                         start: Number(split[2].slice(0, -1)),
                         end: Number(split[2].slice(0, -1)) + 99,
@@ -48,7 +46,7 @@ async function parseRequirement(courseCode) {
                 })
             }
             else{
-                response = await axios.get(backend_api + "/api/course-info/filter", {
+                response = await axios.get("/api/course-info/filter", {
                     params: {
                         start: Number(split[1].slice(0, -1)),
                         end: Number(split[1].slice(0, -1)) + 99,
@@ -60,7 +58,7 @@ async function parseRequirement(courseCode) {
         } else if (courseCode.split("-").length === 2 && courseCode.split("-")[0].length > 0 && courseCode.split("-")[1].length > 0) {
             // Handles range case, eg CS 440-CS 498
             split = courseCode.split("-");
-            const response = await axios.get(backend_api + "/api/course-info/filter", {
+            const response = await axios.get("/api/course-info/filter", {
                 params: {
                     start: Number(split[0].split(" ")[1]),
                     end: Number(split[1].split(" ")[1]),
@@ -70,7 +68,7 @@ async function parseRequirement(courseCode) {
             return response.data.map(element => { return new CourseInfo(element) });
         } else {
             // Handles normal course case, ege MATH 239
-            let response = await axios.get(backend_api + "/api/course-info/get", {
+            const response = await axios.get("/api/course-info/get", {
                 params: {
                     pk: courseCode,
                 }
@@ -102,7 +100,7 @@ const actions = {
         if (getters.chosenMajor === "No major") {
             return
         }
-        const response = await axios.get(backend_api + "/api/requirements/requirements", {
+        const response = await axios.get("/api/requirements/requirements", {
             params: {
                 major: getters.chosenMajor[0],
                 option: getters.chosenSpecialization.length !== 0 ? getters.chosenSpecialization[0] : "",
