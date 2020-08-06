@@ -5,16 +5,16 @@ const backend_api = "http://localhost:8000"
 const state = {
     //these are the list that are available to be chosen
     majors: [],
-    minors: ["minor1", "minor2", "minor3", "remove"],
-    specialization: ["options1", "options2", "options3", "remove"],
-    //array because there exists multiple major/minor/specs that can be chosen
+    minors: [],
+    specialization: [],
+    //array to support the possibility of having multiple major/minor/specs that can be chosen
     chosenMajor: [],
     chosenMinor: [],
     chosenSpecialization: []
 };
 
 const getters = {
-    allMajors: (state) => state.majors.map(e => {return e["program_name"]}),
+    allMajors: (state) => {return state.majors },
     allMinors: (state) => { return state.minors },  
     allSpecializations: (state) => { return state.specialization },
     chosenMajor: (state) => { return state.chosenMajor },
@@ -23,9 +23,20 @@ const getters = {
     //finds the major that maches to a give program name
     findMajorByProgram: (state) => {
         return (program) => {
-            return state.majors.find(obj => { return program == obj["program_name"]})["major_name"]
+            return state.majors.find(obj => { return program == obj.program_name})
+        } 
+    },
+    findMinorByProgram: (state) => {
+        return (program) => {
+            return state.minors.find(obj => { return program == obj.program_name})
+        } 
+    },
+    findOptionByProgram: (state) => {
+        return (program) => {
+            return state.specialization.find(obj => { return program == obj.program_name})
         } 
     }
+
 };
 
 const actions = {
@@ -47,27 +58,10 @@ const mutations = {
         state.majors = majors
     },
     setMinor: (state, minors) => {
-
-        state.minors = minors.map(e => {
-            return e.program_name
-        })
+        state.minors = minors
     },
     setSpecialization: (state, specialization) => {
-        state.specialization = specialization.map(e => {
-            return e.program_name
-        })
-    },
-    setChosenMajor: (state, newMajor) => {
-        state.chosenMajor = []
-        state.chosenMajor.push(newMajor)
-    },
-    setChosenMinor: (state, newMinor) => {
-        state.chosenMinor = []
-        state.chosenMinor.push(newMinor) 
-    },
-    setChosenSpecialization: (state, chosenSpecialization) => {
-        state.chosenSpecialization = []
-        state.chosenSpecialization.push(chosenSpecialization)
+        state.specialization = specialization
     }
 };
 

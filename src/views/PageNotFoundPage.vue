@@ -10,11 +10,6 @@
 </template>
 
 <script>
-export default {
-    name: "PageNotFoundPage",
-    components: {
-    },
-}
 </script>
 
 <style scoped>

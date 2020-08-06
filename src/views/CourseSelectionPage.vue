@@ -8,10 +8,10 @@
                 <tab class="primary-tab" title="Course Plan">
                     <v-container class="course-selection-container">
                         <v-row class="main-row">
-                            <v-col class="side-bar" cols="12" lg="2" md="2" sm="3">
+                            <v-col class="side-bar" lg="2" md="3" sm="3">
                                 <side-bar/>
                             </v-col>
-                            <v-col class="main-panel" cols="12" lg="10" md="10" sm="9">
+                            <v-col class="main-panel" lg="10" md="9" sm="9">
                                 <course-plan/>
                             </v-col>
                         </v-row>
@@ -46,7 +46,6 @@ export default {
         ProgramSelectionBar,
         SideBar,
         ProgramChecklist,
-        //ProgramChecklistSideBar,
         Tabs,
         Tab
     },
@@ -66,7 +65,8 @@ export default {
 }
 
 .main-row {
-    height: 90%;
+    margin-top: 1rem;
+    height: 90%
 }
 
 .main-panel {
