@@ -1,6 +1,5 @@
 import axios from "axios";
 //need to move the routes to the configs
-const backend_api = "http://localhost:8000"
 
 const state = {
     //these are the list that are available to be chosen
@@ -30,7 +29,7 @@ const getters = {
 
 const actions = {
     fetchMajors({ commit }) {
-        axios.get(backend_api + "/api/requirements/unique_major")
+        axios.get("/api/requirements/unique_major")
         .then(response => {
             console.log("majors list", response.data)
             commit('setMajor', response.data["Major"]);
