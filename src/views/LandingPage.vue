@@ -94,14 +94,17 @@ export default {
 }
 
 .title {
+    color: ghostwhite;
     margin-bottom: 1rem;
 }
 
 .caption {
+    color: ghostwhite;
     margin-bottom: 1rem;
 }
 
 .centerpiece-container {
+    margin-left: 20%;
     margin: 2%;
 }
 
@@ -120,6 +123,7 @@ export default {
 }
 
 .findprogram {
+    color: ghostwhite;
     margin-top: 1rem;
     height: 3rem;
 }
@@ -139,8 +143,10 @@ export default {
     margin-bottom: 0.5rem;
 }
 .background { 
-  background: url(../assets/cover.png) no-repeat center center fixed !important;
-  background-size: cover;
+  background: url(../assets/cover.png)  !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: cover !important;
   height: 100%;
   overflow: hidden;
 }

@@ -4,6 +4,22 @@ import {CourseInfo, CourseRequirement} from '../../models/courseModel'
 // Fetch course information of a single course code (eg MATH 239 or PHYS 300-)
 async function parseRequirement(courseCode) {
     let hasNumber = /\d/;
+    // Engineering specific
+    if (courseCode.includes("TE")){
+        return [new CourseInfo({
+            course_name: "Technical Elective",
+            course_code: courseCode,
+            info: "Please refer to degree requirement page for more information. (Click on program title)"
+        })]
+    }
+    else if (courseCode.includes("CSE")){
+        return [new CourseInfo({
+            course_name: "Complementary Studies Elective",
+            course_code: courseCode,
+            info: "Please refer to degree requirement page for more information. (Click on program title)"
+        })]
+    }
+
     if (!hasNumber.test(courseCode)){
         // Handle the exceptions [e.g. NON-MATH]
         if (courseCode === "NON-MATH") {
@@ -77,10 +93,29 @@ async function parseRequirement(courseCode) {
                 return null
             })
             //Laurier queries are unavailable, so this is necessary
-            if (response == null) return [ new CourseInfo({
-                course_code: courseCode,
-                info: "Information about this course is unavailable. Please"
-            }) ]
+            if (response == null){ 
+                if (courseCode.includes("W")){
+                    //laurier couse
+                    return [ new CourseInfo({ course_code: courseCode, 
+                                                info: "Information about this course is unavailable. Please refer to https://loris.wlu.ca/register/ssb/registration for more details.",
+                                                credit: 'N/A', 
+                                                prereqs: 'N/A',
+                                                antireqs: 'N/A',
+                                                coreqs: 'N/A',
+                                                online: false
+                                            })]
+                }
+                else{
+                    return [ new CourseInfo({ course_code: courseCode, info: "Information about this course is unavailable.",
+                                    credit: 'N/A', 
+                                    prereqs: 'N/A',
+                                    antireqs: 'N/A',
+                                    coreqs: 'N/A',
+                                    online: false
+                                }),
+                                ]
+                }
+            }
             return [new CourseInfo(response.data)];
         }
     }
