@@ -40,6 +40,8 @@ jobs:
       - deploy:
           name: Push application Docker image
           command: |
-            docker login -u ${docker_user} -p ${docker_pass}
-            docker tag frontend "uwpath/frontend:${CIRCLE_SHA1:0:8}"
-            docker push "uwpath/frontend:${CIRCLE_SHA1:0:8}"
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              docker login -u ${docker_user} -p ${docker_pass}
+              docker tag frontend "uwpath/frontend:${CIRCLE_SHA1:0:8}"
+              docker push "uwpath/frontend:${CIRCLE_SHA1:0:8}"
+            fi
