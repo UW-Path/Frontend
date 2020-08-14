@@ -5,7 +5,7 @@
         <v-toolbar-title class="program-titles spec"  v-for="(spec) in chosenSpecialization" :key="spec">{{ spec }}</v-toolbar-title>
         <ProgramSelectionModal/>
         <v-spacer></v-spacer>
-        <v-btn text color="white"> Contact Us </v-btn>
+        <v-btn v-on:click="onContactPressed" text color="white"> Contact Us </v-btn>
     </v-app-bar>
 </template>
 
@@ -29,10 +29,12 @@ export default {
         ...mapMutations(["setChosenMajor", "setChosenMinor", "setChosenSpecialization"]),
         toggleSelection: function () {
             this.programSelectionHidden = !this.programSelectionHidden
+        },
+        onContactPressed() {
+            this.$router.push('/Contact')
         }
     },
-    computed: mapGetters(["allMajors", "allMinors", "allSpecializations", 
-                            "chosenMajor", "chosenMinor", "chosenSpecialization"]),
+    computed: mapGetters(["allMajors", "allMinors", "allSpecializations", "chosenMajor", "chosenMinor", "chosenSpecialization"]),
 }
 </script>
 

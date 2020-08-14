@@ -138,9 +138,14 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
         if (numMatchedCourses >= requirement.number_of_courses) {
             requirement.prereqs_met = true;
             usedCourses.addAll(matchedCourses);
+            requirements.number_of_prereqs_met = requirements.number_of_courses;
         }
     }
     for (var requirement of requirements) {
+        if (requirement.prereqs_met) {
+            parsed_requirements.push(new CourseRequirement(requirement));
+            continue;
+        }
         var required_courses = requirement.course_codes.split(/,\s|\sor\s/)
         requirement.number_of_prereqs_met = 0;
         var matchedCourses = [];
@@ -251,9 +256,8 @@ const mutations = {
             }
         }
     },
-    //WIP
-    addCourse: (state, termIndex) => {
-        void termIndex
+    addCourse: (state, { newRequirement, termIndex} ) => {
+        state.table[termIndex].courses.push(newRequirement)
     },
     validateCourses : (state) => {
         let listOfCoursesTaken = [];

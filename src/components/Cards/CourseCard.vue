@@ -5,7 +5,7 @@
         <v-list-item-content>
           <div class="overline mb-2">
             <v-chip v-if="this.courseData.major.length > 0" color="light-blue" label text-color="white" class="chip"> 
-                Major
+              Major
             </v-chip>
             <v-chip v-if="this.courseData.minor.length > 0" color="light-green" label text-color="white" class="chip"> 
               Minor
@@ -15,6 +15,9 @@
             </v-chip>
             <v-chip v-if="this.courseData.course_choices.length > 1" color="red" label text-color="white" class="chip"> 
               Choice
+            </v-chip>
+            <v-chip v-if="this.courseData.user_selected" color="orange" label text-color="white" class="chip">
+              Added
             </v-chip>
             <v-spacer></v-spacer>
             <v-btn icon class="delete-btn" @click="deleteCourse()" v-if="!onSelectionBar"></v-btn>

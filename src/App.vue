@@ -1,5 +1,4 @@
 <template>
-
     <v-app id="app" style="overflow-y: hidden;">
       <div id="nav">
         <router-link to="/">Home</router-link> |
@@ -10,6 +9,20 @@
       <!-- <v-footer></v-footer> -->
     </v-app>
 </template>
+
+<script>
+import { mapActions } from "vuex";
+
+export default {
+  name: 'App',
+  mounted() {
+    this.fetchAllCourses()
+  },
+   methods: {
+      ...mapActions(["fetchAllCourses"]),
+   }
+}
+</script>
 
 <style lang="scss">
 #app {

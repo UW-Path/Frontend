@@ -1,4 +1,5 @@
 import axios from "axios";
+import TrieSearch from "trie-search"
 import {CourseInfo, CourseRequirement} from '../../models/courseModel'
 
 const backend_api = "http://127.0.0.1:8000"
@@ -90,14 +91,47 @@ async function parseRequirement(courseCode) {
 
 const state = {
     requirements: [],
+    allCourses: new TrieSearch(['course_code', 'course_number'], {
+        idFieldOrFunction: function(course) {
+            return course.course_id + course.course_code;
+        }
+    }),
 };
 
 const getters = {
     requirements: (state) => state.requirements,
+    allCourses: (state) => state.allCourses,
 };
 
 const actions = {
-    //fetching requirements simply adds requirements to the requirement column. To delete the requirements, one would need to call the functions in mutation
+    // Fetch a list of all available courses
+    async fetchAllCourses({ commit }) {
+        var response = await axios.get(backend_api + "/api/course-info/filter", {
+            params: {
+                start: 0,
+                end: 1000,
+                code: "none",
+            }
+        })
+        .catch(err => {
+            console.log(err)
+        })
+        // Shuffle the course list
+        var currentIndex = response.data.length;
+        var temporaryValue, randomIndex;
+        while (0 !== currentIndex) {
+            // Pick a remaining element...
+            randomIndex = Math.floor(Math.random() * currentIndex);
+            currentIndex -= 1;
+            // And swap it with the current element.
+            temporaryValue = response.data[currentIndex];
+            response.data[currentIndex] = response.data[randomIndex];
+            response.data[randomIndex] = temporaryValue;
+        }
+
+        commit('setAllCourses', response.data);
+    },
+    // Fetching requirements simply adds requirements to the requirement column. To delete the requirements, one would need to call the functions in mutation
     async fetchRequirements({ commit, getters }, options) {
         if (getters.chosenMajor === "No major") {
             return
@@ -223,6 +257,9 @@ const actions = {
 const mutations = {
     setRequirements: (state, requirements) => {
         state.requirements = requirements
+    },
+    setAllCourses: (state, allCourses) => {
+        state.allCourses.addAll(allCourses)
     },
     addRequirement: (state, newRequirement) => {
         for (let req of state.requirements) {

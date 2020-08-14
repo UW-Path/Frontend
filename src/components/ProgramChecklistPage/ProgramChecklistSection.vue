@@ -64,4 +64,32 @@ export default {
 .requirement-checkbox {
     margin: 0;
 }
+
+.modal-actions {
+    position: absolute;
+    right: 0px;
+}
+
+.modal-course-list-row {
+    height: 100%;
+    width: 100%;
+}
+
+.modal-course-list-container {
+    min-height: 330px;
+    margin: 0px;
+}
+
+.modal-search {
+    width: 90%;
+}
+
+.modal-course-list {
+    margin-top: 1rem;
+    /* margin-bottom: 1rem; */
+    width: 90%;
+    max-height: 250px;
+    /* height:auto; */
+    overflow-y: auto;
+}
 </style>
