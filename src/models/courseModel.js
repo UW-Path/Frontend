@@ -56,6 +56,6 @@ export class CourseRequirement {
     }
 
     isSelected() {
-        return this.selected_course.course_code != "WAITING"
+        return this.selected_course && this.selected_course.course_code != "WAITING"
     }
 }

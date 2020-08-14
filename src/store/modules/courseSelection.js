@@ -137,6 +137,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
         }
         if (numMatchedCourses >= requirement.number_of_courses) {
             requirement.prereqs_met = true;
+            requirement.number_of_prereqs_met = requirement.number_of_courses;
             usedCourses.addAll(matchedCourses);
             requirements.number_of_prereqs_met = requirements.number_of_courses;
         }
@@ -155,7 +156,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
                 let possibleMatches = selectedCourses.get([course.split(" ")[0], course.split(" ")[1][0]], TrieSearch.UNION_REDUCER)
                 for (let match of possibleMatches) {
                     if (usedCourses.get(match.selected_course.course_code).length === 0) {
-                        matchedCourses.push(match);requirement.number_of_prereqs_met++;
+                        matchedCourses.push(match);
                         requirement.number_of_prereqs_met++;
                         if (matchedCourses.length >= requirement.number_of_courses) break;
                     }

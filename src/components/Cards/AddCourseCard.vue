@@ -99,6 +99,8 @@ export default {
       newRequirement.selected_course = addedCourse;
       newRequirement.user_selected = true;
       newRequirement.inRequirementBar = false;
+      newRequirement.number_of_courses = 1;
+      newRequirement.course_choices = [addedCourse]
       this.dialog = false;
       this.addCourse({newRequirement: newRequirement, termIndex: this.termIndex});
       this.validateCourses();
