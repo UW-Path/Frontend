@@ -6,11 +6,9 @@
       <template v-for="(term, termIndex) in getTable">  
         <v-card class="col-sm-3 col-md-2 term-column" :key="termIndex" @mouseenter="termMouseOver(termIndex)" @mouseleave="termMouseExit()">
         <div class="text-h6 term-title">{{ getTermList[termIndex] }}
-
-        <v-btn icon class="delete-btn" small @click="deleteTerm(term)">
-          <v-icon medium class="delete-term-btn" v-if="termHovered == termIndex">mdi-trash-can</v-icon>
-        </v-btn>
-
+          <v-btn icon class="delete-btn" small @click="deleteTerm(term)">
+            <v-icon medium class="delete-term-btn" v-if="termHovered == termIndex">mdi-trash-can</v-icon>
+          </v-btn>
         </div>
         <draggable class="list-group draggable-column" :disabled="editingEnabled" :list="term.courses" group="course" @change="change"> 
           <template v-for="(requirement, courseIndex) in term.courses">
@@ -58,7 +56,7 @@ export default {
     };
   },
   methods: {
-    ...mapMutations(["addTermToTable", "deleteTermFromTable", "addRequirement", "decrementRequirementByID", "validateCourses"]),
+    ...mapMutations(["addTermToTable", "deleteTermFromTable", "addCourseRequirement", "validateCourses", "decrementRequirementID"]),
     termMouseOver(termIndex) {
       this.termHovered = termIndex;
     },
@@ -67,8 +65,8 @@ export default {
     },
     deleteTerm(term) {
       for (let req of term.courses) {
-        if (req.major.length || req.minor.length || req.option.length) 
-          this.addRequirement(req)
+        if (req.major.length || req.minor.length || req.specialization.length) 
+          this.addCourseRequirement(req)
       }
       this.deleteTermFromTable(term)
     },
@@ -79,7 +77,7 @@ export default {
         let changedReq = event.added.element;
         if (changedReq.course_choices.length > 1 && changedReq.inRequirementBar) {
           changedReq.number_of_courses = 1;
-          this.decrementRequirementByID(changedReq.id);
+          this.decrementRequirementID(changedReq.id)
         }
         changedReq.inRequirementBar = false;
     }
@@ -99,10 +97,9 @@ export default {
   }
 
   .main-course-selection-panel {
-    flex-wrap: nowrap;
-    overflow: auto;
-  
-    height: 100%;
+    overflow-x: auto;
+    overflow-y:visible;
+    min-height: 100%;
   }
 
 
@@ -150,7 +147,7 @@ export default {
   }
 
   .draggable-column {
-    height: 90%;
+    min-height: 90%;
     width: 100%;
   }
 

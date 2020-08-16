@@ -1,7 +1,7 @@
 <template>
 <div>
-<v-btn @click="enableDialog()" small><v-icon class="add-major-btn">mdi-plus-circle</v-icon>Add a minor/option</v-btn>
-<v-dialog v-model="dialog" max-width="800">
+<v-btn @click="enableDialog()" small>Add a minor, option, etc. <v-icon>mdi-plus-circle-outline</v-icon></v-btn>
+<v-dialog v-model="dialog" max-width="800" @click:outside="close()">
     <v-card>
         <v-container fluid class="modal-course-list-container" align="center">
             <v-row class="modal-course-list-row" col>
@@ -12,7 +12,7 @@
                 <div class="auto-complete-title"> Major</div> 
                 <v-autocomplete
                     :disabled="inConfirmation"
-                    :items="allMajors"
+                    :items="getMajorList()"
                     v-on:change="selectMajor"
                     dense
                     prepend-inner-icon="mdi-magnify"
@@ -20,7 +20,7 @@
                     hide-details
                     background-color="rgb(196,196,196)"
                     class="autocomplete"
-                    label="Search Major"
+                    :label="majorRequirements.length ? majorRequirements[0].info.program_name : noProgram"
                     height="3rem"
                     color="black"
                 ></v-autocomplete>
@@ -31,7 +31,7 @@
                 <div class="auto-complete-title"> Minor</div> 
                     <v-autocomplete
                         :disabled="inConfirmation"
-                        :items="allMinors"
+                        :items="getMinorList()"
                         v-on:change="selectMinor"
                         dense
                         prepend-inner-icon="mdi-magnify"
@@ -39,7 +39,7 @@
                         hide-details
                         background-color="rgb(196,196,196)"
                         class="autocomplete"
-                        label="Search Minor"
+                        :label="minorRequirements.length ? minorRequirements[0].info.program_name : noProgram"
                         height="3rem"
                         color="black"
                     ></v-autocomplete>
@@ -50,7 +50,7 @@
                     <div class="auto-complete-title"> Joint/Option</div> 
                     <v-autocomplete
                         :disabled="inConfirmation"
-                        :items="allSpecializations"
+                        :items="getSpecList()"
                         v-on:change="selectSpec"
                         dense
                         prepend-inner-icon="mdi-magnify"
@@ -58,7 +58,7 @@
                         hide-details
                         background-color="rgb(196,196,196)"
                         class="autocomplete"
-                        label="Search Specialization"
+                        :label="specRequirements.length ? specRequirements[0].info.program_name : noProgram"
                         height="3rem"
                         color="black"
                     ></v-autocomplete>
@@ -82,8 +82,6 @@
 
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
-// import draggable from 'vuedraggable'
-
 export default {
     components: {
     },
@@ -91,69 +89,88 @@ export default {
         return {
             dialog: false,
             inConfirmation: false,
+            noProgram: "None",
             newMajor: "",
             newMinor: "",
             newSpec: "",
-            searchtext: "",
         }
     },
     name: "ProgramSelectionModal",
     methods: {
         ...mapActions(["fetchRequirements", "fillOutChecklist"]),
-        ...mapMutations(["setChosenMinor", "setChosenMajor", "setChosenSpecialization", "clearTable", "clearCourses", "clearMinorFromTable", "clearOptionTable", "clearMinorFromReq", "clearOptionFromReq"]),
+        ...mapMutations(["clearTable", "clearMinorFromTable", "clearOptionTable", "removeMajor", "removeMinor", "removeOption" ]),
         enableDialog: function() {
             this.dialog = true;
             this.inConfirmation = false;
         },
-        changeMajor: function() {
-            return true
+        select: function() { this.inConfirmation = true; },
+        selectMajor: function (major) { this.newMajor = major },
+        selectMinor: function (minor) { this.newMinor = minor },
+        selectSpec: function (spec) { this.newSpec = spec },
+        getMajorList: function() { 
+            let majList = this.allMajors.map(e => { return e.program_name })
+            return majList
         },
-        select: function() {
-            this.inConfirmation = true;
+        getMinorList: function() { 
+            let minlist = this.allMinors.map(e => { return e.program_name }).concat([this.noProgram])
+            return minlist
         },
-        selectMajor: function (major) {
-            this.newMajor = major
-        },
-        selectMinor: function (minor) {
-            this.newMinor = minor
-        },
-        selectSpec: function (spec) {
-            this.newSpec = spec
+        getSpecList: function() { 
+            let specList = this.allSpecializations.map(e => { return e.program_name }).concat([this.noProgram])
+            return specList
         },
         confirmSelection: function() {
-            this.inConfirmation = false;
-            this.dialog = false
-            //clear the table if a new major is selected
-            if (this.newMajor != "") {
-                this.clearCourses()
+            let changeMajor = this.newMajor != this.noProgram && (!this.majorRequirements.length || this.newMajor != this.majorRequirements[0].info.program_name) ? this.findMajorByProgram(this.newMajor) : undefined
+            let changeMinor = this.newMinor != this.noProgram && (!this.minorRequirements.length || this.newMinor != this.minorRequirements[0].info.program_name) ? this.findMinorByProgram(this.newMinor) : undefined
+            let changeOption = this.newSpec != this.noProgram && (!this.specRequirements.length || this.newSpec != this.specRequirements[0].info.program_name) ? this.findOptionByProgram(this.newSpec) : undefined
+
+            //remove current major/minor/options if none is chosen or if it needs to be changed
+            if (changeMajor || this.newMajor == this.noProgram) {
+                this.removeMajor()
+                this.removeMinor()
+                this.removeOption()
                 this.clearTable()
-                this.setChosenMajor(this.newMajor)
             }
-            if(this.newMinor != "") {
+            if (changeMinor || this.newMinor == this.noProgram) {
+                this.removeMinor()
                 this.clearMinorFromTable()
-                this.clearMinorFromReq()
-                this.setChosenMinor(this.newMinor)
             }
-            if(this.newSpec != "") {
+            if (changeOption || this.newSpec == this.noProgram) {
+                this.removeOption()
                 this.clearOptionTable()
-                this.clearOptionFromReq()
-                this.setChosenSpecialization(this.newSpec)
             }
+
             this.fetchRequirements({
-                addMajor: this.newMajor != "",
-                addMinor: this.newMinor != "",
-                addSpecialization: this.newSpec != ""
+                newMajor: changeMajor,
+                newMinor: changeMinor,
+                newSpecialization: changeOption
+            }).then(e => {
+                void e;
+                this.fillOutChecklist()
             })
+
             this.newMajor = ""
             this.newMinor = ""
             this.newSpec = ""
-            this.fillOutChecklist()
+            this.dialog = false
+            this.inConfirmation = false;
+           
+            
         },
         cancelSelection: function() {
             this.inConfirmation = false;
         },
+        close() {
+            this.newMajor = ""
+            this.newMinor = ""
+            this.newSpec = ""
+            this.dialog = false
+            this.inConfirmation = false
+        }
     },
-    computed: mapGetters(["allMajors", "allMinors", "allSpecializations", "chosenMajor", "chosenMinor", "chosenSpecialization"]),
+    computed: mapGetters(["allMajors", "allMinors", "allSpecializations", 
+                            "findMajorByProgram", "findMinorByProgram", "findOptionByProgram", 
+                            "majorRequirements", "minorRequirements", "specRequirements"]),
 }
 </script>
 

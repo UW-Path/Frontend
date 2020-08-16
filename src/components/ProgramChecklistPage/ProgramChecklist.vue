@@ -69,7 +69,7 @@ export default {
     width: 100%;
     height: 100%;
     max-height: 96%;
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .requirements-list-item {

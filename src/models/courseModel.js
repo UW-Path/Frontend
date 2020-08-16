@@ -5,7 +5,9 @@ var requirementId = 0
  */
 export class CourseInfo {
     constructor(data) {
-        // console.log("data", data)
+        //metadata
+        
+        //data 
         this.antireqs = data && data.antireqs ? data.antireqs.split(",") : []
         this.coreqs = data && data.coreqs ? data.coreqs.split(","): []
         this.course_abbr = data && data.course_abbr ? data.course_abbr : ""
@@ -19,11 +21,16 @@ export class CourseInfo {
         this.online = data && data.online ? data.online : false
         this.prereqs = data && data.prereqs ? data.prereqs.split(",") : []
         this.selected = data && data.selected ? data.selected : false
+        this.link = data && data.link ? data.link : ""
+        //the year that this is in is based off of the course code is other
+        if (this.course_code.split(" ").length == 1) this.year = -1
+        else if ( this.course_code.split(" ")[1][0] > 4 || this.course_code.split(" ")[1][0] < 0) this.year = -1
+        else this.year = parseInt(this.course_code.split(" ")[1][0])
     }
 }
 
 /**
- * One course requirement, may contain multiple course informations
+ * One course requirement, may contain information of multiple courses
  */
 export class CourseRequirement {
     constructor(data) {
@@ -32,21 +39,22 @@ export class CourseRequirement {
         this.course_codes = this.course_choices.map(choice => {
             return choice.course_code
         })
-        //if there only exist one course in the requirement, then it is not a choice anymore
-        this.selected_course = data && (data.course_choices.length == 1 || data.selected_course) ? data.course_choices[0] : {course_code: "WAITING", course_number: 42}
+        if (data && data.course_choices.length == 1) this.selected_course = data.course_choices[0]
+        else if (data && data.selected_course) this.selected_course = data.selected_course 
+        else this.selected_course = {course_code: "WAITING", course_number: 42}
 
-        //the majors or minors that this requirement is part of
         this.major = data && data.major ? data.major : []
         this.minor = data && data.minor ? data.minor : []
         this.specialization = data && data.specialization ? data.specialization : []
-        this.overriden = data && data.overriden ? data.overriden : false
+        this.overridden = data && data.overridden ? data.overridden : false
         this.id = data && data.id ? data.id : requirementId++
-        //this shows that the courseRequimrent is currently in the requirement bar
         this.inRequirementBar = data && data.inRequirementBar ?  data.inRequirementBar  : true
         this.prereqs_met = data && data.prereqs_met ? data.prereqs_met : false
+        // the year is x if all course choices that are in the requirement are in the same year, otherwise, it is -1 which is other
+        this.year = this.course_choices.length ? this.course_choices[0].year : -1
+        for(let course of this.course_choices) if (course.year != this.year) this.year = -1
     }
 
-    //this selects the course 
     deselect() {
         if (this.course_choices.length == 1) return
         this.selected_course = {course_code: "WAITING", course_number: 42}
@@ -54,5 +62,9 @@ export class CourseRequirement {
 
     isSelected() {
         return this.selected_course.course_code != "WAITING"
+    }
+
+    toggleOverride() {
+        this.overridden = !this.overridden;
     }
 }

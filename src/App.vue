@@ -1,5 +1,4 @@
 <template>
-
     <v-app id="app" style="overflow-y: hidden;">
       <div id="nav">
         <router-link to="/">Home</router-link> |
@@ -7,13 +6,27 @@
         <router-link to="/landing">Landing</router-link>
       </div>
       <router-view/>
-      <!-- <v-footer></v-footer> -->
     </v-app>
 </template>
 
+
+<script>
+import {  mapActions } from "vuex";
+export default {
+  methods: {
+  ...mapActions(["fetchMajors"]),
+  },
+  created() {
+      this.fetchMajors();
+  },
+}
+
+
+</script>
+
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Avenir, Helvetica , Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

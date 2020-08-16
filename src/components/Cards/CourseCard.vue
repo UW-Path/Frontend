@@ -3,24 +3,31 @@
     <template v-if="this.courseData.selected_course && this.courseData.selected_course.course_code !== 'WAITING'">
       <v-list-item three-line>
         <v-list-item-content>
-          <div class="overline mb-1">
-            <v-chip v-if="this.courseData.major.length > 0" color="light-blue" label text-color="white" class="chip"> 
+          <div class="overline mb-4">
+            <div class="notif">
+            <v-chip v-if="this.courseData.major.length > 0" color="light-blue" label x-small text-color="white" class="chip"> 
                 Major
             </v-chip>
             <v-chip v-if="this.courseData.minor.length > 0" color="light-green" label text-color="white" class="chip"> 
               Minor
             </v-chip>
-            <v-chip v-if="this.courseData.specialization.length > 0" color="light-green" label text-color="white" class="chip"> 
+            <v-chip v-if="this.courseData.specialization.length > 0" color="rgb(0,204,204)" label x-small text-color="white" class="chip"> 
               Option
             </v-chip>
-            <v-chip v-if="this.courseData.course_choices.length > 1" color="red" label text-color="white" class="chip"> 
+            <v-chip v-if="this.courseData.course_choices.length > 1" color="grey" label x-small text-color="white" class="chip"> 
               Choice
             </v-chip>
+            <v-chip v-if="this.courseData.overridden" color="red" label x-small text-color="white" class="chip"> 
+              Overridden
+            </v-chip>
+            </div>
             <v-spacer></v-spacer>
             <v-btn icon class="delete-btn" @click="deleteCourse()" v-if="!onSelectionBar"></v-btn>
           </div>
-          <v-list-item-title style="font-size: 2.5vh;" v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met && !courseData.inRequirementBar, course_card_prereqs_failed: !courseData.prereqs_met && !courseData.inRequirementBar}">{{ courseData.selected_course.course_code }}</v-list-item-title>
-          <v-list-item-subtitle style="font-size: 1.5vh;">{{ courseData.selected_course.course_name }}</v-list-item-subtitle>
+          <v-list-item-title class="headline mb-1" v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met && !courseData.inRequirementBar || courseData.overridden, course_card_prereqs_failed: !courseData.prereqs_met && !courseData.inRequirementBar && !courseData.overridden}">
+            {{ courseData.selected_course.course_code }}
+          </v-list-item-title>
+          <v-list-item-subtitle>{{ courseData.selected_course.course_name }}</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
     </template>
@@ -47,7 +54,6 @@
         </v-list-item-content>
       </v-list-item>
     </template>
-      <!-- popup when we need course selection -->
   </v-card>
 </template>
 
@@ -67,16 +73,12 @@ export default {
     }
   },
   methods: {
-    ...mapMutations([ "removeRequirementFromTable", "addRequirement"]),
-    getOpacity: function() {
-        return 0
-    },
+    ...mapMutations([ "removeRequirementFromTable", "addCourseRequirement", "sortAndCollapseRequirements"]),
     deleteCourse: function() {
-      if (this.courseData.major.length || this.courseData.minor.length || this.courseData.option.length) {
-        this.addRequirement(this.courseData)
-      }
+      if (this.courseData.major.length || this.courseData.minor.length || this.courseData.option.length) this.addCourseRequirement(this.courseData)
       this.courseData.inRequirementBar = true
       this.removeRequirementFromTable(this.courseData)
+      this.sortAndCollapseRequirements()
     },
     isSelected: function(courseCode) {
         if (!this.courseData.selected_course) return false
@@ -129,12 +131,15 @@ export default {
   color: red;
 }
 
+.notif {
+  max-width: 80%;
+}
+
 .course-card-font{
   font-size:5.5 rem !important;
 }
 
 .course-card{
   max-height: 6em;
-
 }
 </style>

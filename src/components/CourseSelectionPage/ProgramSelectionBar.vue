@@ -1,8 +1,14 @@
 <template>
     <v-app-bar color="#4A75AD">
-        <v-toolbar-title class="program-titles" v-for="(major) in chosenMajor" :key="major">{{ major }}</v-toolbar-title>
-        <v-toolbar-title class="program-titles minor"    v-for="(minor) in chosenMinor" :key="minor">{{ minor }}</v-toolbar-title>
-        <v-toolbar-title class="program-titles spec"  v-for="(spec) in chosenSpecialization" :key="spec">{{ spec }}</v-toolbar-title>
+        <v-toolbar-title class="program-titles" v-for="(major,index) in majorRequirements" :key="index" >
+            <a v-bind:href="major.info.link" target="_blank">{{major.info.program_name }}</a>
+        </v-toolbar-title>
+        <v-toolbar-title class="program-titles" v-for="(minor, index) in minorRequirements" :key="index + majorRequirements.length" v-bind:href="minor.link">
+            <a v-bind:href="minor.info.link" target="_blank">{{ minor.info.program_name  }}</a>
+        </v-toolbar-title>
+        <v-toolbar-title class="program-titles"  v-for="(spec,index) in specRequirements" :key="index + majorRequirements.length + minorRequirements.length" v-bind:href="spec.link"> 
+            <a v-bind:href="spec.info.link" target="_blank">{{ spec.info.program_name  }}</a>
+        </v-toolbar-title>
         <ProgramSelectionModal/>
         <v-spacer></v-spacer>
         <v-btn text color="white"> Contact Us </v-btn>
@@ -12,27 +18,13 @@
 
 <script>
 import ProgramSelectionModal from "../Modals/ProgramSelectionModal"
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters } from "vuex";
 export default {
     name: "ProgramSelectionBar",
-    data: function () {
-        return {
-            programSelectionHidden: true
-        }
-    },
     components: {
         ProgramSelectionModal
     },
-    props: {
-    },
-    methods: {
-        ...mapMutations(["setChosenMajor", "setChosenMinor", "setChosenSpecialization"]),
-        toggleSelection: function () {
-            this.programSelectionHidden = !this.programSelectionHidden
-        }
-    },
-    computed: mapGetters(["allMajors", "allMinors", "allSpecializations", 
-                            "chosenMajor", "chosenMinor", "chosenSpecialization"]),
+    computed: mapGetters(["majorRequirements", "minorRequirements", "specRequirements"]),
 }
 </script>
 
@@ -42,6 +34,16 @@ export default {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
     color:ghostwhite; 
+}
+
+a {
+    color: black !important;
+    text-decoration: none;
+}
+
+a:hover {
+    color:grey;
+    cursor: pointer;
 }
 
 .minor{
