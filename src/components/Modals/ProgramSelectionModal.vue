@@ -224,4 +224,11 @@ export default {
     text-align: left;
     color: rgb(140, 140, 140)
 }
+
+.add-major-btn{
+    margin-right: 0.3em;
+    color: #5C8CE9 !important;
+}
+
+
 </style>

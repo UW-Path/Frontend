@@ -2,14 +2,30 @@ import axios from "axios";
 import {CourseInfo, CourseRequirement} from '../../models/courseModel'
 import {MajorRequirement, MinorRequirement, OptionRequirement } from '../../models/ProgramModel'
 
-const backend_api = "http://127.0.0.1:8000"
+const backend_api = "http://0.0.0.0:8000";
 
 // Fetch course information of a single course code (eg MATH 239 or PHYS 300-)
 async function parseRequirement(courseCode) {
     let hasNumber = /\d/;
+    // Engineering specific
+    if (courseCode.includes("TE")){
+        return [new CourseInfo({
+            course_name: "Technical Elective",
+            course_code: courseCode,
+            info: "Please refer to degree requirement page for more information. (Click on program title)"
+        })]
+    }
+    else if (courseCode.includes("CSE")){
+        return [new CourseInfo({
+            course_name: "Complementary Studies Elective",
+            course_code: courseCode,
+            info: "Please refer to degree requirement page for more information. (Click on program title)"
+        })]
+    }
+
     if (!hasNumber.test(courseCode)){
         // Handle the exceptions [e.g. NON-MATH]
-        if (courseCode == "NON-MATH") {
+        if (courseCode === "NON-MATH") {
             return [new CourseInfo({
                 course_name: "Course not offered by the Faculty of Math",
                 course_code: "NON-MATH"
@@ -28,7 +44,7 @@ async function parseRequirement(courseCode) {
                     end: 499,
                     code: courseCode,
                 }
-            })
+            });
             return response.data.map(element => { return new CourseInfo(element) });
         }
     }
@@ -67,7 +83,7 @@ async function parseRequirement(courseCode) {
                     end: Number(split[1].split(" ")[1]),
                     code: split[0].split(" ")[0],
                 }
-            })
+            });
             return response.data.map(element => { return new CourseInfo(element) });
         } else {
             // Handles normal course case, ege MATH 239
@@ -80,10 +96,29 @@ async function parseRequirement(courseCode) {
                 return null
             })
             //Laurier queries are unavailable, so this is necessary
-            if (response == null) return [ new CourseInfo({
-                course_code: courseCode,
-                info: "Information about this course is unavailable. Please"
-            }) ]
+            if (response == null){ 
+                if (courseCode.includes("W")){
+                    //laurier couse
+                    return [ new CourseInfo({ course_code: courseCode, 
+                                                info: "Information about this course is unavailable. Please refer to https://loris.wlu.ca/register/ssb/registration for more details.",
+                                                credit: 'N/A', 
+                                                prereqs: 'N/A',
+                                                antireqs: 'N/A',
+                                                coreqs: 'N/A',
+                                                online: false
+                                            })]
+                }
+                else{
+                    return [ new CourseInfo({ course_code: courseCode, info: "Information about this course is unavailable.",
+                                    credit: 'N/A', 
+                                    prereqs: 'N/A',
+                                    antireqs: 'N/A',
+                                    coreqs: 'N/A',
+                                    online: false
+                                }),
+                                ]
+                }
+            }
             return [new CourseInfo(response.data)];
         }
     }

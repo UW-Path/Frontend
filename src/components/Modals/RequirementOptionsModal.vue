@@ -50,8 +50,8 @@
                             <v-card-subtitle class="course-info-subheading">
                                     Credits: {{ selectedCourse.credit }} | ID: {{ selectedCourse.course_id }} | <a style="text-decoration:none" target="_blank" :href="'https://uwflow.com/course/' + selectedCourse.course_code.replace(/\s/g, '').toLowerCase()">UWFlow link</a>
                             </v-card-subtitle>
-
-                            <v-card-text>{{ selectedCourse.info + (selectedCourse.offering === "" ? "" :  " Offered in: " + selectedCourse.offering.slice(0,-1) + ".") + (selectedCourse.online ? " Offered Online." : "")}}</v-card-text>
+                            
+                            <v-card-text>{{ selectedCourse.info + (selectedCourse.offering == "" ? "" :  " Offered in: " + selectedCourse.offering.slice(0,-1) + ". ") + (selectedCourse.online ? "Also offered online." : "")}}</v-card-text>
                             <v-card-text class="course-description-text">{{ "Credits: " + selectedCourse.credit }}</v-card-text>
                             <v-card-text class="course-description-text" v-if="selectedCourse.prereqs !== ''">{{ "Prerequisites: " + selectedCourse.prereqs }}</v-card-text>
                             <v-card-text class="course-description-text" v-if="selectedCourse.antireqs !== ''">{{ "Antirequisites: " + selectedCourse.antireqs }}</v-card-text>

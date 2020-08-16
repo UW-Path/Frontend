@@ -18,7 +18,7 @@ export class CourseInfo {
         this.credit = data && data.credit ? Number(data.credit) : -1
         this.info = data && data.info ? data.info : ""
         this.offering = data && data.offering ? data.offering.split(",") : []
-        this.online = data && data.online ? data.online : true
+        this.online = data && data.online ? data.online : false
         this.prereqs = data && data.prereqs ? data.prereqs.split(",") : []
         this.selected = data && data.selected ? data.selected : false
         this.link = data && data.link ? data.link : ""

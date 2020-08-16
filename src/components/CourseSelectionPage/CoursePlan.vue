@@ -102,6 +102,7 @@ export default {
     min-height: 100%;
   }
 
+
   .course-plan-container{
     display: flex;
     flex-flow: column;
@@ -114,7 +115,7 @@ export default {
   }
 
   .term-column {
-    background-color: lightgray;
+    background-color: whitesmoke;
   }
 
   .main-drag {
@@ -149,4 +150,5 @@ export default {
     min-height: 90%;
     width: 100%;
   }
+
 </style>
