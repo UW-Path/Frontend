@@ -44,6 +44,7 @@ a {
 a:hover {
     color:grey;
     cursor: pointer;
+}
 
 .minor{
     font-size:1.1em;

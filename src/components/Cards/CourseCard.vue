@@ -133,6 +133,7 @@ export default {
 
 .notif {
   max-width: 80%;
+}
 
 .course-card-font{
   font-size:5.5 rem !important;
