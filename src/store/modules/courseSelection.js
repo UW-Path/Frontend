@@ -166,7 +166,7 @@ const actions = {
     async export({ state }, options) {
         let course_table = getCoursesTable();
         if (options.PDF) {
-            axios.get("http://0.0.0.0:8000/api/requirements/export", {
+            axios.get("http://127.0.0.1:8000/api/requirements/export", {
                 params: {
                     table: course_table,
                     termList : state.termList
@@ -181,7 +181,7 @@ const actions = {
                 );
             });
         } else if (options.XLS) {
-            axios.get("http://0.0.0.0:8000/api/requirements/export", {
+            axios.get("http://127.0.0.1:8000/api/requirements/export", {
                 params: {
                     table: course_table,
                     termList : state.termList
@@ -189,6 +189,7 @@ const actions = {
             }, {
                 responseType: 'blob'
             }).then((response) => {
+                console.log(response.data)
                 download(
                     response.data,
                     'uwpath-schedule.xls',
