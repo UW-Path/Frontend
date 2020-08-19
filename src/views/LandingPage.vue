@@ -10,7 +10,7 @@
                     <div class="text-h5 caption" >Plan your degree ahead</div>
                     <v-autocomplete
                         :disabled="inConfirmation"
-                        :items="allMajors"
+                        :items="allMajors.map(e => { return e.program_name })"
                         v-on:change="changeMajor"
                         dense
                         prepend-inner-icon="mdi-magnify"
@@ -38,47 +38,38 @@
 import { mapGetters, mapActions, mapMutations } from "vuex";
 export default {
     name: "Home",
-    components: {
-    },
     data() {
         return {
             inConfirmation: false,
-            selectedProgram: ""
+            selectedMajor: ""
         }
     },
     methods: {
-        ...mapActions(["fetchMajors", "fetchRequirements"]),
-        ...mapMutations(["setChosenMajor", "clearTable", "clearCourses"]),
+        ...mapActions(["fetchRequirements"]),
+        ...mapMutations(["clearTable", "removeMajor", "removeMinor", "removeOption" ]),
         changeMajor(programName) {
-            this.selectedProgram = programName
-            if (this.chosenMajor.length > 0) this.inConfirmation = true
+            this.selectedMajor = programName
+            if (this.majorRequirements.length > 0) this.inConfirmation = true
             else this.confirmSelection()
         },
         findProgram() {
-            //WIP
             console.log("find program clicked: WIP")
         },
         confirmSelection() {
             this.inConfirmation = false
-            this.setChosenMajor(this.selectedProgram)
-            //clear the sidebar and the courses
-            this.clearCourses()
+            this.removeMajor()
+            this.removeMinor()
+            this.removeOption()
             this.clearTable()
-            this.fetchRequirements({
-                addMajor: true,
-                addMinor: false,
-                addOption: false
-            })
+            this.fetchRequirements({ newMajor: this.findMajorByProgram(this.selectedMajor) })
             this.$router.push('/CourseSelection')   
         },
         cancelSelection() {
             this.inConfirmation = false
-        }
-        
+        }    
     },
-    computed: mapGetters(["allMajors", "findMajorByProgram", "chosenMajor"]),
-    created() {
-        this.fetchMajors();
+    computed: {
+        ...mapGetters(["allMajors", "findMajorByProgram", "majorRequirements"])
     },
 }
 </script>
@@ -94,14 +85,17 @@ export default {
 }
 
 .title {
+    color: ghostwhite;
     margin-bottom: 1rem;
 }
 
 .caption {
+    color: ghostwhite;
     margin-bottom: 1rem;
 }
 
 .centerpiece-container {
+    margin-left: 20%;
     margin: 2%;
 }
 
@@ -120,6 +114,7 @@ export default {
 }
 
 .findprogram {
+    color: ghostwhite;
     margin-top: 1rem;
     height: 3rem;
 }
@@ -139,8 +134,10 @@ export default {
     margin-bottom: 0.5rem;
 }
 .background { 
-  background: url(../assets/cover.png) no-repeat center center fixed !important;
-  background-size: cover;
+  background: url(../assets/cover.png)  !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: cover !important;
   height: 100%;
   overflow: hidden;
 }

@@ -1,15 +1,30 @@
 import axios from "axios";
 import TrieSearch from "trie-search"
 import {CourseInfo, CourseRequirement} from '../../models/courseModel'
-
-const backend_api = "http://127.0.0.1:8000"
+import {MajorRequirement, MinorRequirement, OptionRequirement } from '../../models/ProgramModel'
 
 // Fetch course information of a single course code (eg MATH 239 or PHYS 300-)
 async function parseRequirement(courseCode) {
     let hasNumber = /\d/;
+    // Engineering specific
+    if (courseCode.includes("TE")){
+        return [new CourseInfo({
+            course_name: "Technical Elective",
+            course_code: courseCode,
+            info: "Please refer to degree requirement page for more information. (Click on program title)"
+        })]
+    }
+    else if (courseCode.includes("CSE")){
+        return [new CourseInfo({
+            course_name: "Complementary Studies Elective",
+            course_code: courseCode,
+            info: "Please refer to degree requirement page for more information. (Click on program title)"
+        })]
+    }
+
     if (!hasNumber.test(courseCode)){
         // Handle the exceptions [e.g. NON-MATH]
-        if (courseCode == "NON-MATH") {
+        if (courseCode === "NON-MATH") {
             return [new CourseInfo({
                 course_name: "Course not offered by the Faculty of Math",
                 course_code: "NON-MATH"
@@ -22,13 +37,13 @@ async function parseRequirement(courseCode) {
             })]
         }
         else{
-            const response = await axios.get(backend_api + "/api/course-info/filter", {
+            const response = await axios.get("/api/course-info/filter", {
                 params: {
                     start: 0,
                     end: 499,
                     code: courseCode,
                 }
-            })
+            });
             return response.data.map(element => { return new CourseInfo(element) });
         }
     }
@@ -40,7 +55,7 @@ async function parseRequirement(courseCode) {
             split = courseCode.split(" ");
             
             if(split[1] === "LAB"){
-                response = await axios.get(backend_api + "/api/course-info/filter", {
+                response = await axios.get("/api/course-info/filter", {
                     params: {
                         start: Number(split[2].slice(0, -1)),
                         end: Number(split[2].slice(0, -1)) + 99,
@@ -49,7 +64,7 @@ async function parseRequirement(courseCode) {
                 })
             }
             else{
-                response = await axios.get(backend_api + "/api/course-info/filter", {
+                response = await axios.get("/api/course-info/filter", {
                     params: {
                         start: Number(split[1].slice(0, -1)),
                         end: Number(split[1].slice(0, -1)) + 99,
@@ -57,21 +72,21 @@ async function parseRequirement(courseCode) {
                     }
                 })
             }
-            return response.data;
+            return response.data.map(element => { return new CourseInfo(element) });
         } else if (courseCode.split("-").length === 2 && courseCode.split("-")[0].length > 0 && courseCode.split("-")[1].length > 0) {
             // Handles range case, eg CS 440-CS 498
             split = courseCode.split("-");
-            const response = await axios.get(backend_api + "/api/course-info/filter", {
+            const response = await axios.get("/api/course-info/filter", {
                 params: {
                     start: Number(split[0].split(" ")[1]),
                     end: Number(split[1].split(" ")[1]),
                     code: split[0].split(" ")[0],
                 }
-            })
+            });
             return response.data.map(element => { return new CourseInfo(element) });
         } else {
             // Handles normal course case, ege MATH 239
-            let response = await axios.get(backend_api + "/api/course-info/get", {
+            const response = await axios.get("/api/course-info/get", {
                 params: {
                     pk: courseCode,
                 }
@@ -80,178 +95,198 @@ async function parseRequirement(courseCode) {
                 return null
             })
             //Laurier queries are unavailable, so this is necessary
-            if (response == null) return [ new CourseInfo({
-                course_code: courseCode,
-                info: "Information about this course is unavailable. Please"
-            }) ]
+            if (response == null){ 
+                if (courseCode.includes("W")){
+                    //laurier couse
+                    return [ new CourseInfo({ course_code: courseCode, 
+                                                info: "Information about this course is unavailable. Please refer to https://loris.wlu.ca/register/ssb/registration for more details.",
+                                                credit: 'N/A', 
+                                                prereqs: 'N/A',
+                                                antireqs: 'N/A',
+                                                coreqs: 'N/A',
+                                                online: false
+                                            })]
+                }
+                else{
+                    return [ new CourseInfo({ course_code: courseCode, info: "Information about this course is unavailable.",
+                                    credit: 'N/A', 
+                                    prereqs: 'N/A',
+                                    antireqs: 'N/A',
+                                    coreqs: 'N/A',
+                                    online: false
+                                }),
+                                ]
+                }
+            }
             return [new CourseInfo(response.data)];
         }
     }
 }
 
 const state = {
+    // old stuff
     requirements: [],
     allCourses: new TrieSearch(['course_code', 'course_number'], {
         idFieldOrFunction: function(course) {
             return course.course_id + course.course_code;
         }
     }),
+    // mew stuff
+    majorRequirements: [],
+    minorRequirements: [],
+    specRequirements:  []
 };
 
 const getters = {
     requirements: (state) => state.requirements,
     allCourses: (state) => state.allCourses,
+    majorRequirements: (state) => state.majorRequirements,
+    minorRequirements: (state) => state.minorRequirements,
+    specRequirements: (state) => state.specRequirements,
 };
+
 
 const actions = {
     // Fetch a list of all available courses
     async fetchAllCourses({ commit }) {
-        var response = await axios.get(backend_api + "/api/course-info/filter", {
+        await axios.get("/api/course-info/filter", {
             params: {
                 start: 0,
                 end: 1000,
                 code: "none",
             }
         })
+        .then(response => {
+            // Shuffle the course list
+            var currentIndex = response.data.length;
+            var temporaryValue, randomIndex;
+            while (0 !== currentIndex) {
+                // Pick a remaining element...
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex -= 1;
+                // And swap it with the current element.
+                temporaryValue = response.data[currentIndex];
+                response.data[currentIndex] = response.data[randomIndex];
+                response.data[randomIndex] = temporaryValue;
+            }
+            commit('setAllCourses', response.data);
+        })
         .catch(err => {
             console.log(err)
-        })
-        // Shuffle the course list
-        var currentIndex = response.data.length;
-        var temporaryValue, randomIndex;
-        while (0 !== currentIndex) {
-            // Pick a remaining element...
-            randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex -= 1;
-            // And swap it with the current element.
-            temporaryValue = response.data[currentIndex];
-            response.data[currentIndex] = response.data[randomIndex];
-            response.data[randomIndex] = temporaryValue;
-        }
-
-        commit('setAllCourses', response.data);
+        }) 
     },
     // Fetching requirements simply adds requirements to the requirement column. To delete the requirements, one would need to call the functions in mutation
-    async fetchRequirements({ commit, getters }, options) {
-        if (getters.chosenMajor === "No major") {
-            return
+    async fetchRequirements({ commit, getters, state }, options) {
+        let map = {
+            "-1": "others",
+            "1": "firstYear",
+            "2": "secondYear",
+            "3": "thirdYear",
+            "4": "fourthYear"
         }
-        const response = await axios.get(backend_api + "/api/requirements/requirements", {
+        if (!options.newMajor && !getters.majorRequirements.length) return 
+        const response = await axios.get("/api/requirements/requirements", {
             params: {
-                major: getters.chosenMajor[0],
-                option: getters.chosenSpecialization.length != 0 ? getters.chosenSpecialization[0] : "",
-                minor: getters.chosenMinor.length != 0 ? getters.chosenMinor[0] : ""
+                major: options.newMajor ? options.newMajor.program_name : getters.majorRequirements[0].info.program_name ,
+                minor: options.newMinor ?  options.newMinor.program_name : "",
+                option: options.newSpecialization ? options.newSpecialization.program_name : ""
             }
         });
-        let choices_fetched_promises = [];
-        let requirements = [];
-
         console.log("requirements ", response.data)
-        if (options.addMajor) {
+
+        if (options.newMajor) {
+            let newMajor = new MajorRequirement({ info: options.newMajor })
+
             for (let requirement of response.data.requirements) {
-                    let choice_promise = new Promise(function (resolve, reject) {
-                    void reject
-                    let promises = []
-                    // Split the requirement into its individual courses and parse each of them
-                    let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
-                    for (let course of required_courses) {
-                        promises.push(parseRequirement(course))
+                let promises = []
+                let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
+                for (let course of required_courses) {
+                    promises.push(parseRequirement(course))
+                }
+
+                Promise.all(promises).then(choices => {
+                    let parsed_requirement = {
+                        course_codes: requirement.course_codes,
+                        course_choices: [],
+                        number_of_courses: requirement.number_of_courses,
+                        major: [options.newMajor],
                     }
-                    Promise.all(promises).then(choices => {
-                        // Create object to store requirement information
-                        let parsed_requirement = {
-                            course_codes: requirement.course_codes,
-                            course_choices: [],
-                            number_of_courses: requirement.number_of_courses,
-                            major: [getters.chosenMajor[0]],
-                        }
-                        for (let choice of choices) {
-                            parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
-                        }
-                        requirements.push(new CourseRequirement(parsed_requirement))
-                        resolve()
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
+                    for (let choice of choices) {
+                        parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
+                    }
+                    let parsed_req_obj = new CourseRequirement(parsed_requirement)
+                    newMajor[map[parsed_req_obj.year]].push(parsed_req_obj)
                 })
-            choices_fetched_promises.push(choice_promise)
+                .catch(err => {
+                    console.log(err)
+                })
             }
+            //TODO:kevin this way is used to resolve a synch bug but its fcked, will change when have time
+            state.majorRequirements.push(newMajor)
+            commit('setMinor', response.data["minor_list"]);
+            commit('setSpecialization', response.data["option_list"]);
         }
         //minor requirments
-        if (response.data.minor_requirements != undefined && options.addMinor) {
-            for (let requirement of response.data.minor_requirements) {
-                let choice_promise = new Promise(function (resolve, reject) {
-                    void reject
-                    let promises = [];
+        if (response.data.minor_requirements != undefined && options.newMinor) {
+            let newMinor = new MinorRequirement({ info: options.newMinor })
 
-                    // Split the requirement into its individual courses and parse each of them
-                    let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
-                    for (let course of required_courses) {
-                        promises.push(parseRequirement(course))
+            for (let requirement of response.data.minor_requirements) {
+                let promises = [];
+                let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
+                for (let course of required_courses) {
+                    promises.push(parseRequirement(course))
+                }
+
+                Promise.all(promises).then(choices => {
+                    let parsed_requirement = {
+                        course_codes: requirement.course_codes,
+                        course_choices: [],
+                        number_of_courses: requirement.number_of_courses,
+                        minor: [options.newMinor],
                     }
-                    Promise.all(promises).then(choices => {
-                        // Create object to store requirement information
-                        let parsed_requirement = {
-                            course_codes: requirement.course_codes,
-                            course_choices: [],
-                            number_of_courses: requirement.number_of_courses,
-                            minor: [getters.chosenMinor[0]],
-                        }
-                        for (let choice of choices) {
-                            parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
-                        }
-                        requirements.push(new CourseRequirement(parsed_requirement))
-                        resolve()
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
+                    for (let choice of choices) {
+                        parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
+                    }                    
+                    let parsed_req_obj = new CourseRequirement(parsed_requirement)
+                    newMinor[map[parsed_req_obj.year]].push(parsed_req_obj)
                 })
-                choices_fetched_promises.push(choice_promise)
+                .catch(err => {
+                    console.log(err)
+                })
             }
+            state.minorRequirements.push(newMinor)
         } 
         //option requirments
-        if (response.data.option_requirements != undefined && options.addSpecialization) {
-            for (let requirement of response.data.option_requirements) {
-                let choice_promise = new Promise(function (resolve, reject) {
-                    void reject
-                    let promises = [];
-                    let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
-                    for (let course of required_courses) {
-                        promises.push(parseRequirement(course))
-                    }
+        if (response.data.option_requirements != undefined && options.newSpecialization) {
+            let newSpec = new OptionRequirement({ info: options.newSpecialization })
 
-                    Promise.all(promises).then(choices => {
-                        let parsed_requirement = {
-                            course_codes: requirement.course_codes,
-                            course_choices: [],
-                            number_of_courses: requirement.number_of_courses,
-                            specialization: [getters.chosenSpecialization[0]],
-                        }        
-                        for (let choice of choices) {
-                            parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
-                        }
-                        requirements.push(new CourseRequirement(parsed_requirement))
-                        resolve()
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
+            for (let requirement of response.data.option_requirements) {
+                let promises = [];
+                let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
+                for (let course of required_courses) {
+                    promises.push(parseRequirement(course))
+                }
+
+                Promise.all(promises).then(choices => {
+                    let parsed_requirement = {
+                        course_codes: requirement.course_codes,
+                        course_choices: [],
+                        number_of_courses: requirement.number_of_courses,
+                        specialization: [options.newSpecialization],
+                    }        
+                    for (let choice of choices) {
+                        parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
+                    }
+                    let parsed_req_obj = new CourseRequirement(parsed_requirement)
+                    newSpec[map[parsed_req_obj.year]].push(parsed_req_obj)                    
                 })
-                choices_fetched_promises.push(choice_promise)
+                .catch(err => {
+                    console.log(err)
+                })
             }
+            state.specRequirements.push(newSpec)
         }
-        //Once everything has been loaded then we push everything onto the requirements
-        Promise.all(choices_fetched_promises).then(choices => {
-            void choices
-            commit("addRequirements", requirements)
-            if (options.addMajor) {
-                commit('setMinor', response.data["minor_list"]);
-                commit('setSpecialization', response.data["option_list"]);
-            }
-        })
-    },
+    }
 };
 
 const mutations = {
@@ -261,77 +296,118 @@ const mutations = {
     setAllCourses: (state, allCourses) => {
         state.allCourses.addAll(allCourses)
     },
-    addRequirement: (state, newRequirement) => {
-        for (let req of state.requirements) {
-            if (newRequirement.id == req.id) {
-                req.number_of_courses++
-                return
+    addCourseRequirement: (state, requirement) => {
+        //currently each course requirement can only have one major/minor/req
+        let map = {
+            "-1": "others",
+            "1": "firstYear",
+            "2": "secondYear",
+            "3": "thirdYear",
+            "4": "fourthYear"
+        }
+        //reset everything when entering the requirement bar
+        requirement.inRequirementBar = true
+        requirement.deselect()
+        requirement.overridden = false
+
+        if (requirement.major.length) {
+            let major = state.majorRequirements.find(req => { return req.info.program_name == requirement.major[0].program_name })
+            major[map[requirement.year]].push(requirement)
+            return;
+        }
+        if (requirement.minor.length) {
+            let minor = state.minorRequirements.find(req => { return req.info.program_name == requirement.minor[0].program_name }) 
+            minor[map[requirement.year]].push(requirement)
+            return;
+        }
+        if (requirement.specialization.length) {
+            let spec = state.specRequirements.find(req => { return req.info.program_name == requirement.specialization[0].program_name })
+            spec[map[requirement.year]].push(requirement)
+            return;
+        }
+    },
+    addMajor: (state, majorRequirement) => { state.majorRequirements.push(majorRequirement); console.log(state.majorRequirements); },
+    addMinor: (state, minorRequirement) => { state.minorRequirements.push(minorRequirement); console.log(state.majorRequirements); },
+    addSpec: (state, specRequirement) => { state.specRequirements.push(specRequirement); console.log(state.majorRequirements); },
+    removeMajor: (state) => { state.majorRequirements = [] },
+    removeMinor: (state) => { state.minorRequirements = [] },
+    removeOption: (state) => { state.specRequirements = [] },
+    // sorts and splices all of the requirements
+    sortAndCollapseRequirements: (state) => {
+        let collapseAndSort = (group) => {
+            let map = {}
+            //collapse
+            for (let i = 0; i < group.length; i++) {
+                if (map[group[i].id] != undefined) {
+                    group[map[group[i].id]].number_of_courses += group[i].number_of_courses
+                    group.splice(i, 1)
+                } 
+                else {
+                    map[group[i].id] = i
+                }
             }
+            //sort
+            group.sort((a, b) => { 
+                if (a.selected_course == "WAITING" && b.selected_course != "WAITING") return 1
+                if (a.selected_course != "WAITING" && b.selected_course == "WAITING") return -1
+                return 0 
+            })
         }
-        state.requirements.push(newRequirement)
-    },
-    addRequirements: (state, requirements)=> {
-        for (let req of requirements) {
-            state.requirements.push(req)
+
+        for (let major of state.majorRequirements) {
+            collapseAndSort(major.firstYear)
+            collapseAndSort(major.secondYear)
+            collapseAndSort(major.thirdYear)
+            collapseAndSort(major.fourthYear)
+            collapseAndSort(major.others)
+        }
+        for (let minor of state.minorRequirements) {
+            collapseAndSort(minor.firstYear)
+            collapseAndSort(minor.secondYear)
+            collapseAndSort(minor.thirdYear)
+            collapseAndSort(minor.fourthYear)
+            collapseAndSort(minor.others)
+        }
+        for (let spec of state.specRequirements) {
+            collapseAndSort(spec.firstYear)
+            collapseAndSort(spec.secondYear)
+            collapseAndSort(spec.thirdYear)
+            collapseAndSort(spec.fourthYear)
+            collapseAndSort(spec.others)
         }
     },
-    deleteRequirement: (state, requirement) => {
-        let index = state.requirements.indexOf(requirement)
-        state.requirements.splice(index, 1)
-    },
-    sortRequirements: (state) => {
-        void state
-        // this 
-        // state.requirements.sort((a, b) => {
-        //     //reqs with multiple choices go to the bottom
-        //     if (a.course_choices.length != b.course_choices.length) return a.course_choices.length - b.course_choices.length
-        //     //compare the course code and the course code and the course year
-        //     let choiceA = a.course_choices[0].course_code.split(" ")
-        //     let choiceB = b.course_choices[0].course_code.split(" ")
-        //     if (parseInt(choiceA[1][0]) != parseInt(choiceB[1][0])) return parseInt(choiceA[1][0]) - parseInt(choiceB[1][0])
-        //     return choiceA[0].localeCompare(choiceB[0])
-        // })
-    },
-    //this collapses duplicate requirements that share the same id
-    collapseRequirements: (state) => {
-        for (let i = 0; i < state.requirements.length;i++) {
-            for (let j = i + 1; j < state.requirements.length;j++) {
-                if (state.requirements[i].id == state.requirements[j].id) {
-                    state.requirements[i].number_of_courses += state.requirements[j].number_of_courses
-                    state.requirements.splice(j, 1)
+    decrementRequirementID: (state, id) => {
+        let checkArrayForID = (arr) => {
+            for (let i = 0; i < arr.length; i++) {
+                if (arr[i].id == id) {
+                    arr[i].number_of_courses--
+                    break;
                 }
             }
         }
-    },
-    decrementRequirementByID: (state, id) => {
-        void state
-        // this collapses the requirement first so that there is only 1 id
-        for (let i = 0; i < state.requirements.length;i++) {
-            for (let j = i + 1; j < state.requirements.length;j++) {
-                if (state.requirements[i].id == state.requirements[j].id) {
-                    state.requirements[i].number_of_courses += state.requirements[j].number_of_courses
-                    state.requirements.splice(j, 1)
-                }
-            }
+        //go through the 
+        for (let major of state.majorRequirements) {
+            checkArrayForID(major.firstYear)
+            checkArrayForID(major.secondYear)
+            checkArrayForID(major.thirdYear)
+            checkArrayForID(major.fourthYear)
+            checkArrayForID(major.others)
         }
-        for (let i = 0; i < state.requirements.length;i++) {
-            if (state.requirements[i].id == id) {
-                state.requirements[i].number_of_courses--
-                return
-            }
+        for (let minor of state.minorRequirements) {
+            checkArrayForID(minor.firstYear)
+            checkArrayForID(minor.secondYear)
+            checkArrayForID(minor.thirdYear)
+            checkArrayForID(minor.fourthYear)
+            checkArrayForID(minor.others)
+        }
+        for (let spec of state.specRequirements) {
+            checkArrayForID(spec.firstYear)
+            checkArrayForID(spec.secondYear)
+            checkArrayForID(spec.thirdYear)
+            checkArrayForID(spec.fourthYear)
+            checkArrayForID(spec.others)
         }
     },
-    clearCourses: (state) => {state.requirements = []},
-    clearMinorFromReq: (state)=> {
-        state.requirements = state.requirements.filter(req => {
-            return req.minor.length == 0
-        })
-    },
-    clearOptionFromReq: (state) => {
-        state.requirements = state.requirements.filter(req => {
-            return req.specialization.length == 0
-        })
-    }
 };
 
 export default {

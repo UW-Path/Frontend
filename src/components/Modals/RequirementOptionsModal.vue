@@ -8,14 +8,13 @@
             :onSelectionBar="onSelectionBar"
             @click.native="enableDialog()"
         />
-
         <!-- Course Popup Modal -->
         <v-dialog v-model="dialog" :max-width="isChoice() ? 1200 : 700">
             <v-card>
                 <v-container fluid class="modal-course-list-container">
                     <v-row class="modal-course-list-row">
                         <v-col align="center" v-if="isChoice()">
-                            <v-text-field v-if="this.course.course_choices.length > 7" class="modal-search" v-model="searchtext" label="Search for a Course" prepend-inner-icon="mdi-magnify" hide-details="true" single-line outlined dense></v-text-field>
+                            <v-text-field class="modal-search" v-model="searchtext" label="Search for a Course" prepend-inner-icon="mdi-magnify" hide-details="true" single-line outlined dense></v-text-field>
                             <div class="modal-course-list">
                                 <div class="modal-course" v-for="(course,index) in filteredCourses" :key="index"
                                     v-on:click="selectedCourse = course">
@@ -23,30 +22,36 @@
                                 </div>
                             </div>
                         </v-col>
-
                         <v-col v-if="selectedCourse" class="course-description-col" align="left">
                             <v-card-title class="course-title">
                                 {{ selectedCourse.course_code }}
                                 <v-spacer></v-spacer>
-                                <template v-if="isChoice()">
-                                    <v-btn class="select-btn" text @click="selectCourse()" v-if="selectedCourse != this.course.selected_course" icon large>
-                                        <v-icon>mdi-plus-circle</v-icon>
+                                <template v-if="!this.course.prereqs_met">
+                                    <v-btn class="select-btn" text @click="course.toggleOverride()" v-if="!this.course.overridden" large outlined>
+                                        Override
                                     </v-btn>
-                                    <v-btn class="select-btn" text @click="deselectCourse()" v-else icon large>
-                                        <v-icon>mdi-minus-circle</v-icon>
+                                    <v-btn class="select-btn" text @click="course.toggleOverride()" v-else-if="this.course.overridden" large outlined>
+                                        de-Override
                                     </v-btn>
                                 </template>
 
-
+                                <template v-if="isChoice()">
+                                    <v-btn class="select-btn" text @click="selectCourse()" v-if="selectedCourse != this.course.selected_course" large outlined>
+                                        Select<v-icon>mdi-plus-circle</v-icon>
+                                    </v-btn>
+                                    <v-btn class="select-btn" text @click="deselectCourse()" v-else large outlined>
+                                        Deselect<v-icon>mdi-minus-circle</v-icon>
+                                    </v-btn>
+                                </template>
                             </v-card-title>
                             <v-card-subtitle class="course-name">
                                     {{ selectedCourse.course_name}}
                             </v-card-subtitle>
                             <v-card-subtitle class="course-info-subheading">
-                                    Credits: {{ selectedCourse.credit }} | ID: {{ selectedCourse.course_id }} | uwflow
+                                    Credits: {{ selectedCourse.credit }} | ID: {{ selectedCourse.course_id }} | <a style="text-decoration:none" target="_blank" :href="'https://uwflow.com/course/' + selectedCourse.course_code.replace(/\s/g, '').toLowerCase()">UWFlow link</a>
                             </v-card-subtitle>
-
-                            <v-card-text>{{ selectedCourse.info + (selectedCourse.offering === "" ? "" :  " Offered in: " + selectedCourse.offering.slice(0,-1) + ".") + (selectedCourse.online ? " Offered Online." : "")}}</v-card-text>
+                            
+                            <v-card-text>{{ selectedCourse.info + (selectedCourse.offering == "" ? "" :  " Offered in: " + selectedCourse.offering.slice(0,-1) + ". ") + (selectedCourse.online ? "Also offered online." : "")}}</v-card-text>
                             <v-card-text class="course-description-text">{{ "Credits: " + selectedCourse.credit }}</v-card-text>
                             <v-card-text class="course-description-text" v-if="selectedCourse.prereqs && selectedCourse.prereqs.length > 0">{{ "Prerequisites: " + selectedCourse.prereqs }}</v-card-text>
                             <v-card-text class="course-description-text" v-if="selectedCourse.antireqs && selectedCourse.antireqs.length > 0">{{ "Antirequisites: " + selectedCourse.antireqs }}</v-card-text>
@@ -60,7 +65,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { mapMutations } from "vuex";
 import CourseCard from "../Cards/CourseCard";
 
 export default {
@@ -88,7 +93,6 @@ export default {
         },
         selectCourse: function () {
             this.course.selected_course = this.selectedCourse;
-            this.dialog = false;
             this.validateCourses()
         },
         deselectCourse() {
@@ -98,8 +102,14 @@ export default {
             if (!this.course.selected_course) return false
             return courseCode == this.course.selected_course.course_code;
         },
-        isChoice() {
+        isChoice: function() {
             return this.course.course_choices.length > 1
+        },
+        close: function() {
+            
+        },
+        open: function() {
+            
         }
     },
     computed: {
@@ -121,8 +131,7 @@ export default {
         },
         hasSelected: function() {
             return this.course.selected_course != undefined
-        },
-        ...mapGetters(["requirements", "chosenMajor"]),
+        }
     }
 }
 </script>
@@ -131,7 +140,6 @@ export default {
 .course-list-block {
     display: flex;
     width: 100%;
-    /* height: 50px; */
     justify-content: center;
     align-items: center;
     overflow-y: hidden;
@@ -160,7 +168,8 @@ export default {
 }
 
 .select-btn {
-    padding: 0px !important;
+    padding: 0.5rem 0.5rem !important;
+    border: transparent;
 }
 
 .course-description-text {

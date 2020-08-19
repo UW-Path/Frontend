@@ -1,31 +1,21 @@
 <template>
-    <v-card id="selection-sidebar"> 
-        <v-list-item v-if="!requirements.length" id="no-program-message">
-            select a program to get a list of requirements
-        </v-list-item>
-        <draggable class="draggable-column" :list="requirements" :group="{ name: 'course', pull: pullFunction }" :clone="clone" @change="change">
-              <RequirementOptionsModal
-                class="list-group-item course-card"
-                v-for="(requirement,index) in requirements"
-                :key="index"
-                :course="requirement"
-                :onSelectionBar="true"
-                @mousedown.native="lastClickdownReq = requirement"
-              />
-        </draggable>
-    </v-card> 
+<v-card id="selection-sidebar"> 
+    <v-list-item v-if="!majorRequirements.length && !minorRequirements.length && !specRequirements.length" id="no-program-message">
+        select a program to get a list of requirements
+    </v-list-item>
+    <RequirementDropdown v-bind:programArray="majorRequirements" />
+    <RequirementDropdown v-bind:programArray="minorRequirements" />
+    <RequirementDropdown v-bind:programArray="specRequirements" />
+</v-card> 
 </template>
 
 <script>
-import { mapGetters, mapActions, mapMutations } from "vuex";
-import draggable from 'vuedraggable'
-import RequirementOptionsModal from '../Modals/RequirementOptionsModal' 
-import { CourseRequirement } from '../../models/courseModel.js' 
+import { mapGetters } from "vuex";
+import RequirementDropdown from './RequirementDropdown'
 export default {
     name: "SideBar",
     components: {
-        draggable,
-        RequirementOptionsModal
+        RequirementDropdown
     },
     data() {
         return {
@@ -33,35 +23,8 @@ export default {
         }
     },
     methods: {
-        ...mapActions(["fetchRequirements"]),
-        ...mapMutations(["deleteRequirement", "collapseRequirements", "sortRequirements"]),
-        //card is not cloned if it only has one list and that 
-        pullFunction: function() {
-            return this.lastClickdownReq.number_of_courses == 1 || this.lastClickdownReq.course_choices.length == 1 ? true : "clone"
-        },
-        clone: function(event) {
-            if (event.course_choices.length == 1) {
-                return event
-            }
-            //create a deep copy of the requirement
-            let clone = new CourseRequirement(JSON.parse(JSON.stringify(event)))
-            if (clone.isSelected()) {
-                event.deselect()
-            }
-            else {
-                clone.deselect()
-            }
-            return clone
-        },
-        change: function(event) {
-            if (!event.added) return
-            let changedReq = event.added.element
-            changedReq.inRequirementBar = true
-            this.collapseRequirements()
-            this.sortRequirements()
-        }
     },
-    computed: mapGetters(["requirements", "chosenMajor"]),
+    computed: mapGetters(["majorRequirements", "minorRequirements", "specRequirements"]),
 }
 </script>
 
@@ -92,7 +55,19 @@ export default {
     color: #071223 !important;
 }
 
-.draggable-column {
-    /* height: 90%; */
+.v-expansion-panel-content__wrap {
+    padding-top: 0px !important;
+    padding-right: 0px !important;
+    padding-bottom: 0px !important;
+    padding-left: 0px !important;
+}
+
+.title {
+    text-align: left;
+    padding-left: 24px;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    font-weight: 400;
+    background-color: white;
 }
 </style>

@@ -6,27 +6,28 @@
         <router-link to="/landing">Landing</router-link>
       </div>
       <router-view/>
-      <!-- <v-footer></v-footer> -->
     </v-app>
 </template>
 
-<script>
-import { mapActions } from "vuex";
 
+<script>
+import {  mapActions } from "vuex";
 export default {
-  name: 'App',
-  mounted() {
+  methods: {
+  ...mapActions(["fetchMajors", "fetchAllCourses"]),
+  },
+  created() {
+    this.fetchMajors();
     this.fetchAllCourses()
   },
-   methods: {
-      ...mapActions(["fetchAllCourses"]),
-   }
 }
+
+
 </script>
 
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Avenir, Helvetica , Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
@@ -36,7 +37,7 @@ export default {
 
 #nav {
   position: fixed;
-  bottom: 2%;
+  bottom: 1%;
   right: 3%;
 
   a {

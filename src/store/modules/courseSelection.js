@@ -1,7 +1,6 @@
 import axios from "axios";
 import TrieSearch from "trie-search"
 import { CourseRequirement } from "../../models/courseModel";
-const backend_api = "http://127.0.0.1:8000"
 
 //need to move the routes to the configs
 
@@ -197,11 +196,12 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
 
 const actions = {
     fillOutChecklist({ commit, getters }) {
-        axios.get(backend_api + "/api/requirements/requirements", {
+        if (!getters.majorRequirements.length) return
+        axios.get("/api/requirements/requirements", {
             params: {
-                major: getters.chosenMajor[0],
-                option: getters.chosenSpecialization.length != 0 ? getters.chosenSpecialization[0] : "",
-                minor: getters.chosenMinor.length != 0 ? getters.chosenMinor[0] : ""
+                major: getters.majorRequirements[0].info.program_name,
+                minor: getters.minorRequirements.length != 0 ? getters.minorRequirements[0].info.program_name : "",
+                option: getters.specRequirements.length != 0 ? getters.specRequirements[0].info.program_name : ""
             }
         })
         .then(response => {
@@ -214,11 +214,20 @@ const actions = {
             if (response.data.requirements) {
                 commit('setChecklistMajorRequirements', ParseRequirementsForChecklist(response.data.requirements, selectedCourses));
             }
+            else {
+                commit('setChecklistMajorRequirements', []);
+            }
             if (response.data.minor_requirements) {
                 commit('setChecklistMinorRequirements', ParseRequirementsForChecklist(response.data.minor_requirements, selectedCourses));
             }
+            else {
+                commit('setChecklistMinorRequirements', []); 
+            }
             if (response.data.option_requirements) {
                 commit('setChecklistOptionRequirements', ParseRequirementsForChecklist(response.data.option_requirements, selectedCourses));
+            }
+            else {
+                commit('setChecklistOptionRequirements', []);
             }
         })
         .catch(err => {
@@ -272,7 +281,7 @@ const mutations = {
                 //there if course has not been selected yet then dont do anything
                 if (!requirement.selected_course) continue
                 if (requirement.selected_course.course_code !== "WAITING") {
-                    axios.get(backend_api + "/api/meets_prereqs/get", {
+                    axios.get("/api/meets_prereqs/get", {
                         params: {
                             list_of_courses_taken: listOfCoursesTaken,
                             current_term_courses: currentTermCourses,
@@ -308,11 +317,6 @@ const mutations = {
         state.table = JSON.parse(JSON.stringify(defaultTable))
     }
 };
-
-
-
-//scripts that are helps actions, mutation, getting
-
 
 export default {
     state,
