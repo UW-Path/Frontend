@@ -140,7 +140,8 @@ const getters = {
 
 
 const actions = {
-    //fetching requirements simply adds requirements to the requirement column. To delete the requirements, one would need to call the functions in mutation
+    // Fetching requirements simply adds requirements to the requirement column.
+    // To delete the requirements, one would need to call the functions in mutation
     async fetchRequirements({ commit, getters, state }, options) {
         let map = {
             "-1": "others",
@@ -148,8 +149,8 @@ const actions = {
             "2": "secondYear",
             "3": "thirdYear",
             "4": "fourthYear"
-        }
-        if (!options.newMajor && !getters.majorRequirements.length) return 
+        };
+        if (!options.newMajor && !getters.majorRequirements.length) return;
         const response = await axios.get("http://127.0.0.1:8000/api/requirements/requirements", {
             params: {
                 major: options.newMajor ? options.newMajor.program_name : getters.majorRequirements[0].info.program_name ,
@@ -157,14 +158,14 @@ const actions = {
                 option: options.newSpecialization ? options.newSpecialization.program_name : ""
             }
         });
-        console.log("requirements ", response.data)
+        console.log("requirements ", response.data);
 
         if (options.newMajor) {
-            let newMajor = new MajorRequirement({ info: options.newMajor })
+            let newMajor = new MajorRequirement({info: options.newMajor});
 
             for (let requirement of response.data.requirements) {
-                let promises = []
-                let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
+                let promises = [];
+                let required_courses = requirement.course_codes.split(/,\s|\sor\s/);
                 for (let course of required_courses) {
                     promises.push(parseRequirement(course))
                 }
@@ -179,19 +180,19 @@ const actions = {
                     for (let choice of choices) {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
                     }
-                    let parsed_req_obj = new CourseRequirement(parsed_requirement)
+                    let parsed_req_obj = new CourseRequirement(parsed_requirement);
                     newMajor[map[parsed_req_obj.year]].push(parsed_req_obj)
                 })
-                .catch(err => {
-                    console.log(err)
-                })
+                    .catch(err => {
+                        console.log(err)
+                    })
             }
             //TODO:kevin this way is used to resolve a synch bug but its fcked, will change when have time
             state.majorRequirements.push(newMajor)
             commit('setMinor', response.data["minor_list"]);
             commit('setSpecialization', response.data["option_list"]);
         }
-        //minor requirments
+        // Minor requirements
         if (response.data.minor_requirements != undefined && options.newMinor) {
             let newMinor = new MinorRequirement({ info: options.newMinor })
 
@@ -221,7 +222,7 @@ const actions = {
             }
             state.minorRequirements.push(newMinor)
         } 
-        //option requirments
+        // Option requirements
         if (response.data.option_requirements != undefined && options.newSpecialization) {
             let newSpec = new OptionRequirement({ info: options.newSpecialization })
 

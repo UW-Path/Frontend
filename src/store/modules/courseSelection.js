@@ -1,5 +1,6 @@
 import axios from "axios";
 import TrieSearch from "trie-search"
+import * as download from 'downloadjs'
 
 //need to move the routes to the configs
 
@@ -140,7 +141,62 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
     return requirements;
 }
 
+function getCoursesTable() {
+    var course_table = [];
+    for (let i = 0; i < state.table.length; i++) {
+        let t = [];
+        for (let j = 0; j < state.table[i].courses.length; j++) {
+            let courses = [];
+            for (let k = 0; k < state.table[i].courses[j].course_choices.length; k++) {
+                courses.push(state.table[i].courses[j].course_choices[k].course_code);
+            }
+            if (!state.table[i].courses[j].selected_course) {
+                courses.push("WAITING");
+            } else {
+                courses.push(state.table[i].courses[j].selected_course.course_code);
+            }
+            t.push(courses)
+        }
+        course_table.push(t);
+    }
+    return course_table;
+}
+
 const actions = {
+    async export({ state }, options) {
+        let course_table = getCoursesTable();
+        if (options.PDF) {
+            axios.get("http://0.0.0.0:8000/api/requirements/export", {
+                params: {
+                    table: course_table,
+                    termList : state.termList
+                }
+            }, {
+                responseType: 'blob'
+            }).then((response) => {
+                download(
+                    response.data,
+                    'uwpath-schedule.xls',
+                    'blob'
+                );
+            });
+        } else if (options.XLS) {
+            axios.get("http://0.0.0.0:8000/api/requirements/export", {
+                params: {
+                    table: course_table,
+                    termList : state.termList
+                }
+            }, {
+                responseType: 'blob'
+            }).then((response) => {
+                download(
+                    response.data,
+                    'uwpath-schedule.xls',
+                    'application/ms-excel'
+                );
+            });
+        }
+    },
     fillOutChecklist({ commit, getters }) {
         if (!getters.majorRequirements.length) return
         axios.get("http://127.0.0.1:8000/api/requirements/requirements", {
