@@ -26,6 +26,15 @@
                         </v-row>
                     </v-container>
                 </tab>
+                <tab class="primary-tab" title="Export Table">
+                    <v-container class="course-selection-container">
+                        <v-row class="main-row">
+                            <v-col class="main-panel">
+                                <export/>
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                </tab>
             </tabs>
         </v-row>
     </v-container>
@@ -33,6 +42,7 @@
 
 <script>
 import CoursePlan from '../components/CourseSelectionPage/CoursePlan.vue'
+import Export from '../components/ExportPage/Export.vue'
 import ProgramSelectionBar from '../components/CourseSelectionPage/ProgramSelectionBar.vue'
 import ProgramChecklist from '../components/ProgramChecklistPage/ProgramChecklist.vue'
 import SideBar from '../components/CourseSelectionPage/SideBar.vue'
@@ -43,6 +53,7 @@ export default {
     name: "CourseSelection",
     components: {
         CoursePlan,
+        Export,
         ProgramSelectionBar,
         SideBar,
         ProgramChecklist,
