@@ -170,14 +170,13 @@ const actions = {
                 params: {
                     table: course_table,
                     termList : state.termList
-                }
-            }, {
-                responseType: 'blob'
+                },
+                responseType: 'arraybuffer'
             }).then((response) => {
                 download(
                     response.data,
                     'uwpath-schedule.xls',
-                    'blob'
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                 );
             });
         } else if (options.XLS) {
@@ -185,14 +184,13 @@ const actions = {
                 params: {
                     table: course_table,
                     termList : state.termList
-                }
-            }, {
-                responseType: 'blob'
+                },
+                responseType: 'arraybuffer'
             }).then((response) => {
                 download(
                     response.data,
                     'uwpath-schedule.xls',
-                    'application/ms-excel'
+                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                 );
             });
         }
