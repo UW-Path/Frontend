@@ -35,7 +35,7 @@ const getters = {
 
 const actions = {
     fetchMajors({ commit }) {
-        axios.get("http://0.0.0.0:8000/api/requirements/unique_major")
+        axios.get("http://127.0.0.1:8000/api/requirements/unique_major")
         .then(response => {
             console.log("majors list", response.data)
             commit('setMajor', response.data["Major"]);
