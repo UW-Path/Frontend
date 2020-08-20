@@ -1,6 +1,5 @@
 <template>
     <div class="export">
-        <v-btn @click="exportPDF()" small>PDF</v-btn>
         <v-btn @click="exportXLS()" small>XLS</v-btn>
     </div>
 </template>
