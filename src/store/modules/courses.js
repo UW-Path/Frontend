@@ -1,6 +1,13 @@
 import axios from "axios";
+import TrieSearch from "trie-search"
 import {CourseInfo, CourseRequirement} from '../../models/courseModel'
 import {MajorRequirement, MinorRequirement, OptionRequirement } from '../../models/ProgramModel'
+
+// Production Kubernetes API
+const backend_api = "";
+
+// Dev API
+// const backend_api = "http://127.0.0.1:8000";
 
 // Fetch course information of a single course code (eg MATH 239 or PHYS 300-)
 async function parseRequirement(courseCode) {
@@ -36,7 +43,7 @@ async function parseRequirement(courseCode) {
             })]
         }
         else{
-            const response = await axios.get("/api/course-info/filter", {
+            const response = await axios.get(backend_api + "/api/course-info/filter", {
                 params: {
                     start: 0,
                     end: 499,
@@ -54,7 +61,7 @@ async function parseRequirement(courseCode) {
             split = courseCode.split(" ");
             
             if(split[1] === "LAB"){
-                response = await axios.get("/api/course-info/filter", {
+                response = await axios.get(backend_api + "/api/course-info/filter", {
                     params: {
                         start: Number(split[2].slice(0, -1)),
                         end: Number(split[2].slice(0, -1)) + 99,
@@ -63,7 +70,7 @@ async function parseRequirement(courseCode) {
                 })
             }
             else{
-                response = await axios.get("/api/course-info/filter", {
+                response = await axios.get(backend_api + "/api/course-info/filter", {
                     params: {
                         start: Number(split[1].slice(0, -1)),
                         end: Number(split[1].slice(0, -1)) + 99,
@@ -75,7 +82,7 @@ async function parseRequirement(courseCode) {
         } else if (courseCode.split("-").length === 2 && courseCode.split("-")[0].length > 0 && courseCode.split("-")[1].length > 0) {
             // Handles range case, eg CS 440-CS 498
             split = courseCode.split("-");
-            const response = await axios.get("/api/course-info/filter", {
+            const response = await axios.get(backend_api + "/api/course-info/filter", {
                 params: {
                     start: Number(split[0].split(" ")[1]),
                     end: Number(split[1].split(" ")[1]),
@@ -85,7 +92,7 @@ async function parseRequirement(courseCode) {
             return response.data.map(element => { return new CourseInfo(element) });
         } else {
             // Handles normal course case, ege MATH 239
-            const response = await axios.get("/api/course-info/get", {
+            const response = await axios.get(backend_api + "/api/course-info/get", {
                 params: {
                     pk: courseCode,
                 }
@@ -125,6 +132,11 @@ async function parseRequirement(courseCode) {
 const state = {
     // old stuff
     requirements: [],
+    allCourses: new TrieSearch(['course_code', 'course_number'], {
+        idFieldOrFunction: function(course) {
+            return course.course_id + course.course_code;
+        }
+    }),
     // mew stuff
     majorRequirements: [],
     minorRequirements: [],
@@ -133,6 +145,7 @@ const state = {
 
 const getters = {
     requirements: (state) => state.requirements,
+    allCourses: (state) => state.allCourses,
     majorRequirements: (state) => state.majorRequirements,
     minorRequirements: (state) => state.minorRequirements,
     specRequirements: (state) => state.specRequirements,
@@ -140,6 +153,34 @@ const getters = {
 
 
 const actions = {
+    // Fetch a list of all available courses
+    async fetchAllCourses({ commit }) {
+        await axios.get(backend_api + "/api/course-info/filter", {
+            params: {
+                start: 0,
+                end: 1000,
+                code: "none",
+            }
+        })
+        .then(response => {
+            // Shuffle the course list
+            var currentIndex = response.data.length;
+            var temporaryValue, randomIndex;
+            while (0 !== currentIndex) {
+                // Pick a remaining element...
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex -= 1;
+                // And swap it with the current element.
+                temporaryValue = response.data[currentIndex];
+                response.data[currentIndex] = response.data[randomIndex];
+                response.data[randomIndex] = temporaryValue;
+            }
+            commit('setAllCourses', response.data);
+        })
+        .catch(err => {
+            console.log(err)
+        }) 
+    },
     // Fetching requirements simply adds requirements to the requirement column.
     // To delete the requirements, one would need to call the functions in mutation
     async fetchRequirements({ commit, getters, state }, options) {
@@ -150,8 +191,8 @@ const actions = {
             "3": "thirdYear",
             "4": "fourthYear"
         };
-        if (!options.newMajor && !getters.majorRequirements.length) return;
-        const response = await axios.get("/api/requirements/requirements", {
+        if (!options.newMajor && !getters.majorRequirements.length) return 
+        const response = await axios.get(backend_api + "/api/requirements/requirements", {
             params: {
                 major: options.newMajor ? options.newMajor.program_name : getters.majorRequirements[0].info.program_name ,
                 minor: options.newMinor ?  options.newMinor.program_name : "",
@@ -255,10 +296,13 @@ const actions = {
     }
 };
 
-
-
-
 const mutations = {
+    setRequirements: (state, requirements) => {
+        state.requirements = requirements
+    },
+    setAllCourses: (state, allCourses) => {
+        state.allCourses.addAll(allCourses)
+    },
     addCourseRequirement: (state, requirement) => {
         //currently each course requirement can only have one major/minor/req
         let map = {

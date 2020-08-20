@@ -56,9 +56,9 @@
                             <v-card-text>{{ selectedCourse.info + (selectedCourse.offering == "" ? "" :  " Offered in: " + selectedCourse.offering.slice(0,-1) + ". ") + (selectedCourse.online ? "Also offered online." : "")}}</v-card-text>
                             <template v-if="selectedCourse.course_id != -1">
                                 <v-card-text class="course-description-text">{{ "Credits: " + selectedCourse.credit }}</v-card-text>
-                                <v-card-text class="course-description-text" v-if="selectedCourse.prereqs !== ''">{{ "Prerequisites: " + selectedCourse.prereqs }}</v-card-text>
-                                <v-card-text class="course-description-text" v-if="selectedCourse.antireqs !== ''">{{ "Antirequisites: " + selectedCourse.antireqs }}</v-card-text>
-                                <v-card-text class="course-description-text" v-if="selectedCourse.coreqs !== ''">{{ "Corequisites: " + selectedCourse.antireqs }}</v-card-text>
+                                <v-card-text class="course-description-text" v-if="selectedCourse.prereqs && selectedCourse.prereqs.length > 0">{{ "Prerequisites: " + selectedCourse.prereqs }}</v-card-text>
+                                <v-card-text class="course-description-text" v-if="selectedCourse.antireqs && selectedCourse.antireqs.length > 0">{{ "Antirequisites: " + selectedCourse.antireqs }}</v-card-text>
+                                <v-card-text class="course-description-text" v-if="selectedCourse.coreqs && selectedCourse.coreqs.length > 0">{{ "Corequisites: " + selectedCourse.coreqs }}</v-card-text>
                             </template>
                         </v-col>
                     </v-row>
@@ -205,7 +205,7 @@ export default {
     margin-top: 1rem;
     /* margin-bottom: 1rem; */
     width: 90%;
-    max-height: 250px;
+    max-height: 500px;
     /* height:auto; */
     overflow-y: auto;
 }

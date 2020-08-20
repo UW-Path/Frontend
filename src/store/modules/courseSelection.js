@@ -1,9 +1,13 @@
 import axios from "axios";
 import TrieSearch from "trie-search"
+import { CourseRequirement } from "../../models/courseModel";
 import * as download from 'downloadjs'
 
-//need to move the routes to the configs
+// Production Kubernetes API
+const backend_api = "";
 
+// Dev API
+// const backend_api = "http://127.0.0.1:8000";
 
 const defaultTable = [ 
     {
@@ -90,11 +94,12 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
             return 0;
         }
     });
-    for (var requirement of requirements) {
-        var required_courses = requirement.course_codes.split(/,\s|\sor\s/)
-        var numMatchedCourses = 0;
-        var matchedCourses = [];
-        for (var course of required_courses) {
+    var parsed_requirements = [];
+    for (let requirement of requirements) {
+        let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
+        let numMatchedCourses = 0;
+        let matchedCourses = [];
+        for (let course of required_courses) {
             if (course[course.length - 1] === "-") {
                 // Handles X00's case, eg PHYS 300-
                 let possibleMatches = selectedCourses.get([course.split(" ")[0], course.split(" ")[1][0]], TrieSearch.UNION_REDUCER)
@@ -108,9 +113,9 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
             } else if (course.split("-").length === 2 && course.split("-")[0].length > 0 && course.split("-")[1].length > 0) {
                 // Handles range case, eg CS 440-CS 498
                 let possibleMatches = [];
-                var start = Math.floor(course.split("-")[0].split(" ")[1]/100);
-                var end = Math.floor(course.split("-")[1].split(" ")[1]/100);
-                for (var i = start; i <= end; i++) {
+                let start = Math.floor(course.split("-")[0].split(" ")[1]/100);
+                let end = Math.floor(course.split("-")[1].split(" ")[1]/100);
+                for (let i = start; i <= end; i++) {
                     possibleMatches = possibleMatches.concat(selectedCourses.get([course.split("-")[0].split(" ")[0], i.toString()], TrieSearch.UNION_REDUCER))
                 }
                 for (let match of possibleMatches) {
@@ -134,11 +139,63 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
             if (numMatchedCourses >= requirement.number_of_courses) break;
         }
         if (numMatchedCourses >= requirement.number_of_courses) {
-            requirement.met = true;
+            requirement.prereqs_met = true;
+            requirement.number_of_prereqs_met = requirement.number_of_courses;
             usedCourses.addAll(matchedCourses);
+            requirements.number_of_prereqs_met = requirements.number_of_courses;
         }
     }
-    return requirements;
+    for (var requirement of requirements) {
+        if (requirement.prereqs_met) {
+            parsed_requirements.push(new CourseRequirement(requirement));
+            continue;
+        }
+        var required_courses = requirement.course_codes.split(/,\s|\sor\s/)
+        requirement.number_of_prereqs_met = 0;
+        var matchedCourses = [];
+        for (let course of required_courses) {
+            if (course[course.length - 1] === "-") {
+                // Handles X00's case, eg PHYS 300-
+                let possibleMatches = selectedCourses.get([course.split(" ")[0], course.split(" ")[1][0]], TrieSearch.UNION_REDUCER)
+                for (let match of possibleMatches) {
+                    if (usedCourses.get(match.selected_course.course_code).length === 0) {
+                        matchedCourses.push(match);
+                        requirement.number_of_prereqs_met++;
+                        if (matchedCourses.length >= requirement.number_of_courses) break;
+                    }
+                }
+            } else if (course.split("-").length === 2 && course.split("-")[0].length > 0 && course.split("-")[1].length > 0) {
+                // Handles range case, eg CS 440-CS 498
+                let possibleMatches = [];
+                var start = Math.floor(course.split("-")[0].split(" ")[1]/100);
+                var end = Math.floor(course.split("-")[1].split(" ")[1]/100);
+                for (let i = start; i <= end; i++) {
+                    possibleMatches = possibleMatches.concat(selectedCourses.get([course.split("-")[0].split(" ")[0], i.toString()], TrieSearch.UNION_REDUCER))
+                }
+                for (let match of possibleMatches) {
+                    if (match.selected_course.course_number <= course.split("-")[1].split(" ")[1] && match.selected_course.course_number >= course.split("-")[0].split(" ")[1] && usedCourses.get(match.selected_course.course_code).length === 0) {
+                        matchedCourses.push(match);
+                        requirement.number_of_prereqs_met++;
+                        if (matchedCourses.length >= requirement.number_of_courses) break;
+                    }
+                }
+            } else {
+                // Handles normal course case, ege MATH 239
+                let possibleMatches = selectedCourses.get(course)
+                for (let match of possibleMatches) {
+                    if (usedCourses.get(match.selected_course.course_code).length === 0) {
+                        matchedCourses.push(selectedCourses.get(course)[0])
+                        requirement.number_of_prereqs_met++;
+                        break;
+                    }
+                }
+            }
+            if (matchedCourses.length >= requirement.number_of_courses) break;
+        }
+        usedCourses.addAll(matchedCourses);
+        parsed_requirements.push(new CourseRequirement(requirement));
+    }
+    return parsed_requirements;
 }
 
 function getCoursesTable() {
@@ -166,7 +223,7 @@ const actions = {
     async export({ state }, options) {
         let course_table = getCoursesTable();
         if (options.PDF) {
-            axios.get("/api/requirements/export", {
+            axios.get(backend_api + "/api/requirements/export", {
                 params: {
                     table: course_table,
                     termList : state.termList
@@ -180,7 +237,7 @@ const actions = {
                 );
             });
         } else if (options.XLS) {
-            axios.get("/api/requirements/export", {
+            axios.get(backend_api + "/api/requirements/export", {
                 params: {
                     table: course_table,
                     termList: state.termList
@@ -197,7 +254,7 @@ const actions = {
     },
     fillOutChecklist({ commit, getters }) {
         if (!getters.majorRequirements.length) return
-        axios.get("/api/requirements/requirements", {
+        axios.get(backend_api + "/api/requirements/requirements", {
             params: {
                 major: getters.majorRequirements[0].info.program_name,
                 minor: getters.minorRequirements.length != 0 ? getters.minorRequirements[0].info.program_name : "",
@@ -266,9 +323,8 @@ const mutations = {
             }
         }
     },
-    //WIP
-    addCourse: (state, termIndex) => {
-        void termIndex
+    addCourse: (state, { newRequirement, termIndex} ) => {
+        state.table[termIndex].courses.push(newRequirement)
     },
     validateCourses : (state) => {
         let listOfCoursesTaken = [];
@@ -282,7 +338,7 @@ const mutations = {
                 //there if course has not been selected yet then dont do anything
                 if (!requirement.selected_course) continue
                 if (requirement.selected_course.course_code !== "WAITING") {
-                    axios.get("/api/meets_prereqs/get", {
+                    axios.get(backend_api + "/api/meets_prereqs/get", {
                         params: {
                             list_of_courses_taken: listOfCoursesTaken,
                             current_term_courses: currentTermCourses,
