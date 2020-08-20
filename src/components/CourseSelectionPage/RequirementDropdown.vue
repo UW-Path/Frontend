@@ -176,11 +176,12 @@ export default {
 .title {
     text-align: left;
     padding: 1em;
-    font-size: 0.8rem !important;
+    font-size: 0.85rem !important;
     font-weight: 400;
     background-color: #4a75ad59; /*#ffea3df0;*/
-    margin-top: 0.5em;
+    margin-top: 0;
     margin-bottom: 0.5em;
+    font-weight: 500;
 }
 </style>
 
