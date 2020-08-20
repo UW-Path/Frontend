@@ -118,4 +118,5 @@ export default {
     font-size: .9em !important;
 }
 
+
 </style>

@@ -194,5 +194,7 @@ export default {
 .v-expansion-panels {
     width: 95% !important;
     left: 2.5%;
+    margin-bottom: 1em;
 }
+
 </style>

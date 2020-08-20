@@ -6,7 +6,7 @@
       <template v-for="(term, termIndex) in getTable">  
         <v-card class="col-sm-3 col-md-2 term-column" :key="termIndex" @mouseenter="termMouseOver(termIndex)" @mouseleave="termMouseExit()">
         <div class="default-font term-title"><b>{{ getTermList[termIndex] }}</b>
-          <v-btn icon class="delete-btn" small @click="deleteTerm(term)">
+          <v-btn icon class="delete-btn" x-small @click="deleteTerm(term)">
             <v-icon medium class="delete-term-btn" v-if="termHovered == termIndex">mdi-trash-can</v-icon>
           </v-btn>
         </div>

@@ -24,10 +24,10 @@
             <v-spacer></v-spacer>
             <v-btn icon class="delete-btn" @click="deleteCourse()" v-if="!onSelectionBar"></v-btn>
           </div>
-          <v-list-item-title class="mb-1" style="font-size:2.5vh;" v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met && !courseData.inRequirementBar || courseData.overridden, course_card_prereqs_failed: !courseData.prereqs_met && !courseData.inRequirementBar && !courseData.overridden}">
+          <v-list-item-title class="mb-1" style="font-size:1.2em; margin-top:0.1em" v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met && !courseData.inRequirementBar || courseData.overridden, course_card_prereqs_failed: !courseData.prereqs_met && !courseData.inRequirementBar && !courseData.overridden}">
             {{ courseData.selected_course.course_code }}
           </v-list-item-title>
-          <v-list-item-subtitle style="font-size: 1.5vh;">{{ courseData.selected_course.course_name }}</v-list-item-subtitle>
+          <v-list-item-subtitle style="font-size: 0.9em; margin-bottom: 1em;">{{ courseData.selected_course.course_name }}</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
     </template>
@@ -42,13 +42,13 @@
           <div v-if="courseData.course_codes.length <= 3">
             <template v-for="(code, index) in courseData.course_codes" >
                 <v-list-item-subtitle  :key="index" v-if="isSelected(code)">{{  code  }}</v-list-item-subtitle>
-                <v-list-item-subtitle  :key="index" v-else>{{  code  }}</v-list-item-subtitle>
+                <v-list-item-subtitle class="select-font" :key="index" v-else>{{  code  }}</v-list-item-subtitle>
             </template>
           </div>    
           <div v-else>
             <template v-for="(code, index) in courseData.course_codes.slice(0,3)" >
                 <v-list-item-subtitle  :key="index" v-if="isSelected(code)">{{  code  }}</v-list-item-subtitle>
-                <v-list-item-subtitle  :key="index" v-else>{{  code  }}<b v-if="index==2">...</b> </v-list-item-subtitle>
+                <v-list-item-subtitle  class="select-font" :key="index" v-else>{{  code  }}<b v-if="index==2">...</b> </v-list-item-subtitle>
             </template>
           </div>    
         </v-list-item-content>
@@ -95,7 +95,7 @@ export default {
   padding-right: 0.3rem;
   text-align: center;
   height: 1.6em !important;
-  font-size: 1.1vh !important;
+  font-size: 0.8em !important;
 }
 
 .card {
@@ -115,8 +115,8 @@ export default {
   display: block;
   border-width: thin;
   margin: 0px;
-  height: 10px !important;
-  width: 10px !important;
+  height: 0.65rem !important;
+  width: 0.65rem !important;
 }
 
 .delete-btn:hover {
@@ -138,11 +138,16 @@ export default {
 }
 
 .course-card{
-  max-height: 6em;
+  height: 6em;
 }
 
 .v-list-item__content {
   margin-top: -0.4em !important;
+}
+
+
+.select-font{
+  font-size: 1em;
 }
 
 </style>
