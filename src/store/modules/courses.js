@@ -4,10 +4,10 @@ import {CourseInfo, CourseRequirement} from '../../models/courseModel'
 import {MajorRequirement, MinorRequirement, OptionRequirement } from '../../models/ProgramModel'
 
 // Production Kubernetes API
-const backend_api = "";
+//const backend_api = "";
 
 // Dev API
-// const backend_api = "http://127.0.0.1:8000";
+ const backend_api = "http://127.0.0.1:8000";
 
 // Fetch course information of a single course code (eg MATH 239 or PHYS 300-)
 async function parseRequirement(courseCode) {
