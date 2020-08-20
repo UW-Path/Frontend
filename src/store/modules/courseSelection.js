@@ -4,10 +4,10 @@ import { CourseRequirement } from "../../models/courseModel";
 import * as download from 'downloadjs'
 
 // Production Kubernetes API
-//const backend_api = "";
+const backend_api = "";
 
 // Dev API
- const backend_api = "http://127.0.0.1:8000";
+//const backend_api = "http://127.0.0.1:8000";
 
 const defaultTable = [ 
     {
