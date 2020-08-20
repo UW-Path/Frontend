@@ -1,5 +1,12 @@
 import axios from "axios";
 import { MajorInfo, MinorInfo, OptionInfo } from "../../models/ProgramInfoModel"
+
+// Production Kubernetes API
+const backend_api = "";
+
+// Dev API
+// const backend_api = "http://127.0.0.1:8000";
+
 //need to move the routes to the configs
 
 const state = {
@@ -35,7 +42,7 @@ const getters = {
 
 const actions = {
     fetchMajors({ commit }) {
-        axios.get("/api/requirements/unique_major")
+        axios.get(backend_api + "/api/requirements/unique_major")
         .then(response => {
             console.log("majors list", response.data)
             commit('setMajor', response.data["Major"]);

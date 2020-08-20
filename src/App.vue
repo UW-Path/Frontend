@@ -14,10 +14,11 @@
 import {  mapActions } from "vuex";
 export default {
   methods: {
-  ...mapActions(["fetchMajors"]),
+  ...mapActions(["fetchMajors", "fetchAllCourses"]),
   },
   created() {
-      this.fetchMajors();
+    this.fetchMajors();
+    this.fetchAllCourses()
   },
 }
 
