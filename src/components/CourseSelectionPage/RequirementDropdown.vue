@@ -165,14 +165,20 @@ export default {
     color: grey !important;
 }
 
+.v-expansion-panel-content{
+    background-color: ghostwhite;
+}
 
+.v-expansion-panel-header{
+    background-color: ghostwhite;
+}
 
 .title {
     text-align: left;
     padding: 1em;
     font-size: 0.8rem !important;
     font-weight: 400;
-    background-color: #ffea3df0;
+    background-color: #4a75ad59; /*#ffea3df0;*/
     margin-top: 0.5em;
     margin-bottom: 0.5em;
 }
