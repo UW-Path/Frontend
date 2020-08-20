@@ -40,7 +40,7 @@ export class CourseRequirement {
             return choice.course_code
         })
         this.course_codes_raw = data && data.course_codes ? data.course_codes : ""
-        if (data && data.course_choices.length == 1) this.selected_course = data.course_choices[0]
+        if (data && data.course_choices && data.course_choices.length == 1) this.selected_course = data.course_choices[0]
         else if (data && data.selected_course) this.selected_course = data.selected_course 
         else this.selected_course = {course_code: "WAITING", course_number: 42}
 

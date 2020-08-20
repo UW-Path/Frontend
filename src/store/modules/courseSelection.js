@@ -3,8 +3,11 @@ import TrieSearch from "trie-search"
 import { CourseRequirement } from "../../models/courseModel";
 import * as download from 'downloadjs'
 
-//need to move the routes to the configs
+// Production Kubernetes API
+const backend_api = "";
 
+// Dev API
+// const backend_api = "http://127.0.0.1:8000";
 
 const defaultTable = [ 
     {
@@ -221,7 +224,7 @@ const actions = {
     async export({ state }, options) {
         let course_table = getCoursesTable();
         if (options.PDF) {
-            axios.get("/api/requirements/export", {
+            axios.get(backend_api + "/api/requirements/export", {
                 params: {
                     table: course_table,
                     termList : state.termList
@@ -235,7 +238,7 @@ const actions = {
                 );
             });
         } else if (options.XLS) {
-            axios.get("/api/requirements/export", {
+            axios.get(backend_api + "/api/requirements/export", {
                 params: {
                     table: course_table,
                     termList: state.termList
@@ -252,7 +255,7 @@ const actions = {
     },
     fillOutChecklist({ commit, getters }) {
         if (!getters.majorRequirements.length) return
-        axios.get("/api/requirements/requirements", {
+        axios.get(backend_api + "/api/requirements/requirements", {
             params: {
                 major: getters.majorRequirements[0].info.program_name,
                 minor: getters.minorRequirements.length != 0 ? getters.minorRequirements[0].info.program_name : "",
@@ -336,7 +339,7 @@ const mutations = {
                 //there if course has not been selected yet then dont do anything
                 if (!requirement.selected_course) continue
                 if (requirement.selected_course.course_code !== "WAITING") {
-                    axios.get("/api/meets_prereqs/get", {
+                    axios.get(backend_api + "/api/meets_prereqs/get", {
                         params: {
                             list_of_courses_taken: listOfCoursesTaken,
                             current_term_courses: currentTermCourses,

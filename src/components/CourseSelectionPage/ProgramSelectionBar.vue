@@ -11,7 +11,7 @@
         </v-toolbar-title>
         <ProgramSelectionModal/>
         <v-spacer></v-spacer>
-        <v-btn v-on:click="onContactPressed" text color="white"> Contact Us </v-btn>
+        <v-btn text color="white"> Contact Us </v-btn>
     </v-app-bar>
 </template>
 
