@@ -11,7 +11,7 @@
         </v-toolbar-title>
         <ProgramSelectionModal/>
         <v-spacer></v-spacer>
-        <v-btn text color="white"> Contact Us </v-btn>
+        <v-btn text color="white" v-on:click="onContactPressed"> Contact Us </v-btn>
     </v-app-bar>
 </template>
 
@@ -25,6 +25,11 @@ export default {
         ProgramSelectionModal
     },
     computed: mapGetters(["majorRequirements", "minorRequirements", "specRequirements"]),
+    methods: {
+        onContactPressed() {
+            this.$router.push('/Contact')
+        }
+    }
 }
 </script>
 
