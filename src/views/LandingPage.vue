@@ -95,7 +95,7 @@ export default {
 }
 
 .centerpiece-container {
-    margin-left: 20%;
+    margin-left: 20% !important; 
     margin: 2%;
 }
 
@@ -111,9 +111,11 @@ export default {
 
 .autocomplete {
     max-width: 600px;
+    width:100%
 }
 
 .findprogram {
+    text-align: end;
     color: ghostwhite;
     margin-top: 1rem;
     height: 3rem;
@@ -130,6 +132,7 @@ export default {
 }
 
 .confirmation-msg {
+    color:ghostwhite;
     margin-top: 1rem;
     margin-bottom: 0.5rem;
 }

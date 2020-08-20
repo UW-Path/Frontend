@@ -219,7 +219,6 @@ function getCoursesTable() {
     return course_table;
 }
 
-
 const actions = {
     async export({ state }, options) {
         let course_table = getCoursesTable();
