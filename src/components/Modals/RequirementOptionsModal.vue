@@ -98,9 +98,11 @@ export default {
         selectCourse: function () {
             this.course.selected_course = this.selectedCourse;
             this.validateCourses()
+            this.dialog = false;
         },
         deselectCourse() {
             this.course.deselect();
+            this.dialog = false;
         },
         isSelected: function(courseCode) {
             if (!this.course.selected_course) return false
