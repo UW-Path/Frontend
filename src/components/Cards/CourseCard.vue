@@ -6,22 +6,22 @@
           <div class="overline mb-1">
             <div>
             <v-chip v-if="this.courseData.major.length > 0" color="light-blue" label x-small text-color="white" class="chip"> 
-              Major
+              M
             </v-chip>
             <v-chip v-if="this.courseData.minor.length > 0" color="light-green" label text-color="white" class="chip"> 
-              Minor
+              Mi
             </v-chip>
             <v-chip v-if="this.courseData.specialization.length > 0" color="rgb(0,204,204)" label x-small text-color="white" class="chip"> 
-              Option
+              O
             </v-chip>
             <v-chip v-if="this.courseData.course_choices.length > 1" color="grey" label x-small text-color="white" class="chip"> 
-              Choice
+              C
             </v-chip>
             <v-chip v-if="this.courseData.user_selected" color="orange" label text-color="white" class="chip">
-              Added
+              A
             </v-chip>
             <v-chip v-if="this.courseData.overridden" color="red" label x-small text-color="white" class="chip"> 
-              Overridden
+              OR
             </v-chip>
             </div>
             <v-spacer></v-spacer>

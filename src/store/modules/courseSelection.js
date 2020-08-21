@@ -335,22 +335,32 @@ const mutations = {
                 return course.selected_course.course_code;
             });
             for (let requirement of state.table[i].courses) {
+                console.log(requirement)
+                // If course has no prereq, then course can be taken
+                if (requirement.course_choices.length == 1 && requirement.course_choices[0].prereqs.length === 0){
+                    requirement.prereqs_met = true;
+                }
                 //there if course has not been selected yet then dont do anything
-                if (!requirement.selected_course) continue
-                if (requirement.selected_course.course_code !== "WAITING") {
-                    axios.get(backend_api + "/api/meets_prereqs/get", {
-                        params: {
-                            list_of_courses_taken: listOfCoursesTaken,
-                            current_term_courses: currentTermCourses,
-                            pk: requirement.selected_course.course_code,
-                        }
-                    })
-                    .then(response => {
-                        requirement.prereqs_met = response.data.can_take;
-                    })
-                    .catch(err => {
-                        console.log(err);
-                    })
+                else if (!requirement.selected_course) continue
+                else if (requirement.selected_course.course_code !== "WAITING") {
+                    if (requirement.selected_course.prereqs.length === 0){
+                        requirement.prereqs_met = true;
+                    }
+                    else{
+                        axios.get(backend_api + "/api/meets_prereqs/get", {
+                            params: {
+                                list_of_courses_taken: listOfCoursesTaken,
+                                current_term_courses: currentTermCourses,
+                                pk: requirement.selected_course.course_code,
+                            }
+                        })
+                        .then(response => {
+                            requirement.prereqs_met = response.data.can_take;
+                        })
+                        .catch(err => {
+                            console.log(err);
+                        })
+                    }
                 }
             }
             listOfCoursesTaken = listOfCoursesTaken.concat(currentTermCourses);

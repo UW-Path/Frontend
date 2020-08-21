@@ -7,24 +7,31 @@ import {MajorRequirement, MinorRequirement, OptionRequirement } from '../../mode
 const backend_api = "";
 
 // Dev API
-// const backend_api = "http://127.0.0.1:8000";
+// const backend_api = "";
 
 // Fetch course information of a single course code (eg MATH 239 or PHYS 300-)
 async function parseRequirement(courseCode) {
     let hasNumber = /\d/;
-    // Engineering specific
+    // Engineering specific/Program Electives
     if (courseCode.includes("TE")){
         return [new CourseInfo({
             course_name: "Technical Elective",
             course_code: courseCode,
-            info: "Please refer to degree requirement page for more information. (Click on program title)"
+            info: "Please refer to degree requirement page for more information. (Click on program heading)"
         })]
     }
     else if (courseCode.includes("CSE")){
         return [new CourseInfo({
             course_name: "Complementary Studies Elective",
             course_code: courseCode,
-            info: "Please refer to degree requirement page for more information. (Click on program title)"
+            info: "Please refer to degree requirement page for more information. (Click on program heading)"
+        })]
+    }
+    else if (courseCode.includes("Program Elective")){
+        return [new CourseInfo({
+            course_name: courseCode,
+            course_code: courseCode.replace("Program Elective", "PE"),
+            info: "Please refer to degree requirement page for more information. (Click on program heading)"
         })]
     }
 
@@ -102,23 +109,24 @@ async function parseRequirement(courseCode) {
             })
             //Laurier queries are unavailable, so this is necessary
             if (response == null){ 
-                if (courseCode.includes("W")){
+                if (courseCode.includes("WKRPT")){
+                    //Work Term Report
+                    return [ new CourseInfo({ course_code: courseCode, 
+                        course_name:'Work-term Report',
+                        info: "Work-term Report. Please refer to degree requirement page for more information. (Click on program heading)",
+                        online: false
+                    })]
+
+                }
+                else if (courseCode.includes("W")){
                     //laurier couse
                     return [ new CourseInfo({ course_code: courseCode, 
                                                 info: "Information about this course is unavailable. Please refer to https://loris.wlu.ca/register/ssb/registration for more details.",
-                                                credit: 'N/A', 
-                                                prereqs: 'N/A',
-                                                antireqs: 'N/A',
-                                                coreqs: 'N/A',
                                                 online: false
                                             })]
                 }
                 else{
                     return [ new CourseInfo({ course_code: courseCode, info: "Information about this course is unavailable.",
-                                    credit: 'N/A', 
-                                    prereqs: 'N/A',
-                                    antireqs: 'N/A',
-                                    coreqs: 'N/A',
                                     online: false
                                 }),
                                 ]
