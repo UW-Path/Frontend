@@ -5,7 +5,7 @@ import { MajorInfo, MinorInfo, OptionInfo } from "../../models/ProgramInfoModel"
 const backend_api = "";
 
 // Dev API
-// const backend_api = "";
+//const backend_api = "http://127.0.0.1:8000";
 
 //need to move the routes to the configs
 

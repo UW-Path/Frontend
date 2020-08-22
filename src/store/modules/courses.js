@@ -7,7 +7,7 @@ import {MajorRequirement, MinorRequirement, OptionRequirement } from '../../mode
 const backend_api = "";
 
 // Dev API
-// const backend_api = "";
+//const backend_api = "http://127.0.0.1:8000";
 
 // Fetch course information of a single course code (eg MATH 239 or PHYS 300-)
 async function parseRequirement(courseCode) {
@@ -171,18 +171,11 @@ const actions = {
             }
         })
         .then(response => {
-            // Shuffle the course list
-            var currentIndex = response.data.length;
-            var temporaryValue, randomIndex;
-            while (0 !== currentIndex) {
-                // Pick a remaining element...
-                randomIndex = Math.floor(Math.random() * currentIndex);
-                currentIndex -= 1;
-                // And swap it with the current element.
-                temporaryValue = response.data[currentIndex];
-                response.data[currentIndex] = response.data[randomIndex];
-                response.data[randomIndex] = temporaryValue;
-            }
+            response.data.sort((course1, course2) => {
+                if (course1.course_code < course2.course_code) return -1;
+                else if (course1.course_code > course2.course_code) 1;
+                else return 0;
+            })
             commit('setAllCourses', response.data);
         })
         .catch(err => {
