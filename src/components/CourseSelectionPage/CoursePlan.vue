@@ -19,7 +19,7 @@
               :onSelectionBar="false"
             />
           </template>
-          <AddCourseCard :termIndex="termIndex"/>
+          <AddCourseCard :termIndex="termIndex" v-show="termHovered === termIndex"/>
 
         </draggable>
       </v-card >

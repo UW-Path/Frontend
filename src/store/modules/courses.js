@@ -7,7 +7,7 @@ import {MajorRequirement, MinorRequirement, OptionRequirement } from '../../mode
 const backend_api = "";
 
 // Dev API
-// const backend_api = "";
+//const backend_api = "http://127.0.0.1:8000";
 
 // Fetch course information of a single course code (eg MATH 239 or PHYS 300-)
 async function parseRequirement(courseCode) {
@@ -171,18 +171,11 @@ const actions = {
             }
         })
         .then(response => {
-            // Shuffle the course list
-            var currentIndex = response.data.length;
-            var temporaryValue, randomIndex;
-            while (0 !== currentIndex) {
-                // Pick a remaining element...
-                randomIndex = Math.floor(Math.random() * currentIndex);
-                currentIndex -= 1;
-                // And swap it with the current element.
-                temporaryValue = response.data[currentIndex];
-                response.data[currentIndex] = response.data[randomIndex];
-                response.data[randomIndex] = temporaryValue;
-            }
+            response.data.sort((course1, course2) => {
+                if (course1.course_code < course2.course_code) return -1;
+                else if (course1.course_code > course2.course_code) 1;
+                else return 0;
+            })
             commit('setAllCourses', response.data);
         })
         .catch(err => {
@@ -192,13 +185,27 @@ const actions = {
     // Fetching requirements simply adds requirements to the requirement column.
     // To delete the requirements, one would need to call the functions in mutation
     async fetchRequirements({ commit, getters, state }, options) {
+        // 1A, 1B, one, two... is when courses are told to be taken in those years
         let map = {
             "-1": "others",
             "1": "firstYear",
             "2": "secondYear",
             "3": "thirdYear",
-            "4": "fourthYear"
+            "4": "fourthYear",
+            "5": "one", 
+            "6": "two",
+            "7": "three",
+            "8": "four",
+            "9": "oneA",
+            "10": "oneB",
+            "11": "twoA",
+            "12": "twoB",
+            "13": "threeA",
+            "14": "threeB",
+            "15": "fourA",
+            "16": "fourB",
         };
+
         if (!options.newMajor && !getters.majorRequirements.length) return 
         const response = await axios.get(backend_api + "/api/requirements/requirements", {
             params: {
@@ -220,11 +227,13 @@ const actions = {
                 }
 
                 Promise.all(promises).then(choices => {
+                    // additional req only needed in majors
                     let parsed_requirement = {
                         course_codes: requirement.course_codes,
                         course_choices: [],
                         number_of_courses: requirement.number_of_courses,
                         major: [options.newMajor],
+                        additional_requirements: requirement.additional_requirements
                     }
                     for (let choice of choices) {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
@@ -318,8 +327,22 @@ const mutations = {
             "1": "firstYear",
             "2": "secondYear",
             "3": "thirdYear",
-            "4": "fourthYear"
-        }
+            "4": "fourthYear",
+            "5": "one", 
+            "6": "two",
+            "7": "three",
+            "8": "four",
+            "9": "oneA",
+            "10": "oneB",
+            "11": "twoA",
+            "12": "twoB",
+            "13": "threeA",
+            "14": "threeB",
+            "15": "fourA",
+            "16": "fourB",
+        };
+
+
         //reset everything when entering the requirement bar
         requirement.inRequirementBar = true
         requirement.deselect()

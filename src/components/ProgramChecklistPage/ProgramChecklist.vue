@@ -7,7 +7,7 @@
             </div>
             <div v-if="checklistMinorRequirements.length > 0">
                 <p class="checklist-title">Minor Requirements</p>
-                <ProgramChecklistSection v-bind:requirement="checklistMajorRequirements"/>
+                <ProgramChecklistSection v-bind:requirements="checklistMinorRequirements"/>
             </div>
             <div v-if="checklistOptionRequirements.length > 0">
                 <p class="checklist-title">Option Requirements</p>
