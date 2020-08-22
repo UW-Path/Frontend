@@ -49,7 +49,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 3%;
+    padding: 2.5%;
     background-color: #EFEFEF;
     width: 100%;
     height: 100%;
