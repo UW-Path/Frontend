@@ -1,12 +1,12 @@
 <template>
-    <v-app-bar color="#4A75AD">
+    <v-app-bar elevation="2" color="#4A75AD">
         <v-toolbar-title class="program-titles" v-for="(major,index) in majorRequirements" :key="index" >
             <a v-bind:href="major.info.link" target="_blank">{{major.info.program_name }}</a>
         </v-toolbar-title>
-        <v-toolbar-title class="program-titles" v-for="(minor, index) in minorRequirements" :key="index + majorRequirements.length" v-bind:href="minor.link">
+        <v-toolbar-title class="program-titles minor-font" v-for="(minor, index) in minorRequirements" :key="index + majorRequirements.length" v-bind:href="minor.link">
             <a v-bind:href="minor.info.link" target="_blank">{{ minor.info.program_name  }}</a>
         </v-toolbar-title>
-        <v-toolbar-title class="program-titles"  v-for="(spec,index) in specRequirements" :key="index + majorRequirements.length + minorRequirements.length" v-bind:href="spec.link"> 
+        <v-toolbar-title class="program-titles minor-font"  v-for="(spec,index) in specRequirements" :key="index + majorRequirements.length + minorRequirements.length" v-bind:href="spec.link"> 
             <a v-bind:href="spec.info.link" target="_blank">{{ spec.info.program_name  }}</a>
         </v-toolbar-title>
         <ProgramSelectionModal/>
@@ -38,12 +38,16 @@ export default {
 .program-titles {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
-    color:ghostwhite; 
 }
 
 a {
-    color: black !important;
+    color: ghostwhite !important;
     text-decoration: none;
+}
+
+.minor-font{
+    font-size: 1em;
+    opacity: 0.6;
 }
 
 a:hover {

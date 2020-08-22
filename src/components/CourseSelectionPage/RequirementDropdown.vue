@@ -1,9 +1,13 @@
 <template>
 <div>
     <div v-for="(program, index) in programArray" :key="index">      
-        <div class="title">{{ program.info.program_name }}</div>
+        <div v-if="program.info.plan_type==='Major'" class="title"><b>Major Requirement</b></div>
+        <div v-else-if="program.info.plan_type==='Minor'" class="title"><b>Minor Requirement</b></div>
+        <div v-else-if="program.info.plan_type==='Specialization'" class="title"><b>Specialization Requirement</b></div>
+        <div v-else-if="program.info.plan_type==='Option'" class="title"><b>Option Requirement</b></div>
+        <div v-else class="title"><b>Joint Requirement</b></div>
         <v-expansion-panels multiple>
-            <v-expansion-panel class="expansion-panel" v-if="program.firstYear.length">
+            <v-expansion-panel  class="expansion-panel" v-if="program.firstYear.length">
                 <v-expansion-panel-header>100s Courses</v-expansion-panel-header>
                 <v-expansion-panel-content>
                     <draggable class="draggable-column" :list="program.firstYear" :group="{ name: 'course', pull: pullFunction }" :clone="clone" @change="change">
@@ -161,17 +165,23 @@ export default {
     color: grey !important;
 }
 
+.v-expansion-panel-content{
+    background-color: ghostwhite;
+}
 
+.v-expansion-panel-header{
+    background-color: ghostwhite;
+}
 
 .title {
     text-align: left;
-    padding-left: 24px;
-    padding-right: 24px;
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-    font-size: 1rem !important;
+    padding: 1em;
+    font-size: 0.85rem !important;
     font-weight: 400;
-    background-color: white;
+    background-color: #4a75ad59; /*#ffea3df0;*/
+    margin-top: 0;
+    margin-bottom: 0.5em;
+    font-weight: 500;
 }
 </style>
 
@@ -179,4 +189,19 @@ export default {
 .v-expansion-panel-content__wrap {
     padding: 0 !important;
 }
+.v-expansion-panel-header{
+    font-size:1em !important; 
+    height: 3em;
+    min-height: 3em !important;
+}
+
+.v-expansion-panel-header--active{
+    margin-bottom: -0.9em !important;
+}
+.v-expansion-panels {
+    width: 95% !important;
+    left: 2.5%;
+    margin-bottom: 1em;
+}
+
 </style>

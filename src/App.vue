@@ -36,6 +36,7 @@ export default {
 }
 
 #nav {
+  font-size: .9em;
   position: fixed;
   bottom: 1%;
   right: 3%;

@@ -40,7 +40,7 @@ export default {
 <style scoped>
 
 .checklist-title {
-    font-size: 18px;
+    font-size: 1.5em;
     font-weight: 500;
     text-align: left;
 }

@@ -5,8 +5,8 @@
 
       <template v-for="(term, termIndex) in getTable">  
         <v-card class="col-sm-3 col-md-2 term-column" :key="termIndex" @mouseenter="termMouseOver(termIndex)" @mouseleave="termMouseExit()">
-        <div class="text-h6 term-title">{{ getTermList[termIndex] }}
-          <v-btn icon class="delete-btn" small @click="deleteTerm(term)">
+        <div class="default-font term-title"><b>{{ getTermList[termIndex] }}</b>
+          <v-btn icon class="delete-btn" x-small @click="deleteTerm(term)">
             <v-icon medium class="delete-term-btn" v-if="termHovered == termIndex">mdi-trash-can</v-icon>
           </v-btn>
         </div>
@@ -128,6 +128,7 @@ export default {
     align-items: center;
     text-align: left;
     justify-content: space-between;
+    margin-top: -0.5em;
   }
 
   .add-term-btn {
@@ -150,5 +151,11 @@ export default {
     min-height: 90%;
     width: 100%;
   }
+  
+  .default-font {
+    font-size: 1em;
+    
+  }
+
 
 </style>

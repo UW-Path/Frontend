@@ -12,19 +12,26 @@ const backend_api = "";
 // Fetch course information of a single course code (eg MATH 239 or PHYS 300-)
 async function parseRequirement(courseCode) {
     let hasNumber = /\d/;
-    // Engineering specific
+    // Engineering specific/Program Electives
     if (courseCode.includes("TE")){
         return [new CourseInfo({
             course_name: "Technical Elective",
             course_code: courseCode,
-            info: "Please refer to degree requirement page for more information. (Click on program title)"
+            info: "Please refer to degree requirement page for more information. (Click on program heading)"
         })]
     }
     else if (courseCode.includes("CSE")){
         return [new CourseInfo({
             course_name: "Complementary Studies Elective",
             course_code: courseCode,
-            info: "Please refer to degree requirement page for more information. (Click on program title)"
+            info: "Please refer to degree requirement page for more information. (Click on program heading)"
+        })]
+    }
+    else if (courseCode.includes("Program Elective")){
+        return [new CourseInfo({
+            course_name: courseCode,
+            course_code: courseCode.replace("Program Elective", "PE"),
+            info: "Please refer to degree requirement page for more information. (Click on program heading)"
         })]
     }
 
@@ -102,23 +109,24 @@ async function parseRequirement(courseCode) {
             })
             //Laurier queries are unavailable, so this is necessary
             if (response == null){ 
-                if (courseCode.includes("W")){
+                if (courseCode.includes("WKRPT")){
+                    //Work Term Report
+                    return [ new CourseInfo({ course_code: courseCode, 
+                        course_name:'Work-term Report',
+                        info: "Work-term Report. Please refer to degree requirement page for more information. (Click on program heading)",
+                        online: false
+                    })]
+
+                }
+                else if (courseCode.includes("W")){
                     //laurier couse
                     return [ new CourseInfo({ course_code: courseCode, 
                                                 info: "Information about this course is unavailable. Please refer to https://loris.wlu.ca/register/ssb/registration for more details.",
-                                                credit: 'N/A', 
-                                                prereqs: 'N/A',
-                                                antireqs: 'N/A',
-                                                coreqs: 'N/A',
                                                 online: false
                                             })]
                 }
                 else{
                     return [ new CourseInfo({ course_code: courseCode, info: "Information about this course is unavailable.",
-                                    credit: 'N/A', 
-                                    prereqs: 'N/A',
-                                    antireqs: 'N/A',
-                                    coreqs: 'N/A',
                                     online: false
                                 }),
                                 ]
@@ -174,7 +182,8 @@ const actions = {
             console.log(err)
         }) 
     },
-    // Fetching requirements simply adds requirements to the requirement column. To delete the requirements, one would need to call the functions in mutation
+    // Fetching requirements simply adds requirements to the requirement column.
+    // To delete the requirements, one would need to call the functions in mutation
     async fetchRequirements({ commit, getters, state }, options) {
         let map = {
             "-1": "others",
@@ -182,7 +191,7 @@ const actions = {
             "2": "secondYear",
             "3": "thirdYear",
             "4": "fourthYear"
-        }
+        };
         if (!options.newMajor && !getters.majorRequirements.length) return 
         const response = await axios.get(backend_api + "/api/requirements/requirements", {
             params: {
@@ -191,14 +200,14 @@ const actions = {
                 option: options.newSpecialization ? options.newSpecialization.program_name : ""
             }
         });
-        console.log("requirements ", response.data)
+        console.log("requirements ", response.data);
 
         if (options.newMajor) {
-            let newMajor = new MajorRequirement({ info: options.newMajor })
+            let newMajor = new MajorRequirement({info: options.newMajor});
 
             for (let requirement of response.data.requirements) {
-                let promises = []
-                let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
+                let promises = [];
+                let required_courses = requirement.course_codes.split(/,\s|\sor\s/);
                 for (let course of required_courses) {
                     promises.push(parseRequirement(course))
                 }
@@ -213,19 +222,19 @@ const actions = {
                     for (let choice of choices) {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
                     }
-                    let parsed_req_obj = new CourseRequirement(parsed_requirement)
+                    let parsed_req_obj = new CourseRequirement(parsed_requirement);
                     newMajor[map[parsed_req_obj.year]].push(parsed_req_obj)
                 })
-                .catch(err => {
-                    console.log(err)
-                })
+                    .catch(err => {
+                        console.log(err)
+                    })
             }
             //TODO:kevin this way is used to resolve a synch bug but its fcked, will change when have time
             state.majorRequirements.push(newMajor)
             commit('setMinor', response.data["minor_list"]);
             commit('setSpecialization', response.data["option_list"]);
         }
-        //minor requirments
+        // Minor requirements
         if (response.data.minor_requirements != undefined && options.newMinor) {
             let newMinor = new MinorRequirement({ info: options.newMinor })
 
@@ -255,7 +264,7 @@ const actions = {
             }
             state.minorRequirements.push(newMinor)
         } 
-        //option requirments
+        // Option requirements
         if (response.data.option_requirements != undefined && options.newSpecialization) {
             let newSpec = new OptionRequirement({ info: options.newSpecialization })
 
