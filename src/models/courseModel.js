@@ -54,8 +54,24 @@ export class CourseRequirement {
         this.number_of_prereqs_met = data && data.number_of_prereqs_met ? data.number_of_prereqs_met : 0
         this.user_selected = data && data.user_selected ? data.user_selected : false
         // the year is x if all course choices that are in the requirement are in the same year, otherwise, it is -1 which is other
-        this.year = this.course_choices.length ? this.course_choices[0].year : -1
-        for(let course of this.course_choices) if (course.year != this.year) this.year = -1
+        // if additional req indicate when the course should be taken, this takes precedence
+
+        if (data.additional_requirements === "1") this.year = 5
+        else if (data.additional_requirements === "2") this.year = 6
+        else if (data.additional_requirements === "3") this.year = 7
+        else if (data.additional_requirements === "4") this.year = 8
+        else if (data.additional_requirements === "1A") this.year = 9
+        else if (data.additional_requirements === "1B") this.year = 10
+        else if (data.additional_requirements === "2A") this.year = 11
+        else if (data.additional_requirements === "2B") this.year = 12
+        else if (data.additional_requirements === "3A") this.year = 13
+        else if (data.additional_requirements === "3B") this.year = 14
+        else if (data.additional_requirements === "4A") this.year = 15
+        else if (data.additional_requirements === "4B") this.year = 16
+        else{
+            this.year = this.course_choices.length ? this.course_choices[0].year : -1
+            for(let course of this.course_choices) if (course.year != this.year) this.year = -1
+        }
     }
 
     deselect() {
