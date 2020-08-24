@@ -95,12 +95,15 @@ export default {
     },
     selectAddedCourse() {
       var addedCourse = new CourseInfo(this.selectedCourse);
-      var newRequirement = new CourseRequirement();
-      newRequirement.selected_course = addedCourse;
-      newRequirement.user_selected = true;
-      newRequirement.inRequirementBar = false;
-      newRequirement.number_of_courses = 1;
-      newRequirement.course_choices = [addedCourse]
+      let req = {
+          selected_course: addedCourse,
+          user_selected: true,
+          inRequirementBar: false,
+          number_of_courses: 1,
+          course_choices: [addedCourse],
+          additional_requirements: ""
+      }
+      var newRequirement = new CourseRequirement(req);
       this.dialog = false;
       this.addCourse({newRequirement: newRequirement, termIndex: this.termIndex});
       this.validateCourses();

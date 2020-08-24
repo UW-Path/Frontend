@@ -7,7 +7,7 @@ import {MajorRequirement, MinorRequirement, OptionRequirement } from '../../mode
 const backend_api = "";
 
 // Dev API
-//const backend_api = "http://127.0.0.1:8000";
+// const backend_api = "http://127.0.0.1:8000";
 
 // Fetch course information of a single course code (eg MATH 239 or PHYS 300-)
 async function parseRequirement(courseCode) {
@@ -267,6 +267,7 @@ const actions = {
                         course_choices: [],
                         number_of_courses: requirement.number_of_courses,
                         minor: [options.newMinor],
+                        additional_requirements: requirement.additional_requirements
                     }
                     for (let choice of choices) {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
@@ -297,6 +298,7 @@ const actions = {
                         course_choices: [],
                         number_of_courses: requirement.number_of_courses,
                         specialization: [options.newSpecialization],
+                        additional_requirements: requirement.additional_requirements
                     }        
                     for (let choice of choices) {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
