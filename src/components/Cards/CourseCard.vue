@@ -11,7 +11,7 @@
                     M
                   </v-chip>
                 </template>
-                <span>Major</span>
+                <span>Major {{this.courseData}}</span>
             </v-tooltip>
 
             <v-tooltip top open-delay="300" max-width="350px" v-if="this.courseData.minor.length > 0">
@@ -47,7 +47,7 @@
                     A
                   </v-chip>
                 </template>
-                <span>Added Course</span>
+                <span>Added Course {{this.courseData}}</span>
             </v-tooltip>
 
             <v-tooltip top open-delay="300" max-width="350px" v-if="this.courseData.overridden">
@@ -56,7 +56,7 @@
                     OR
                   </v-chip>
                 </template>
-                <span>Course Overridden</span>
+                <span>Course overridden</span>
             </v-tooltip>
             
             </div>
