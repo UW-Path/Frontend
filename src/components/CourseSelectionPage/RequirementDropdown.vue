@@ -125,7 +125,7 @@
 					</v-expansion-panel-content>
 				</v-expansion-panel>
 
-                <v-expansion-panel class="expansion-panel" v-if="program.one.length">
+                <v-expansion-panel class="expansion-panel" v-if="program.one && program.one.length">
 					<v-expansion-panel-header>Year One</v-expansion-panel-header>
 					<v-expansion-panel-content>
 						<draggable
@@ -147,7 +147,7 @@
 					</v-expansion-panel-content>
 				</v-expansion-panel>
 
-                <v-expansion-panel class="expansion-panel" v-if="program.two.length">
+                <v-expansion-panel class="expansion-panel" v-if="program.two && program.two.length">
 					<v-expansion-panel-header>Year Two</v-expansion-panel-header>
 					<v-expansion-panel-content>
 						<draggable
@@ -169,7 +169,7 @@
 					</v-expansion-panel-content>
 				</v-expansion-panel>
 
-                <v-expansion-panel class="expansion-panel" v-if="program.three.length">
+                <v-expansion-panel class="expansion-panel" v-if="program.three && program.three.length">
 					<v-expansion-panel-header>Year Three</v-expansion-panel-header>
 					<v-expansion-panel-content>
 						<draggable
@@ -191,7 +191,7 @@
 					</v-expansion-panel-content>
 				</v-expansion-panel>
 
-                <v-expansion-panel class="expansion-panel" v-if="program.four.length">
+                <v-expansion-panel class="expansion-panel" v-if="program.four && program.four.length">
 					<v-expansion-panel-header>Year Four</v-expansion-panel-header>
 					<v-expansion-panel-content>
 						<draggable
@@ -213,7 +213,7 @@
 					</v-expansion-panel-content>
 				</v-expansion-panel>
 
-                <v-expansion-panel class="expansion-panel" v-if="program.oneA.length">
+                <v-expansion-panel class="expansion-panel" v-if="program.oneA && program.oneA.length">
 					<v-expansion-panel-header>1A</v-expansion-panel-header>
 					<v-expansion-panel-content>
 						<draggable
@@ -235,7 +235,7 @@
 					</v-expansion-panel-content>
 				</v-expansion-panel>
 
-                <v-expansion-panel class="expansion-panel" v-if="program.oneB.length">
+                <v-expansion-panel class="expansion-panel" v-if="program.oneB && program.oneB.length">
 					<v-expansion-panel-header>1B</v-expansion-panel-header>
 					<v-expansion-panel-content>
 						<draggable
@@ -257,7 +257,7 @@
 					</v-expansion-panel-content>
 				</v-expansion-panel>
 
-                <v-expansion-panel class="expansion-panel" v-if="program.twoA.length">
+                <v-expansion-panel class="expansion-panel" v-if="program.twoA && program.twoA.length">
 					<v-expansion-panel-header>2A</v-expansion-panel-header>
 					<v-expansion-panel-content>
 						<draggable
@@ -279,7 +279,7 @@
 					</v-expansion-panel-content>
 				</v-expansion-panel>
 
-                <v-expansion-panel class="expansion-panel" v-if="program.twoB.length">
+                <v-expansion-panel class="expansion-panel" v-if="program.twoB && program.twoB.length">
 					<v-expansion-panel-header>2B</v-expansion-panel-header>
 					<v-expansion-panel-content>
 						<draggable
@@ -301,7 +301,7 @@
 					</v-expansion-panel-content>
 				</v-expansion-panel>
 
-                <v-expansion-panel class="expansion-panel" v-if="program.threeA.length">
+                <v-expansion-panel class="expansion-panel" v-if="program.threeA && program.threeA.length">
 					<v-expansion-panel-header>3A</v-expansion-panel-header>
 					<v-expansion-panel-content>
 						<draggable
@@ -323,7 +323,7 @@
 					</v-expansion-panel-content>
 				</v-expansion-panel>
 
-                <v-expansion-panel class="expansion-panel" v-if="program.threeB.length">
+                <v-expansion-panel class="expansion-panel" v-if="program.threeB && program.threeB.length">
 					<v-expansion-panel-header>3B</v-expansion-panel-header>
 					<v-expansion-panel-content>
 						<draggable
@@ -345,7 +345,7 @@
 					</v-expansion-panel-content>
 				</v-expansion-panel>
 
-                <v-expansion-panel class="expansion-panel" v-if="program.fourA.length">
+                <v-expansion-panel class="expansion-panel" v-if="program.fourA && program.fourA.length">
 					<v-expansion-panel-header>4A</v-expansion-panel-header>
 					<v-expansion-panel-content>
 						<draggable
@@ -367,7 +367,7 @@
 					</v-expansion-panel-content>
 				</v-expansion-panel>
 
-                <v-expansion-panel class="expansion-panel" v-if="program.fourB.length">
+                <v-expansion-panel class="expansion-panel" v-if="program.fourB && program.fourB.length">
 					<v-expansion-panel-header>4B</v-expansion-panel-header>
 					<v-expansion-panel-content>
 						<draggable
