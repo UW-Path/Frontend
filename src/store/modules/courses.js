@@ -2,6 +2,8 @@ import axios from "axios";
 import {CourseInfo, CourseRequirement} from '../../models/courseModel'
 import {MajorRequirement, MinorRequirement, OptionRequirement } from '../../models/ProgramModel'
 
+const backend = "http://localhost:8000"
+
 // Fetch course information of a single course code (eg MATH 239 or PHYS 300-)
 async function parseRequirement(courseCode) {
     let hasNumber = /\d/;
@@ -36,7 +38,7 @@ async function parseRequirement(courseCode) {
             })]
         }
         else{
-            const response = await axios.get("/api/course-info/filter", {
+            const response = await axios.get(backend +"/api/course-info/filter", {
                 params: {
                     start: 0,
                     end: 499,
@@ -54,7 +56,7 @@ async function parseRequirement(courseCode) {
             split = courseCode.split(" ");
             
             if(split[1] === "LAB"){
-                response = await axios.get("/api/course-info/filter", {
+                response = await axios.get(backend +"/api/course-info/filter", {
                     params: {
                         start: Number(split[2].slice(0, -1)),
                         end: Number(split[2].slice(0, -1)) + 99,
@@ -63,7 +65,7 @@ async function parseRequirement(courseCode) {
                 })
             }
             else{
-                response = await axios.get("/api/course-info/filter", {
+                response = await axios.get(backend +"/api/course-info/filter", {
                     params: {
                         start: Number(split[1].slice(0, -1)),
                         end: Number(split[1].slice(0, -1)) + 99,
@@ -75,7 +77,7 @@ async function parseRequirement(courseCode) {
         } else if (courseCode.split("-").length === 2 && courseCode.split("-")[0].length > 0 && courseCode.split("-")[1].length > 0) {
             // Handles range case, eg CS 440-CS 498
             split = courseCode.split("-");
-            const response = await axios.get("/api/course-info/filter", {
+            const response = await axios.get(backend +"/api/course-info/filter", {
                 params: {
                     start: Number(split[0].split(" ")[1]),
                     end: Number(split[1].split(" ")[1]),
@@ -85,7 +87,7 @@ async function parseRequirement(courseCode) {
             return response.data.map(element => { return new CourseInfo(element) });
         } else {
             // Handles normal course case, ege MATH 239
-            const response = await axios.get("/api/course-info/get", {
+            const response = await axios.get(backend +"/api/course-info/get", {
                 params: {
                     pk: courseCode,
                 }
@@ -149,8 +151,12 @@ const actions = {
             "3": "thirdYear",
             "4": "fourthYear"
         }
+
+        let table1needed = false;
+        let table2needed = false;
+
         if (!options.newMajor && !getters.majorRequirements.length) return 
-        const response = await axios.get("/api/requirements/requirements", {
+        const response = await axios.get(backend +"/api/requirements/requirements", {
             params: {
                 major: options.newMajor ? options.newMajor.program_name : getters.majorRequirements[0].info.program_name ,
                 minor: options.newMinor ?  options.newMinor.program_name : "",
@@ -158,23 +164,56 @@ const actions = {
             }
         });
         console.log("requirements ", response.data)
+        let newMajorRequirements = response.data.requirements;
 
         if (options.newMajor) {
             let newMajor = new MajorRequirement({ info: options.newMajor })
 
-            for (let requirement of response.data.requirements) {
+            //find all the additional requirements first
+            response.data.requirements.forEach(req => {
+                let additionalReqs = req.additional_requirements ? req.additional_requirements.toLowerCase().split(", ") : []
+                for (let additionalReq of additionalReqs) {
+                    console.log(additionalReq)
+                    if (additionalReq == "table ii") table2needed = true           
+                    if (additionalReq == "table i") table1needed = true
+                }
+            });
+            console.log("has table 1", table1needed)
+            console.log("has table 2", table2needed)
+            
+            if (table1needed) {
+                let list1_courses = response.data.table1.filter( course => {return course.list_number == 1}).map(course => { return course.course_code }).join(",")
+                let list2_courses = response.data.table1.filter( course => {return course.list_number == 2}).map(course => { return course.course_code }).join(",")
+                let list1 = { 
+                    course_codes: list1_courses,
+                    number_of_courses: 1,
+                }
+                let list2 = {
+                    course_codes: list2_courses,
+                    number_of_courses: 1,
+                }
+                newMajorRequirements.push(list1)
+                newMajorRequirements.push(list2)
+            }
+
+            if (table2needed) {
+                newMajorRequirements = newMajorRequirements.concat(response.data.table2)
+            }
+
+            console.log("all requirements", newMajorRequirements)
+            for (let requirement of newMajorRequirements) {
                 let promises = []
-                let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
+                let required_courses = requirement.course_codes.split(/,\s|\sor\s|,/)
                 for (let course of required_courses) {
                     promises.push(parseRequirement(course))
                 }
-
                 Promise.all(promises).then(choices => {
                     let parsed_requirement = {
                         course_codes: requirement.course_codes,
                         course_choices: [],
                         number_of_courses: requirement.number_of_courses,
                         major: [options.newMajor],
+                        additional_requirements: requirement.additional_requirements
                     }
                     for (let choice of choices) {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
@@ -186,6 +225,9 @@ const actions = {
                     console.log(err)
                 })
             }
+
+
+
             //TODO:kevin this way is used to resolve a synch bug but its fcked, will change when have time
             state.majorRequirements.push(newMajor)
             commit('setMinor', response.data["minor_list"]);

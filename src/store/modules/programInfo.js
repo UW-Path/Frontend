@@ -2,6 +2,8 @@ import axios from "axios";
 import { MajorInfo, MinorInfo, OptionInfo } from "../../models/ProgramInfoModel"
 //need to move the routes to the configs
 
+const backend = "http://localhost:8000"
+
 const state = {
     //these are the list that are available to be chosen
     majors: [],
@@ -35,7 +37,7 @@ const getters = {
 
 const actions = {
     fetchMajors({ commit }) {
-        axios.get("/api/requirements/unique_major")
+        axios.get(backend + "/api/requirements/unique_major")
         .then(response => {
             console.log("majors list", response.data)
             commit('setMajor', response.data["Major"]);

@@ -50,6 +50,7 @@ export class CourseRequirement {
         this.id = data && data.id ? data.id : requirementId++
         this.inRequirementBar = data && data.inRequirementBar ?  data.inRequirementBar  : true
         this.prereqs_met = data && data.prereqs_met ? data.prereqs_met : false
+        this.additional_requirements = data && data.additional_requirements ? data.additional_requirements : []
         // the year is x if all course choices that are in the requirement are in the same year, otherwise, it is -1 which is other
         this.year = this.course_choices.length ? this.course_choices[0].year : -1
         for(let course of this.course_choices) if (course.year != this.year) this.year = -1

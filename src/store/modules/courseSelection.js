@@ -2,7 +2,7 @@ import axios from "axios";
 import TrieSearch from "trie-search"
 
 //need to move the routes to the configs
-
+const backend = "http://localhost:8000"
 
 const defaultTable = [ 
     {
@@ -143,7 +143,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
 const actions = {
     fillOutChecklist({ commit, getters }) {
         if (!getters.majorRequirements.length) return
-        axios.get("/api/requirements/requirements", {
+        axios.get(backend + "/api/requirements/requirements", {
             params: {
                 major: getters.majorRequirements[0].info.program_name,
                 minor: getters.minorRequirements.length != 0 ? getters.minorRequirements[0].info.program_name : "",
@@ -228,7 +228,7 @@ const mutations = {
                 //there if course has not been selected yet then dont do anything
                 if (!requirement.selected_course) continue
                 if (requirement.selected_course.course_code !== "WAITING") {
-                    axios.get("/api/meets_prereqs/get", {
+                    axios.get(backend + "/api/meets_prereqs/get", {
                         params: {
                             list_of_courses_taken: listOfCoursesTaken,
                             current_term_courses: currentTermCourses,
