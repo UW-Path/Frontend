@@ -23,7 +23,8 @@
                   </div>
                 </div>
                 <div v-else class="modal-course-list">
-                  No courses match your search.
+                  <p>No courses match your search. Would you like to add a custom course code to your plan named "{{ searchtext }}"?</p>
+                  <v-btn class="add-custom-btn" @click="selectCustomCourse">Add "{{ searchtext }}"</v-btn>
                 </div>
               </v-col>
               <v-col v-if="selectedCourse" class="course-description-col" align="left">
@@ -93,6 +94,25 @@ export default {
         this.filteredCourseList = this.allCourses.get(filterArray, TrieSearch.UNION_REDUCER).slice(0,50)
       }
     },
+    selectCustomCourse() {
+      let customCourse = new CourseInfo({
+        course_code: this.searchtext,
+        course_name: "Custom Added Course",
+        info: "This course was not found by UWPath and was entered manually."
+      });
+      let req = new CourseRequirement ({
+        selected_course: customCourse,
+        user_selected: true,
+        inRequirementBar: false,
+        number_of_courses: 1,
+        course_choices: [customCourse],
+        additional_requirements: "",
+        prereqs_met: true,
+      })
+      this.dialog = false;
+      this.addCourse({newRequirement: req, termIndex: this.termIndex});
+      this.validateCourses();
+    },
     selectAddedCourse() {
       var addedCourse = new CourseInfo(this.selectedCourse);
       let req = {
@@ -101,7 +121,8 @@ export default {
           inRequirementBar: false,
           number_of_courses: 1,
           course_choices: [addedCourse],
-          additional_requirements: ""
+          additional_requirements: "",
+          prereqs_met: true,
       }
       var newRequirement = new CourseRequirement(req);
       this.dialog = false;
