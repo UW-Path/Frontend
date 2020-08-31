@@ -19,7 +19,8 @@
     "vue-slim-tabs": "^0.4.0",
     "vuedraggable": "^2.24.0",
     "vuetify": "^2.2.11",
-    "vuex": "^3.4.0"
+    "vuex": "^3.4.0",
+    "zingtouch": "^1.0.6"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",

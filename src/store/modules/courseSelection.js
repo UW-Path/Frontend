@@ -4,10 +4,10 @@ import { CourseRequirement } from "../../models/courseRequirementModel";
 import * as download from "downloadjs";
 
 // Production Kubernetes API
-const backend_api = "";
+// const backend_api = "";
 
 // Dev API
-// const backend_api = "http://127.0.0.1:8000";
+const backend_api = "http://127.0.0.1:8000";
 
 const defaultTable = [ 
     {
@@ -335,7 +335,6 @@ const mutations = {
                 return course.selected_course.course_code;
             });
             for (let requirement of state.table[i].courses) {
-                console.log(requirement)
                 // If course has no prereq, then course can be taken
                 if (requirement.course_choices.length == 1 && requirement.course_choices[0].prereqs.length === 0){
                     requirement.prereqs_met = true;

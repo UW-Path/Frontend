@@ -1,6 +1,5 @@
 var REQUIREMENT_ID = 10000
 
-
 export const YEAR_TO_REQ_SECTION_MAP = {
     "-1": "others",
     "1": "firstYear",
@@ -25,13 +24,14 @@ export const YEAR_TO_REQ_SECTION_MAP = {
  * One course requirement, may contain information of multiple courses
  */
 export class CourseRequirement {
+
     constructor(data) {
         this.number_of_courses = data && data.number_of_courses? data.number_of_courses : 0
         this.course_choices = data && data.course_choices ? data.course_choices : []        
-        this.course_codes =  data && data.course_codes ? data.course_codes : this.course_choices.map(choice => {
-            return choice.course_code
-        })
-        if (data && data.course_choices.length == 1) this.selected_course = data.course_choices[0]
+        this.course_codes =  data && data.course_codes ? data.course_codes : this.course_choices.map(choice => { return choice.course_code })
+        this.course_codes_raw = data && data.course_codes ? data.course_codes : ""
+
+        if (data && data.course_choices && data.course_choices.length == 1) this.selected_course = data.course_choices[0]
         else if (data && data.selected_course) this.selected_course = data.selected_course 
         else this.selected_course = {course_code: "WAITING", course_number: 42}
 
