@@ -5,7 +5,7 @@
     <v-card>
         <v-container fluid class="modal-course-list-container" align="center">
             <v-row class="modal-course-list-row" col>
-            <div class="text-h4 title">Specify Your Degree</div>
+            <div class="text-h6 title">Specify Your Degree</div>
             </v-row>
             <v-row class="modal-course-list-row" col>
                 <v-col align="center flex-centerise">

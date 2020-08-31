@@ -3,7 +3,7 @@
       <div id="nav">
         <router-link to="/">Home</router-link> |
         <router-link to="/CourseSelection">Course Selection</router-link> |
-        <router-link to="/landing">Landing</router-link>
+        <router-link to="/AboutUs">About Us</router-link>
       </div>
       <router-view/>
     </v-app>
@@ -14,10 +14,11 @@
 import {  mapActions } from "vuex";
 export default {
   methods: {
-  ...mapActions(["fetchMajors"]),
+  ...mapActions(["fetchMajors", "fetchAllCourses"]),
   },
   created() {
-      this.fetchMajors();
+    this.fetchMajors();
+    this.fetchAllCourses()
   },
 }
 
@@ -35,6 +36,7 @@ export default {
 }
 
 #nav {
+  font-size: .9em;
   position: fixed;
   bottom: 1%;
   right: 3%;

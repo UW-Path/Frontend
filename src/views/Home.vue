@@ -13,13 +13,14 @@
 
 <script>
 import RequirementOptionsModal from "../components/Modals/RequirementOptionsModal"
+import { mapGetters } from "vuex";
+
 export default {
     name: "Home",
     components: {
         RequirementOptionsModal
     },
-    methods: {
-    },
+    computed: mapGetters(["requirements", "chosenMajor"]),
 }
 </script>
 

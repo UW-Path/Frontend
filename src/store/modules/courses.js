@@ -1,25 +1,37 @@
 import axios from "axios";
+import TrieSearch from "trie-search"
 import {CourseInfo, CourseRequirement} from '../../models/courseModel'
 import {MajorRequirement, MinorRequirement, OptionRequirement } from '../../models/ProgramModel'
 
-const backend = "http://localhost:8000"
+// Production Kubernetes API
+const backend_api = "";
+
+// Dev API
+// const backend_api = "http://127.0.0.1:8000";
 
 // Fetch course information of a single course code (eg MATH 239 or PHYS 300-)
 async function parseRequirement(courseCode) {
     let hasNumber = /\d/;
-    // Engineering specific
+    // Engineering specific/Program Electives
     if (courseCode.includes("TE")){
         return [new CourseInfo({
             course_name: "Technical Elective",
             course_code: courseCode,
-            info: "Please refer to degree requirement page for more information. (Click on program title)"
+            info: "Please refer to degree requirement page for more information. (Click on program heading)"
         })]
     }
     else if (courseCode.includes("CSE")){
         return [new CourseInfo({
             course_name: "Complementary Studies Elective",
             course_code: courseCode,
-            info: "Please refer to degree requirement page for more information. (Click on program title)"
+            info: "Please refer to degree requirement page for more information. (Click on program heading)"
+        })]
+    }
+    else if (courseCode.includes("Program Elective")){
+        return [new CourseInfo({
+            course_name: courseCode,
+            course_code: courseCode.replace("Program Elective", "PE"),
+            info: "Please refer to degree requirement page for more information. (Click on program heading)"
         })]
     }
 
@@ -38,7 +50,7 @@ async function parseRequirement(courseCode) {
             })]
         }
         else{
-            const response = await axios.get(backend +"/api/course-info/filter", {
+            const response = await axios.get(backend_api + "/api/course-info/filter", {
                 params: {
                     start: 0,
                     end: 499,
@@ -56,7 +68,7 @@ async function parseRequirement(courseCode) {
             split = courseCode.split(" ");
             
             if(split[1] === "LAB"){
-                response = await axios.get(backend +"/api/course-info/filter", {
+                response = await axios.get(backend_api + "/api/course-info/filter", {
                     params: {
                         start: Number(split[2].slice(0, -1)),
                         end: Number(split[2].slice(0, -1)) + 99,
@@ -65,7 +77,7 @@ async function parseRequirement(courseCode) {
                 })
             }
             else{
-                response = await axios.get(backend +"/api/course-info/filter", {
+                response = await axios.get(backend_api + "/api/course-info/filter", {
                     params: {
                         start: Number(split[1].slice(0, -1)),
                         end: Number(split[1].slice(0, -1)) + 99,
@@ -77,7 +89,7 @@ async function parseRequirement(courseCode) {
         } else if (courseCode.split("-").length === 2 && courseCode.split("-")[0].length > 0 && courseCode.split("-")[1].length > 0) {
             // Handles range case, eg CS 440-CS 498
             split = courseCode.split("-");
-            const response = await axios.get(backend +"/api/course-info/filter", {
+            const response = await axios.get(backend_api + "/api/course-info/filter", {
                 params: {
                     start: Number(split[0].split(" ")[1]),
                     end: Number(split[1].split(" ")[1]),
@@ -87,7 +99,7 @@ async function parseRequirement(courseCode) {
             return response.data.map(element => { return new CourseInfo(element) });
         } else {
             // Handles normal course case, ege MATH 239
-            const response = await axios.get(backend +"/api/course-info/get", {
+            const response = await axios.get(backend_api + "/api/course-info/get", {
                 params: {
                     pk: courseCode,
                 }
@@ -97,23 +109,24 @@ async function parseRequirement(courseCode) {
             })
             //Laurier queries are unavailable, so this is necessary
             if (response == null){ 
-                if (courseCode.includes("W")){
+                if (courseCode.includes("WKRPT")){
+                    //Work Term Report
+                    return [ new CourseInfo({ course_code: courseCode, 
+                        course_name:'Work-term Report',
+                        info: "Work-term Report. Please refer to degree requirement page for more information. (Click on program heading)",
+                        online: false
+                    })]
+
+                }
+                else if (courseCode.includes("W")){
                     //laurier couse
                     return [ new CourseInfo({ course_code: courseCode, 
                                                 info: "Information about this course is unavailable. Please refer to https://loris.wlu.ca/register/ssb/registration for more details.",
-                                                credit: 'N/A', 
-                                                prereqs: 'N/A',
-                                                antireqs: 'N/A',
-                                                coreqs: 'N/A',
                                                 online: false
                                             })]
                 }
                 else{
                     return [ new CourseInfo({ course_code: courseCode, info: "Information about this course is unavailable.",
-                                    credit: 'N/A', 
-                                    prereqs: 'N/A',
-                                    antireqs: 'N/A',
-                                    coreqs: 'N/A',
                                     online: false
                                 }),
                                 ]
@@ -127,6 +140,11 @@ async function parseRequirement(courseCode) {
 const state = {
     // old stuff
     requirements: [],
+    allCourses: new TrieSearch(['course_code', 'course_number'], {
+        idFieldOrFunction: function(course) {
+            return course.course_id + course.course_code;
+        }
+    }),
     // mew stuff
     majorRequirements: [],
     minorRequirements: [],
@@ -135,6 +153,7 @@ const state = {
 
 const getters = {
     requirements: (state) => state.requirements,
+    allCourses: (state) => state.allCourses,
     majorRequirements: (state) => state.majorRequirements,
     minorRequirements: (state) => state.minorRequirements,
     specRequirements: (state) => state.specRequirements,
@@ -142,8 +161,31 @@ const getters = {
 
 
 const actions = {
-    //fetching requirements simply adds requirements to the requirement column. To delete the requirements, one would need to call the functions in mutation
+    // Fetch a list of all available courses
+    async fetchAllCourses({ commit }) {
+        await axios.get(backend_api + "/api/course-info/filter", {
+            params: {
+                start: 0,
+                end: 1000,
+                code: "none",
+            }
+        })
+        .then(response => {
+            response.data.sort((course1, course2) => {
+                if (course1.course_code < course2.course_code) return -1;
+                else if (course1.course_code > course2.course_code) 1;
+                else return 0;
+            })
+            commit('setAllCourses', response.data);
+        })
+        .catch(err => {
+            console.log(err)
+        }) 
+    },
+    // Fetching requirements simply adds requirements to the requirement column.
+    // To delete the requirements, one would need to call the functions in mutation
     async fetchRequirements({ commit, getters, state }, options) {
+        // 1A, 1B, one, two... is when courses are told to be taken in those years
         let map = {
             "-1": "others",
             "1": "firstYear",
@@ -156,7 +198,7 @@ const actions = {
         let table2needed = false;
 
         if (!options.newMajor && !getters.majorRequirements.length) return 
-        const response = await axios.get(backend +"/api/requirements/requirements", {
+        const response = await axios.get(backend_api +"/api/requirements/requirements", {
             params: {
                 major: options.newMajor ? options.newMajor.program_name : getters.majorRequirements[0].info.program_name ,
                 minor: options.newMinor ?  options.newMinor.program_name : "",
@@ -167,7 +209,7 @@ const actions = {
         let newMajorRequirements = response.data.requirements;
 
         if (options.newMajor) {
-            let newMajor = new MajorRequirement({ info: options.newMajor })
+            let newMajor = new MajorRequirement({info: options.newMajor});
 
             //find all the additional requirements first
             response.data.requirements.forEach(req => {
@@ -208,6 +250,7 @@ const actions = {
                     promises.push(parseRequirement(course))
                 }
                 Promise.all(promises).then(choices => {
+                    // additional req only needed in majors
                     let parsed_requirement = {
                         course_codes: requirement.course_codes,
                         course_choices: [],
@@ -218,12 +261,12 @@ const actions = {
                     for (let choice of choices) {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
                     }
-                    let parsed_req_obj = new CourseRequirement(parsed_requirement)
+                    let parsed_req_obj = new CourseRequirement(parsed_requirement);
                     newMajor[map[parsed_req_obj.year]].push(parsed_req_obj)
                 })
-                .catch(err => {
-                    console.log(err)
-                })
+                    .catch(err => {
+                        console.log(err)
+                    })
             }
 
 
@@ -233,7 +276,7 @@ const actions = {
             commit('setMinor', response.data["minor_list"]);
             commit('setSpecialization', response.data["option_list"]);
         }
-        //minor requirments
+        // Minor requirements
         if (response.data.minor_requirements != undefined && options.newMinor) {
             let newMinor = new MinorRequirement({ info: options.newMinor })
 
@@ -250,6 +293,7 @@ const actions = {
                         course_choices: [],
                         number_of_courses: requirement.number_of_courses,
                         minor: [options.newMinor],
+                        additional_requirements: requirement.additional_requirements
                     }
                     for (let choice of choices) {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
@@ -263,7 +307,7 @@ const actions = {
             }
             state.minorRequirements.push(newMinor)
         } 
-        //option requirments
+        // Option requirements
         if (response.data.option_requirements != undefined && options.newSpecialization) {
             let newSpec = new OptionRequirement({ info: options.newSpecialization })
 
@@ -280,6 +324,7 @@ const actions = {
                         course_choices: [],
                         number_of_courses: requirement.number_of_courses,
                         specialization: [options.newSpecialization],
+                        additional_requirements: requirement.additional_requirements
                     }        
                     for (let choice of choices) {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
@@ -296,10 +341,13 @@ const actions = {
     }
 };
 
-
-
-
 const mutations = {
+    setRequirements: (state, requirements) => {
+        state.requirements = requirements
+    },
+    setAllCourses: (state, allCourses) => {
+        state.allCourses.addAll(allCourses)
+    },
     addCourseRequirement: (state, requirement) => {
         //currently each course requirement can only have one major/minor/req
         let map = {
@@ -307,8 +355,22 @@ const mutations = {
             "1": "firstYear",
             "2": "secondYear",
             "3": "thirdYear",
-            "4": "fourthYear"
-        }
+            "4": "fourthYear",
+            "5": "one", 
+            "6": "two",
+            "7": "three",
+            "8": "four",
+            "9": "oneA",
+            "10": "oneB",
+            "11": "twoA",
+            "12": "twoB",
+            "13": "threeA",
+            "14": "threeB",
+            "15": "fourA",
+            "16": "fourB",
+        };
+
+
         //reset everything when entering the requirement bar
         requirement.inRequirementBar = true
         requirement.deselect()
