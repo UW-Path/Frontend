@@ -58,7 +58,8 @@
 
 <script>
 import { mapMutations, mapGetters } from "vuex";
-import { CourseRequirement, CourseInfo } from "../../models/courseRequirementModel";
+import { CourseRequirement } from "../../models/courseRequirementModel";
+// import {CourseInfo }  from "../../models/courseInfoModel"
 import TrieSearch from 'trie-search';
 
 export default {
@@ -94,7 +95,7 @@ export default {
       }
     },
     selectAddedCourse() {
-      var addedCourse = new CourseInfo(this.selectedCourse);
+      var addedCourse = this.selectedCourse;
       let req = {
           selected_course: addedCourse,
           user_selected: true,
