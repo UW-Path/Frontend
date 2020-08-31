@@ -4,8 +4,8 @@
             <program-selection-bar/>
         </v-row>
         <v-row class="main-row">
-            <tabs class="primary-tabs">
-                <tab class="primary-tab" title="Course Plan">
+            <tabs class="primary-tabs default-font">
+                <tab class="primary-tab default-font" title="Course Plan">
                     <v-container class="course-selection-container">
                         <v-row class="main-row">
                             <v-col class="side-bar" lg="2" md="3" sm="3">
@@ -17,11 +17,20 @@
                         </v-row>
                     </v-container>
                 </tab>
-                <tab class="primary-tab" title="Program Checklist">
+                <tab class="primary-tab default-font" title="Program Checklist">
                     <v-container class="course-selection-container">
                         <v-row class="main-row">
                             <v-col class="main-panel">
                                 <program-checklist/>
+                            </v-col>
+                        </v-row>
+                    </v-container>
+                </tab>
+                <tab class="primary-tab default-font" title="Export Table">
+                    <v-container class="course-selection-container">
+                        <v-row class="main-row">
+                            <v-col class="main-panel">
+                                <export/>
                             </v-col>
                         </v-row>
                     </v-container>
@@ -33,6 +42,7 @@
 
 <script>
 import CoursePlan from '../components/CourseSelectionPage/CoursePlan.vue'
+import Export from '../components/ExportPage/Export.vue'
 import ProgramSelectionBar from '../components/CourseSelectionPage/ProgramSelectionBar.vue'
 import ProgramChecklist from '../components/ProgramChecklistPage/ProgramChecklist.vue'
 import SideBar from '../components/CourseSelectionPage/SideBar.vue'
@@ -43,6 +53,7 @@ export default {
     name: "CourseSelection",
     components: {
         CoursePlan,
+        Export,
         ProgramSelectionBar,
         SideBar,
         ProgramChecklist,
@@ -62,14 +73,15 @@ export default {
     margin-top: 0.5em;
     width: 100%;
     height: 100%;
+    font-size: 0.9em !important;
 }
 
 .primary-tab {
-    height: 100%;
+    height: 87vh;
 }
 
 .main-row {
-    margin-top: 1rem;
+    margin-top: 0.3rem;
     height: 90%
 }
 
@@ -101,5 +113,10 @@ export default {
     min-width: 95%;
   }
 }
+
+.default-font{
+    font-size: .9em !important;
+}
+
 
 </style>

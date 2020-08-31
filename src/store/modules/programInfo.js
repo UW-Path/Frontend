@@ -1,9 +1,13 @@
 import axios from "axios";
 import { MajorInfo, MinorInfo, OptionInfo } from "../../models/ProgramInfoModel"
+
+// Production Kubernetes API
+// const backend_api = "";
+
+// Dev API
+const backend_api = "http://127.0.0.1:8000";
+
 //need to move the routes to the configs
-
-const backend = "http://localhost:8000"
-
 const state = {
     //these are the list that are available to be chosen
     majors: [],
@@ -37,13 +41,13 @@ const getters = {
 
 const actions = {
     fetchMajors({ commit }) {
-        axios.get(backend + "/api/requirements/unique_major")
+        axios.get(backend_api + "/api/requirements/unique_major")
         .then(response => {
             console.log("majors list", response.data)
             commit('setMajor', response.data["Major"]);
         })
         .catch(err => {
-            console.log(err);
+            console.error(err);
             return;
         })
     },

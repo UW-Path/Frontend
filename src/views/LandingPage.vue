@@ -8,21 +8,24 @@
                 <v-col class="centerpiece-container" data-aos="fade-up" data-aos-duration="1200">
                     <div class="text-h3 title">UWPath</div>
                     <div class="text-h5 caption" >Plan your degree ahead</div>
-                    <v-autocomplete
-                        :disabled="inConfirmation"
-                        :items="allMajors.map(e => { return e.program_name })"
-                        v-on:change="changeMajor"
-                        dense
-                        prepend-inner-icon="mdi-magnify"
-                        solo
-                        hide-details
-                        background-color="rgb(196,196,196)"
-                        class="autocomplete"
-                        label="Find your program"
-                        height="3rem"
-                        color="black"
-                    ></v-autocomplete>
-                    <div class="findprogram" @click="findProgram()" v-if="!inConfirmation">Can't find your program?</div>
+                    <div class="autocomplete-container">
+                        <v-autocomplete
+                            :disabled="inConfirmation"
+                            :items="allMajors.map(e => { return e.program_name })"
+                            v-on:change="changeMajor"
+                            dense
+                            prepend-inner-icon="mdi-magnify"
+                            solo
+                            hide-details
+                            background-color="rgb(196,196,196)"
+                            class="autocomplete"
+                            label="Find your program"
+                            height="3rem"
+                            color="black"
+                        ></v-autocomplete>
+                        <div class="findprogram" @click="findProgram()" v-if="!inConfirmation">Can't find your program?</div>
+                    </div>
+
                     <div v-if="inConfirmation">
                         <div class="confirmation-msg"> It seems like you have already selected a major, are you sure to overwrite?</div>
                         <v-icon large color="light-green"  @click="confirmSelection()">mdi-checkbox-marked-circle</v-icon>
@@ -53,7 +56,7 @@ export default {
             else this.confirmSelection()
         },
         findProgram() {
-            console.log("find program clicked: WIP")
+            this.$router.push('/Contact')   
         },
         confirmSelection() {
             this.inConfirmation = false
@@ -95,7 +98,7 @@ export default {
 }
 
 .centerpiece-container {
-    margin-left: 20%;
+    margin-left: 20% !important; 
     margin: 2%;
 }
 
@@ -109,11 +112,15 @@ export default {
     width: 100%;
 }
 
-.autocomplete {
+.autocomplete-container {
     max-width: 600px;
+    width:100%
 }
 
+
+
 .findprogram {
+    text-align: end;
     color: ghostwhite;
     margin-top: 1rem;
     height: 3rem;
@@ -130,6 +137,7 @@ export default {
 }
 
 .confirmation-msg {
+    color:ghostwhite;
     margin-top: 1rem;
     margin-bottom: 0.5rem;
 }

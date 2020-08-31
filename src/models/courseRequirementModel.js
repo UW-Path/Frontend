@@ -1,33 +1,25 @@
+var REQUIREMENT_ID = 10000
 
-var requirementId = 0
-/**
- * Information about one course
- */
-export class CourseInfo {
-    constructor(data) {
-        //metadata
-        
-        //data 
-        this.antireqs = data && data.antireqs ? data.antireqs.split(",") : []
-        this.coreqs = data && data.coreqs ? data.coreqs.split(","): []
-        this.course_abbr = data && data.course_abbr ? data.course_abbr : ""
-        this.course_code = data && data.course_code ? data.course_code : ""
-        this.course_id = data && data.course_id ? Number(data.course_id): -1
-        this.course_name = data && data.course_name ? data.course_name: ""
-        this.course_number = data && data.course_number ? Number(data.course_number) : -1
-        this.credit = data && data.credit ? Number(data.credit) : -1
-        this.info = data && data.info ? data.info : ""
-        this.offering = data && data.offering ? data.offering.split(",") : []
-        this.online = data && data.online ? data.online : false
-        this.prereqs = data && data.prereqs ? data.prereqs.split(",") : []
-        this.selected = data && data.selected ? data.selected : false
-        this.link = data && data.link ? data.link : ""
-        //the year that this is in is based off of the course code is other
-        if (this.course_code.split(" ").length == 1) this.year = -1
-        else if ( this.course_code.split(" ")[1][0] > 4 || this.course_code.split(" ")[1][0] < 0) this.year = -1
-        else this.year = parseInt(this.course_code.split(" ")[1][0])
-    }
-}
+
+export const YEAR_TO_REQ_SECTION_MAP = {
+    "-1": "others",
+    "1": "firstYear",
+    "2": "secondYear",
+    "3": "thirdYear",
+    "4": "fourthYear",
+    "5": "one", 
+    "6": "two",
+    "7": "three",
+    "8": "four",
+    "9": "oneA",
+    "10": "oneB",
+    "11": "twoA",
+    "12": "twoB",
+    "13": "threeA",
+    "14": "threeB",
+    "15": "fourA",
+    "16": "fourB",
+};
 
 /**
  * One course requirement, may contain information of multiple courses
@@ -36,7 +28,7 @@ export class CourseRequirement {
     constructor(data) {
         this.number_of_courses = data && data.number_of_courses? data.number_of_courses : 0
         this.course_choices = data && data.course_choices ? data.course_choices : []        
-        this.course_codes = this.course_choices.map(choice => {
+        this.course_codes =  data && data.course_codes ? data.course_codes : this.course_choices.map(choice => {
             return choice.course_code
         })
         if (data && data.course_choices.length == 1) this.selected_course = data.course_choices[0]
@@ -47,10 +39,13 @@ export class CourseRequirement {
         this.minor = data && data.minor ? data.minor : []
         this.specialization = data && data.specialization ? data.specialization : []
         this.overridden = data && data.overridden ? data.overridden : false
-        this.id = data && data.id ? data.id : requirementId++
+        this.id = data && data.id ? data.id : REQUIREMENT_ID++
         this.inRequirementBar = data && data.inRequirementBar ?  data.inRequirementBar  : true
         this.prereqs_met = data && data.prereqs_met ? data.prereqs_met : false
         this.additional_requirements = data && data.additional_requirements ? data.additional_requirements : []
+
+        //section 
+        this.section = data && data.section ? data.section : null
         // the year is x if all course choices that are in the requirement are in the same year, otherwise, it is -1 which is other
         this.year = this.course_choices.length ? this.course_choices[0].year : -1
         for(let course of this.course_choices) if (course.year != this.year) this.year = -1
@@ -67,5 +62,17 @@ export class CourseRequirement {
 
     toggleOverride() {
         this.overridden = !this.overridden;
+    }
+
+    satisfied() {
+        return false
+    }
+
+    split() {
+        let copy = new CourseRequirement({...this})
+        copy.number_of_courses = 1 
+        this.number_of_courses -= 1 
+        this.deselect()
+        return copy
     }
 }
