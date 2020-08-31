@@ -198,7 +198,6 @@ export default {
 }
 
 .modal-course-list-container {
-    min-height: 330px;
     margin: 0px;
 }
 
