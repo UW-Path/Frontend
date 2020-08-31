@@ -91,12 +91,13 @@ export default {
         onSelectionBar: Boolean
     },
     methods: {
-        ...mapMutations(["validateCourses"]),
+        ...mapMutations(["validateCourses", "seperateRequirement"]),
         enableDialog: function() {
             this.dialog = true;
         },
         selectCourse: function () {
             this.course.selected_course = this.selectedCourse;
+            this.seperateRequirement(this.course)
             this.validateCourses()
             this.dialog = false;
         },
@@ -112,10 +113,12 @@ export default {
             return this.course.course_choices.length > 1
         },
         close: function() {
-            
+            let ok = ""
+            void ok
         },
         open: function() {
-            
+            let ok = ""
+            void ok
         }
     },
     computed: {

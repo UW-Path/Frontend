@@ -52,7 +52,7 @@ import draggable from "vuedraggable";
 import RequirementOptionsModal from "../Modals/RequirementOptionsModal";
 import { CourseRequirement } from "../../models/courseRequirementModel";
 import { SECTION_TO_DISPLAY_TITLE_MAP } from "../../models/ProgramModel";
-import Hammer from 'hammerjs';
+import ZingTouch from 'zingtouch';
 
 export default {
 	name: "RequirementDropdown",
@@ -109,10 +109,11 @@ export default {
 	directives: {
 		touchscreen: {
 			bind: function(el, binding) {
-				console.log("starting binding", binding.value)
-				const mc = new Hammer(el);
-				mc.get("press").set({ enable: true, time: 0 });
-				mc.on("press", binding.value);
+				let regionOne = new ZingTouch.Region(el, true, false);
+				let longTap = new ZingTouch.Pan({
+					threshold: 0
+				})
+				regionOne.bind(el, longTap, binding.value)
 			}
 		}
 	}

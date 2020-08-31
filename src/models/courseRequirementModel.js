@@ -43,6 +43,7 @@ export class CourseRequirement {
         this.inRequirementBar = data && data.inRequirementBar ?  data.inRequirementBar  : true
         this.prereqs_met = data && data.prereqs_met ? data.prereqs_met : false
         this.additional_requirements = data && data.additional_requirements ? data.additional_requirements : []
+        this.number_of_prereqs_met = data && data.number_of_prereqs_met ? data.number_of_prereqs_met : 0
 
         //section 
         this.section = data && data.section ? data.section : null

@@ -15,11 +15,16 @@ import {  mapActions } from "vuex";
 export default {
   methods: {
   ...mapActions(["fetchMajors", "fetchAllCourses"]),
+    deleted() {
+      
+    }
   },
   created() {
     this.fetchMajors();
-    this.fetchAllCourses()
-  },
+    this.fetchAllCourses();
+    window.addEventListener('beforeunload', this.deleted)
+    console.log("webpage entered")
+  }
 }
 
 
@@ -55,7 +60,6 @@ body {
   height: 100vh;
 }
 
-  
 ::-webkit-scrollbar {
   height: 6px;
   width: 6px;
