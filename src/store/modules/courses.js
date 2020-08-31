@@ -5,10 +5,10 @@ import {MajorRequirement, MinorRequirement, OptionRequirement } from '../../mode
 import { CourseInfo } from '../../models/courseInfoModel'
 
 // Production Kubernetes API
-// const backend_api = "";
+const backend_api = "";
 
 // Dev API
-const backend_api = "http://127.0.0.1:8000";
+// const backend_api = "http://127.0.0.1:8000";
 
 // Fetch course information of a single course code or a course pattern (eg MATH 239 or PHYS 300-)
 // requirement is the courseRequirement object that this course code belongs to

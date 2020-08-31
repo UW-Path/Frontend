@@ -5,9 +5,6 @@ var requirementId = 0
  */
 export class CourseInfo {
     constructor(data) {
-        //metadata
-        
-        //data 
         this.antireqs = data && data.antireqs ? data.antireqs.split(",") : []
         this.coreqs = data && data.coreqs ? data.coreqs.split(","): []
         this.course_abbr = data && data.course_abbr ? data.course_abbr : ""
