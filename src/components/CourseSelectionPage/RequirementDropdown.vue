@@ -171,7 +171,6 @@ export default {
 .v-expansion-panel-content__wrap {
 	padding: 0 !important;
 }
-
 .v-expansion-panel-header {
 	font-size: 1em !important;
 	height: 3em;
@@ -181,7 +180,6 @@ export default {
 .v-expansion-panel-header--active {
 	margin-bottom: -0.9em !important;
 }
-
 .v-expansion-panels {
 	width: 95% !important;
 	left: 2.5%;
