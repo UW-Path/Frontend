@@ -23,7 +23,8 @@
                   </div>
                 </div>
                 <div v-else class="modal-course-list">
-                  No courses match your search.
+                  <p>No courses match your search. Would you like to add a custom course code to your plan named "{{ searchtext }}"?</p>
+                  <v-btn class="add-custom-btn" @click="selectCustomCourse">Add "{{ searchtext }}"</v-btn>
                 </div>
               </v-col>
               <v-col v-if="selectedCourse" class="course-description-col" align="left">
@@ -40,13 +41,13 @@
                   {{ selectedCourse.course_name}}
                 </v-card-subtitle>
                 <v-card-subtitle class="course-info-subheading">
-                  Credits: {{ selectedCourse.credit }} | ID: {{ selectedCourse.course_id }} | uwflow
+                  Credits: {{ selectedCourse.credit }} | ID: {{ selectedCourse.course_id }} | <a style="text-decoration:none" target="_blank" :href="'https://uwflow.com/course/' + selectedCourse.course_code.replace(/\s/g, '').toLowerCase()">UWFlow link</a>
                 </v-card-subtitle>
                 <v-card-text>{{ selectedCourse.info + (selectedCourse.offering === "" ? "" :  " Offered in: " + selectedCourse.offering.slice(0,-1) + ".") + (selectedCourse.online ? " Offered Online." : "")}}</v-card-text>
                 <v-card-text class="course-description-text">{{ "Credits: " + selectedCourse.credit }}</v-card-text>
-                <v-card-text class="course-description-text" v-if="selectedCourse.prereqs !== ''">{{ "Prerequisites: " + selectedCourse.prereqs }}</v-card-text>
-                <v-card-text class="course-description-text" v-if="selectedCourse.antireqs !== ''">{{ "Antirequisites: " + selectedCourse.antireqs }}</v-card-text>
-                <v-card-text class="course-description-text" v-if="selectedCourse.coreqs !== ''">{{ "Corequisites: " + selectedCourse.antireqs }}</v-card-text>
+                <v-card-text class="course-description-text" v-if="selectedCourse.prereqs && selectedCourse.prereqs.length > 0">{{ "Prerequisites: " + selectedCourse.prereqs }}</v-card-text>
+                <v-card-text class="course-description-text" v-if="selectedCourse.antireqs && selectedCourse.antireqs.length > 0">{{ "Antirequisites: " + selectedCourse.antireqs }}</v-card-text>
+                <v-card-text class="course-description-text" v-if="selectedCourse.coreqs && selectedCourse.coreqs.length > 0">{{ "Corequisites: " + selectedCourse.coreqs }}</v-card-text>
               </v-col>
             </v-row>
           </v-container>
@@ -94,6 +95,25 @@ export default {
         this.filteredCourseList = this.allCourses.get(filterArray, TrieSearch.UNION_REDUCER).slice(0,50)
       }
     },
+    selectCustomCourse() {
+      let customCourse = new CourseInfo({
+        course_code: this.searchtext,
+        course_name: "Custom Added Course",
+        info: "This course was not found by UWPath and was entered manually."
+      });
+      let req = new CourseRequirement ({
+        selected_course: customCourse,
+        user_selected: true,
+        inRequirementBar: false,
+        number_of_courses: 1,
+        course_choices: [customCourse],
+        additional_requirements: "",
+        prereqs_met: true,
+      })
+      this.dialog = false;
+      this.addCourse({newRequirement: req, termIndex: this.termIndex});
+      this.validateCourses();
+    },
     selectAddedCourse() {
       var addedCourse = this.selectedCourse;
       let req = {
@@ -102,7 +122,8 @@ export default {
           inRequirementBar: false,
           number_of_courses: 1,
           course_choices: [addedCourse],
-          additional_requirements: ""
+          additional_requirements: "",
+          prereqs_met: true,
       }
       var newRequirement = new CourseRequirement(req);
       this.dialog = false;
