@@ -60,7 +60,7 @@
 <script>
 import { mapMutations, mapGetters } from "vuex";
 import { CourseRequirement } from "../../models/courseRequirementModel";
-// import {CourseInfo }  from "../../models/courseInfoModel"
+import { CourseInfo } from "../../models/courseInfoModel";
 import TrieSearch from 'trie-search';
 
 export default {
