@@ -1,30 +1,24 @@
+var REQUIREMENT_ID = 10000
 
-var requirementId = 0
-/**
- * Information about one course
- */
-export class CourseInfo {
-    constructor(data) {
-        this.antireqs = data && data.antireqs ? data.antireqs.split(",") : []
-        this.coreqs = data && data.coreqs ? data.coreqs.split(","): []
-        this.course_abbr = data && data.course_abbr ? data.course_abbr : ""
-        this.course_code = data && data.course_code ? data.course_code : ""
-        this.course_id = data && data.course_id ? Number(data.course_id): -1
-        this.course_name = data && data.course_name ? data.course_name: ""
-        this.course_number = data && data.course_number ? Number(data.course_number) : -1
-        this.credit = data && data.credit ? Number(data.credit) : -1
-        this.info = data && data.info ? data.info : ""
-        this.offering = data && data.offering ? data.offering.split(",") : []
-        this.online = data && data.online ? data.online : false
-        this.prereqs = data && data.prereqs ? data.prereqs.split(",") : []
-        this.selected = data && data.selected ? data.selected : false
-        this.link = data && data.link ? data.link : ""
-        //the year that this is in is based off of the course code is other
-        if (this.course_code.split(" ").length == 1) this.year = -1
-        else if ( this.course_code.split(" ")[1][0] > 4 || this.course_code.split(" ")[1][0] < 0) this.year = -1
-        else this.year = parseInt(this.course_code.split(" ")[1][0])
-    }
-}
+export const YEAR_TO_REQ_SECTION_MAP = {
+    "-1": "others",
+    "1": "firstYear",
+    "2": "secondYear",
+    "3": "thirdYear",
+    "4": "fourthYear",
+    "5": "one", 
+    "6": "two",
+    "7": "three",
+    "8": "four",
+    "9": "oneA",
+    "10": "oneB",
+    "11": "twoA",
+    "12": "twoB",
+    "13": "threeA",
+    "14": "threeB",
+    "15": "fourA",
+    "16": "fourB",
+};
 
 /**
  * One course requirement, may contain information of multiple courses
@@ -45,14 +39,15 @@ export class CourseRequirement {
         this.minor = data && data.minor ? data.minor : []
         this.specialization = data && data.specialization ? data.specialization : []
         this.overridden = data && data.overridden ? data.overridden : false
-        this.id = data && data.id ? data.id : requirementId++
-        this.inRequirementBar = data ? data.inRequirementBar : true
+        this.id = data && data.id ? data.id : REQUIREMENT_ID++
+        this.inRequirementBar = data && data.inRequirementBar ?  data.inRequirementBar  : true
         this.prereqs_met = data && data.prereqs_met ? data.prereqs_met : false
         this.additional_requirements = data && data.additional_requirements ? data.additional_requirements : []
         this.number_of_prereqs_met = data && data.number_of_prereqs_met ? data.number_of_prereqs_met : 0
         this.user_selected = data && data.user_selected ? data.user_selected : false
         // the year is x if all course choices that are in the requirement are in the same year, otherwise, it is -1 which is other
         // if additional req indicate when the course should be taken, this takes precedence
+        this.section = data && data.section ? data.section : null
 
         if (data.additional_requirements === "1") this.year = 5
         else if (data.additional_requirements === "2") this.year = 6
@@ -78,10 +73,22 @@ export class CourseRequirement {
     }
 
     isSelected() {
-        return this.selected_course && this.selected_course.course_code != "WAITING"
+        return this.selected_course.course_code != "WAITING"
     }
 
     toggleOverride() {
         this.overridden = !this.overridden;
+    }
+
+    satisfied() {
+        return false
+    }
+
+    split() {
+        let copy = new CourseRequirement({...this})
+        copy.number_of_courses = 1 
+        this.number_of_courses -= 1 
+        this.deselect()
+        return copy
     }
 }

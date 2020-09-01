@@ -35,6 +35,7 @@ export default {
     width: 100%;
     background-color: #A0BDD6;
     overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .required-course {

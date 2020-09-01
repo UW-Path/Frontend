@@ -112,12 +112,12 @@ export default {
     }
   },
   methods: {
-    ...mapMutations([ "removeRequirementFromTable", "addCourseRequirement", "sortAndCollapseRequirements"]),
+    ...mapMutations([ "removeRequirementFromTable", "addCourseRequirement", "sortRequirements"]),
     deleteCourse: function() {
-      if (this.courseData.major.length || this.courseData.minor.length || this.courseData.specialization.length) this.addCourseRequirement(this.courseData)
       this.courseData.inRequirementBar = true
       this.removeRequirementFromTable(this.courseData)
-      this.sortAndCollapseRequirements()
+      if (this.courseData.major.length || this.courseData.minor.length || this.courseData.specialization.length) this.addCourseRequirement(this.courseData)
+      this.sortRequirements()
     },
     isSelected: function(courseCode) {
         if (!this.courseData.selected_course) return false

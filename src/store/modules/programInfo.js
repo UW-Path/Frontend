@@ -8,7 +8,6 @@ const backend_api = "";
 // const backend_api = "http://127.0.0.1:8000";
 
 //need to move the routes to the configs
-
 const state = {
     //these are the list that are available to be chosen
     majors: [],
@@ -48,7 +47,7 @@ const actions = {
             commit('setMajor', response.data["Major"]);
         })
         .catch(err => {
-            console.log(err);
+            console.error(err);
             return;
         })
     },

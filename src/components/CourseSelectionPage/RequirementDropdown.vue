@@ -15,380 +15,32 @@
 			</div>
 			<div v-else class="title"><b>Joint Requirement</b></div>
 			<v-expansion-panels multiple>
-				<v-expansion-panel class="expansion-panel" v-if="program.firstYear.length">
-					<v-expansion-panel-header>100s Courses</v-expansion-panel-header>
-					<v-expansion-panel-content>
-						<draggable
-							class="draggable-column"
-							:list="program.firstYear"
-							:group="{ name: 'course', pull: pullFunction }"
-							:clone="clone"
-							@change="change"
-						>
-							<RequirementOptionsModal
-								class="list-group-item course-card"
-								v-for="(requirement, i) in program.firstYear"
-								:key="i"
-								:course="requirement"
-								:onSelectionBar="true"
-								@mousedown.native="setLastClicked(requirement)"
-							/>
-						</draggable>
-					</v-expansion-panel-content>
-				</v-expansion-panel>
-
-				<v-expansion-panel class="expansion-panel" v-if="program.secondYear.length">
-					<v-expansion-panel-header>200s Courses</v-expansion-panel-header>
-					<v-expansion-panel-content>
-						<draggable
-							class="draggable-column"
-							:list="program.secondYear"
-							:group="{ name: 'course', pull: pullFunction }"
-							:clone="clone"
-							@change="change"
-						>
-							<RequirementOptionsModal
-								class="list-group-item course-card"
-								v-for="(requirement, i) in program.secondYear"
-								:key="i"
-								:course="requirement"
-								:onSelectionBar="true"
-								@mousedown.native="setLastClicked(requirement)"
-							/>
-						</draggable>
-					</v-expansion-panel-content>
-				</v-expansion-panel>
-
-				<v-expansion-panel class="expansion-panel" v-if="program.thirdYear.length">
-					<v-expansion-panel-header>300s Courses</v-expansion-panel-header>
-					<v-expansion-panel-content>
-						<draggable
-							class="draggable-column"
-							:list="program.thirdYear"
-							:group="{ name: 'course', pull: pullFunction }"
-							:clone="clone"
-							@change="change"
-						>
-							<RequirementOptionsModal
-								class="list-group-item course-card"
-								v-for="(requirement, i) in program.thirdYear"
-								:key="i"
-								:course="requirement"
-								:onSelectionBar="true"
-								@mousedown.native="setLastClicked(requirement)"
-							/>
-						</draggable>
-					</v-expansion-panel-content>
-				</v-expansion-panel>
-
-				<v-expansion-panel class="expansion-panel" v-if="program.fourthYear.length">
-					<v-expansion-panel-header>400s Courses</v-expansion-panel-header>
-					<v-expansion-panel-content>
-						<draggable
-							class="draggable-column"
-							:list="program.fourthYear"
-							:group="{ name: 'course', pull: pullFunction }"
-							:clone="clone"
-							@change="change"
-						>
-							<RequirementOptionsModal
-								class="list-group-item course-card"
-								v-for="(requirement, i) in program.fourthYear"
-								:key="i"
-								:course="requirement"
-								:onSelectionBar="true"
-								@mousedown.native="setLastClicked(requirement)"
-							/>
-						</draggable>
-					</v-expansion-panel-content>
-				</v-expansion-panel>
-
-				<v-expansion-panel class="expansion-panel" v-if="program.others.length">
-					<v-expansion-panel-header>Other courses</v-expansion-panel-header>
-					<v-expansion-panel-content>
-						<draggable
-							class="draggable-column"
-							:list="program.others"
-							:group="{ name: 'course', pull: pullFunction }"
-							:clone="clone"
-							@change="change"
-						>
-							<RequirementOptionsModal
-								class="list-group-item course-card"
-								v-for="(requirement, i) in program.others"
-								:key="i"
-								:course="requirement"
-								:onSelectionBar="true"
-								@mousedown.native="setLastClicked(requirement)"
-							/>
-						</draggable>
-					</v-expansion-panel-content>
-				</v-expansion-panel>
-
-                <v-expansion-panel class="expansion-panel" v-if="program.one && program.one.length">
-					<v-expansion-panel-header>Year One</v-expansion-panel-header>
-					<v-expansion-panel-content>
-						<draggable
-							class="draggable-column"
-							:list="program.one"
-							:group="{ name: 'course', pull: pullFunction }"
-							:clone="clone"
-							@change="change"
-						>
-							<RequirementOptionsModal
-								class="list-group-item course-card"
-								v-for="(requirement, i) in program.one"
-								:key="i"
-								:course="requirement"
-								:onSelectionBar="true"
-								@mousedown.native="setLastClicked(requirement)"
-							/>
-						</draggable>
-					</v-expansion-panel-content>
-				</v-expansion-panel>
-
-                <v-expansion-panel class="expansion-panel" v-if="program.two && program.two.length">
-					<v-expansion-panel-header>Year Two</v-expansion-panel-header>
-					<v-expansion-panel-content>
-						<draggable
-							class="draggable-column"
-							:list="program.two"
-							:group="{ name: 'course', pull: pullFunction }"
-							:clone="clone"
-							@change="change"
-						>
-							<RequirementOptionsModal
-								class="list-group-item course-card"
-								v-for="(requirement, i) in program.two"
-								:key="i"
-								:course="requirement"
-								:onSelectionBar="true"
-								@mousedown.native="setLastClicked(requirement)"
-							/>
-						</draggable>
-					</v-expansion-panel-content>
-				</v-expansion-panel>
-
-                <v-expansion-panel class="expansion-panel" v-if="program.three && program.three.length">
-					<v-expansion-panel-header>Year Three</v-expansion-panel-header>
-					<v-expansion-panel-content>
-						<draggable
-							class="draggable-column"
-							:list="program.three"
-							:group="{ name: 'course', pull: pullFunction }"
-							:clone="clone"
-							@change="change"
-						>
-							<RequirementOptionsModal
-								class="list-group-item course-card"
-								v-for="(requirement, i) in program.three"
-								:key="i"
-								:course="requirement"
-								:onSelectionBar="true"
-								@mousedown.native="setLastClicked(requirement)"
-							/>
-						</draggable>
-					</v-expansion-panel-content>
-				</v-expansion-panel>
-
-                <v-expansion-panel class="expansion-panel" v-if="program.four && program.four.length">
-					<v-expansion-panel-header>Year Four</v-expansion-panel-header>
-					<v-expansion-panel-content>
-						<draggable
-							class="draggable-column"
-							:list="program.four"
-							:group="{ name: 'course', pull: pullFunction }"
-							:clone="clone"
-							@change="change"
-						>
-							<RequirementOptionsModal
-								class="list-group-item course-card"
-								v-for="(requirement, i) in program.four"
-								:key="i"
-								:course="requirement"
-								:onSelectionBar="true"
-								@mousedown.native="setLastClicked(requirement)"
-							/>
-						</draggable>
-					</v-expansion-panel-content>
-				</v-expansion-panel>
-
-                <v-expansion-panel class="expansion-panel" v-if="program.oneA && program.oneA.length">
-					<v-expansion-panel-header>1A</v-expansion-panel-header>
-					<v-expansion-panel-content>
-						<draggable
-							class="draggable-column"
-							:list="program.oneA"
-							:group="{ name: 'course', pull: pullFunction }"
-							:clone="clone"
-							@change="change"
-						>
-							<RequirementOptionsModal
-								class="list-group-item course-card"
-								v-for="(requirement, i) in program.oneA"
-								:key="i"
-								:course="requirement"
-								:onSelectionBar="true"
-								@mousedown.native="setLastClicked(requirement)"
-							/>
-						</draggable>
-					</v-expansion-panel-content>
-				</v-expansion-panel>
-
-                <v-expansion-panel class="expansion-panel" v-if="program.oneB && program.oneB.length">
-					<v-expansion-panel-header>1B</v-expansion-panel-header>
-					<v-expansion-panel-content>
-						<draggable
-							class="draggable-column"
-							:list="program.oneB"
-							:group="{ name: 'course', pull: pullFunction }"
-							:clone="clone"
-							@change="change"
-						>
-							<RequirementOptionsModal
-								class="list-group-item course-card"
-								v-for="(requirement, i) in program.oneB"
-								:key="i"
-								:course="requirement"
-								:onSelectionBar="true"
-								@mousedown.native="setLastClicked(requirement)"
-							/>
-						</draggable>
-					</v-expansion-panel-content>
-				</v-expansion-panel>
-
-                <v-expansion-panel class="expansion-panel" v-if="program.twoA && program.twoA.length">
-					<v-expansion-panel-header>2A</v-expansion-panel-header>
-					<v-expansion-panel-content>
-						<draggable
-							class="draggable-column"
-							:list="program.twoA"
-							:group="{ name: 'course', pull: pullFunction }"
-							:clone="clone"
-							@change="change"
-						>
-							<RequirementOptionsModal
-								class="list-group-item course-card"
-								v-for="(requirement, i) in program.twoA"
-								:key="i"
-								:course="requirement"
-								:onSelectionBar="true"
-								@mousedown.native="setLastClicked(requirement)"
-							/>
-						</draggable>
-					</v-expansion-panel-content>
-				</v-expansion-panel>
-
-                <v-expansion-panel class="expansion-panel" v-if="program.twoB && program.twoB.length">
-					<v-expansion-panel-header>2B</v-expansion-panel-header>
-					<v-expansion-panel-content>
-						<draggable
-							class="draggable-column"
-							:list="program.twoB"
-							:group="{ name: 'course', pull: pullFunction }"
-							:clone="clone"
-							@change="change"
-						>
-							<RequirementOptionsModal
-								class="list-group-item course-card"
-								v-for="(requirement, i) in program.twoB"
-								:key="i"
-								:course="requirement"
-								:onSelectionBar="true"
-								@mousedown.native="setLastClicked(requirement)"
-							/>
-						</draggable>
-					</v-expansion-panel-content>
-				</v-expansion-panel>
-
-                <v-expansion-panel class="expansion-panel" v-if="program.threeA && program.threeA.length">
-					<v-expansion-panel-header>3A</v-expansion-panel-header>
-					<v-expansion-panel-content>
-						<draggable
-							class="draggable-column"
-							:list="program.threeA"
-							:group="{ name: 'course', pull: pullFunction }"
-							:clone="clone"
-							@change="change"
-						>
-							<RequirementOptionsModal
-								class="list-group-item course-card"
-								v-for="(requirement, i) in program.threeA"
-								:key="i"
-								:course="requirement"
-								:onSelectionBar="true"
-								@mousedown.native="setLastClicked(requirement)"
-							/>
-						</draggable>
-					</v-expansion-panel-content>
-				</v-expansion-panel>
-
-                <v-expansion-panel class="expansion-panel" v-if="program.threeB && program.threeB.length">
-					<v-expansion-panel-header>3B</v-expansion-panel-header>
-					<v-expansion-panel-content>
-						<draggable
-							class="draggable-column"
-							:list="program.threeB"
-							:group="{ name: 'course', pull: pullFunction }"
-							:clone="clone"
-							@change="change"
-						>
-							<RequirementOptionsModal
-								class="list-group-item course-card"
-								v-for="(requirement, i) in program.threeB"
-								:key="i"
-								:course="requirement"
-								:onSelectionBar="true"
-								@mousedown.native="setLastClicked(requirement)"
-							/>
-						</draggable>
-					</v-expansion-panel-content>
-				</v-expansion-panel>
-
-                <v-expansion-panel class="expansion-panel" v-if="program.fourA && program.fourA.length">
-					<v-expansion-panel-header>4A</v-expansion-panel-header>
-					<v-expansion-panel-content>
-						<draggable
-							class="draggable-column"
-							:list="program.fourA"
-							:group="{ name: 'course', pull: pullFunction }"
-							:clone="clone"
-							@change="change"
-						>
-							<RequirementOptionsModal
-								class="list-group-item course-card"
-								v-for="(requirement, i) in program.fourA"
-								:key="i"
-								:course="requirement"
-								:onSelectionBar="true"
-								@mousedown.native="setLastClicked(requirement)"
-							/>
-						</draggable>
-					</v-expansion-panel-content>
-				</v-expansion-panel>
-
-                <v-expansion-panel class="expansion-panel" v-if="program.fourB && program.fourB.length">
-					<v-expansion-panel-header>4B</v-expansion-panel-header>
-					<v-expansion-panel-content>
-						<draggable
-							class="draggable-column"
-							:list="program.fourB"
-							:group="{ name: 'course', pull: pullFunction }"
-							:clone="clone"
-							@change="change"
-						>
-							<RequirementOptionsModal
-								class="list-group-item course-card"
-								v-for="(requirement, i) in program.fourB"
-								:key="i"
-								:course="requirement"
-								:onSelectionBar="true"
-								@mousedown.native="setLastClicked(requirement)"
-							/>
-						</draggable>
-					</v-expansion-panel-content>
-				</v-expansion-panel>
-
+				<template v-for="(section, index) of program.sections()">
+					<v-expansion-panel class="expansion-panel" v-if="section.length" v-bind:key="index">
+						<v-expansion-panel-header>{{ sectionToDisplayMap[Object.keys(program).find(key => program[key] === section )] }}</v-expansion-panel-header>
+						<v-expansion-panel-content>
+							<draggable
+								class="draggable-column"
+								:list="section"
+								:group="{ name: 'course', pull: pullFunction }"
+								:clone="clone"
+								@change="change"
+							>
+							<template v-for="(requirement, i) in section">
+								<RequirementOptionsModal
+									class="list-group-item course-card"
+									:key="i"
+									:course="requirement"
+									:onSelectionBar="true"
+									@mousedown.native="setLastClicked(requirement)"
+									v-touchscreen="()=>{ setLastClicked(requirement) }"
+									v-if="!requirement.satisfied()"
+								/>
+							</template>
+							</draggable>
+						</v-expansion-panel-content>
+					</v-expansion-panel>
+				</template>
 			</v-expansion-panels>
 		</div>
 	</div>
@@ -398,7 +50,10 @@
 import { mapGetters, mapMutations } from "vuex";
 import draggable from "vuedraggable";
 import RequirementOptionsModal from "../Modals/RequirementOptionsModal";
-import { CourseRequirement } from "../../models/courseModel.js";
+import { CourseRequirement } from "../../models/courseRequirementModel";
+import { SECTION_TO_DISPLAY_TITLE_MAP } from "../../models/ProgramModel";
+import ZingTouch from 'zingtouch';
+
 export default {
 	name: "RequirementDropdown",
 	components: {
@@ -414,42 +69,54 @@ export default {
 		programArray: Array
 	},
 	methods: {
-		...mapMutations(["sortRequirements", "sortAndCollapseRequirements"]),
+		...mapMutations(["sortRequirements", "sortRequirements"]),
 		//card is not cloned if it only has one list and that
 		pullFunction: function() {
-			return this.lastClickdownReq.number_of_courses == 1 ||
-				this.lastClickdownReq.course_choices.length == 1
-				? true
-				: "clone";
+			return this.lastClickdownReq.number_of_courses == 1 || this.lastClickdownReq.course_choices.length == 1 ? true : "clone";
 		},
+		//event when card is removed
 		clone: function(event) {
 			if (event.course_choices.length == 1) {
 				return event;
 			}
-			//create a deep copy of the requirement
-			let clone = new CourseRequirement(JSON.parse(JSON.stringify(event)));
-			if (clone.isSelected()) event.deselect();
-			else clone.deselect();
+			//create a shallow copy of the requirement
+			let clone = new CourseRequirement({...event});
 			return clone;
 		},
+		//event when card is added
 		change: function(event) {
 			if (!event.added) return;
 			let changedReq = event.added.element;
 			changedReq.inRequirementBar = true;
-
-			this.sortAndCollapseRequirements();
+			this.sortRequirements();
 		},
 		setLastClicked(requirement) {
 			console.log("last clicked", requirement);
 			this.lastClickdownReq = requirement;
 		}
 	},
-	computed: mapGetters([
+	computed: {
+		...mapGetters([
 		"requirements",
 		"majorRequirements",
 		"minorRequirements",
 		"specRequirements"
-	])
+		]),
+		sectionToDisplayMap: function() {	
+			return SECTION_TO_DISPLAY_TITLE_MAP
+		}
+	},
+	directives: {
+		touchscreen: {
+			bind: function(el, binding) {
+				let regionOne = new ZingTouch.Region(el, true, false);
+				let longTap = new ZingTouch.Pan({
+					threshold: 0
+				})
+				regionOne.bind(el, longTap, binding.value)
+			}
+		}
+	}
 };
 </script>
 

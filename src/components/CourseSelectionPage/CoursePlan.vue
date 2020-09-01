@@ -75,7 +75,7 @@ export default {
         //we only check add events
         if (!event.added) return;
         let changedReq = event.added.element;
-        if (changedReq.course_choices.length > 1 && changedReq.inRequirementBar) {
+        if (changedReq.number_of_courses > 1 && changedReq.inRequirementBar) {
           changedReq.number_of_courses = 1;
           this.decrementRequirementID(changedReq.id)
         }

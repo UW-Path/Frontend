@@ -1,7 +1,7 @@
 import axios from "axios";
 import TrieSearch from "trie-search"
-import { CourseRequirement } from "../../models/courseModel";
-import * as download from 'downloadjs'
+import { CourseRequirement } from "../../models/courseRequirementModel";
+import * as download from "downloadjs";
 
 // Production Kubernetes API
 const backend_api = "";
@@ -288,7 +288,7 @@ const actions = {
             }
         })
         .catch(err => {
-            console.log(err);
+            console.error(err);
             return;
         })
     },
@@ -335,14 +335,13 @@ const mutations = {
                 return course.selected_course.course_code;
             });
             for (let requirement of state.table[i].courses) {
-                console.log(requirement)
                 // If course has no prereq, then course can be taken
                 if (requirement.course_choices.length == 1 && requirement.course_choices[0].prereqs.length === 0){
                     requirement.prereqs_met = true;
                 }
                 //there if course has not been selected yet then dont do anything
                 else if (!requirement.selected_course) continue
-                else if (requirement.selected_course.course_code !== "WAITING") {
+                else if (requirement.isSelected()) {
                     if (requirement.selected_course.prereqs.length === 0){
                         requirement.prereqs_met = true;
                     }
@@ -358,7 +357,7 @@ const mutations = {
                             requirement.prereqs_met = response.data.can_take;
                         })
                         .catch(err => {
-                            console.log(err);
+                            console.error(err);
                         })
                     }
                 }
