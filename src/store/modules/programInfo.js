@@ -1,5 +1,5 @@
 import axios from "axios";
-import { MajorInfo, MinorInfo, OptionInfo } from "../../models/ProgramInfoModel"
+import { ProgramInfo } from "../../models/ProgramInfoModel"
 
 // Production Kubernetes API
 const backend_api = "";
@@ -20,7 +20,7 @@ const getters = {
     allMajors: (state) => {return state.majors },
     allMinors: (state) => { return state.minors },  
     allSpecializations: (state) => { return state.specialization },
-    //finds the major that maches to a give program name
+    //finds the major that matches to a give program name
     findMajorByProgram: (state) => {
         return (program) => {
             return state.majors.find(obj => { return program == obj.program_name})
@@ -43,7 +43,6 @@ const actions = {
     fetchMajors({ commit }) {
         axios.get(backend_api + "/api/requirements/unique_major")
         .then(response => {
-            console.log("majors list", response.data)
             commit('setMajor', response.data["Major"]);
         })
         .catch(err => {
@@ -55,13 +54,13 @@ const actions = {
 
 const mutations = {
     setMajor: (state, majors) => {
-        state.majors = majors.map(major => { return new MajorInfo(major) })
+        state.majors = majors.map(major => { return new ProgramInfo(major) })
     },
     setMinor: (state, minors) => {
-        state.minors = minors.map(minor => { return new MinorInfo(minor) })
+        state.minors = minors.map(minor => { return new ProgramInfo(minor) })
     },
     setSpecialization: (state, specialization) => {
-        state.specialization = specialization.map(spec => { return new OptionInfo(spec) })
+        state.specialization = specialization.map(spec => { return new ProgramInfo(spec) })
     }
 };
 

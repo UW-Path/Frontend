@@ -34,7 +34,7 @@ const defaultTable = [
     {
         courses: []
     }       
- ]
+ ];
 
 const state = {
     table: JSON.parse(JSON.stringify(defaultTable)),
@@ -49,7 +49,7 @@ const getters = {
     checklistMajorRequirements: (state) => state.checklistMajorRequirements,
     checklistMinorRequirements: (state) => state.checklistMinorRequirements,
     checklistOptionRequirements: (state) => state.checklistOptionRequirements,
-    getTable: (state) => {return state.table},
+    getTable: (state) => state.table,
     isFull: (state) => {
         return state.table.length >= state.termList.length
     },
@@ -288,6 +288,7 @@ const actions = {
             }
         })
         .catch(err => {
+            // eslint-disable-next-line no-console
             console.error(err);
             return;
         })
@@ -357,6 +358,7 @@ const mutations = {
                             requirement.prereqs_met = response.data.can_take;
                         })
                         .catch(err => {
+                            // eslint-disable-next-line no-console
                             console.error(err);
                         })
                     }
