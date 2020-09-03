@@ -1,27 +1,25 @@
 import axios from "axios";
 import { CourseRequirement, YEAR_TO_REQ_SECTION_MAP} from '../../models/courseRequirementModel'
-import {MajorRequirement, MinorRequirement, OptionRequirement } from '../../models/ProgramModel'
+import { MajorRequirement, OtherRequirement } from '../../models/ProgramModel'
 import { CourseInfo } from '../../models/courseInfoModel'
 
 // Production Kubernetes API
-// const backend_api = "";
+const backend_api = "";
 
 // Dev API
-const backend_api = "http://127.0.0.1:8000";
+// const backend_api = "http://127.0.0.1:8000";
 
 // Fetch course information of a single course code or a course pattern (eg MATH 239 or PHYS 300-)
 // requirement is the courseRequirement object that this course code belongs to
-async function parseRequirement(courseCode, requirement) {
+async function parseRequirement(courseCode) {
     //checks if it exists in the cache and adds it to the cache if it is not currently in the cache
     function addAndReturnCache(courseInfoParam) {
         let courseInfo = new CourseInfo(courseInfoParam)
         if (state.courseCache[courseInfo.course_code]) {
-            if (!state.courseCache[courseInfo.course_code].requirements.includes(requirement) && requirement != null) state.courseCache[courseInfo.course_code].requirements.push(requirement)
             return state.courseCache[courseInfo.course_code]
         }
 
         state.courseCache[courseInfo.course_code] = courseInfo
-        if (requirement != null) courseInfo.requirements.push(requirement)
         return courseInfo
     }
 
@@ -189,7 +187,6 @@ const actions = {
                 option: options.newSpecialization ? options.newSpecialization.program_name : ""
             }
         });
-        console.log("requirements ", response.data)
         let newMajorRequirements = response.data.requirements;
 
         if (options.newMajor) {
@@ -228,7 +225,7 @@ const actions = {
                 let promises = []
                 let required_courses = requirement.course_codes.split(/,\s|\sor\s|,/)
                 for (let course of required_courses) {
-                    promises.push(parseRequirement(course, ))
+                    promises.push(parseRequirement(course))
                 }
                 Promise.all(promises).then(choices => {
                     // additional req only needed in majors
@@ -243,10 +240,6 @@ const actions = {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
                     }
                     let parsed_req_obj = new CourseRequirement(parsed_requirement);
-                    for (let choice of parsed_requirement.course_choices) {
-                        choice.requirements.push(parsed_req_obj)
-                    }
-                    parsed_req_obj.section = newMajor[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]]
                     newMajor[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]].push(parsed_req_obj)
                 })
                 .catch(error => { console.error(error) })
@@ -256,15 +249,14 @@ const actions = {
             state.majorRequirements.push(newMajor)
 
             let compiledReqs = []
-            Object.values(newMajor.sections()).forEach(section => { console.log(section); compiledReqs = compiledReqs.concat(section) })
+            Object.values(newMajor.sections()).forEach(section => { compiledReqs = compiledReqs.concat(section) })
 
-            console.log("compiled requirements", newMajor)
             commit('setMinor', response.data["minor_list"]);
             commit('setSpecialization', response.data["option_list"]);
         }
         // Minor requirements
         if (response.data.minor_requirements != undefined && options.newMinor) {
-            let newMinor = new MinorRequirement({ info: options.newMinor })
+            let newMinor = new OtherRequirement({ info: options.newMinor })
 
             for (let requirement of response.data.minor_requirements) {
                 let promises = [];
@@ -285,10 +277,6 @@ const actions = {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
                     }                    
                     let parsed_req_obj = new CourseRequirement(parsed_requirement)
-                    for (let choice of parsed_requirement.course_choices) {
-                        choice.requirements.push(parsed_req_obj)
-                    }
-                    parsed_req_obj.section = newMinor[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]]
                     newMinor[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]].push(parsed_req_obj)
                 })
                 .catch(error => { console.error(error) })
@@ -297,7 +285,7 @@ const actions = {
         } 
         // Option requirements
         if (response.data.option_requirements != undefined && options.newSpecialization) {
-            let newSpec = new OptionRequirement({ info: options.newSpecialization })
+            let newSpec = new OtherRequirement({ info: options.newSpecialization })
 
             for (let requirement of response.data.option_requirements) {
                 let promises = [];
@@ -318,10 +306,6 @@ const actions = {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
                     }
                     let parsed_req_obj = new CourseRequirement(parsed_requirement)
-                    for (let choice of parsed_requirement.course_choices) {
-                        choice.requirements.push(parsed_req_obj)
-                    }
-                    parsed_req_obj.section = newSpec[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]]
                     newSpec[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]].push(parsed_req_obj)                    
                 })
                 .catch(error => { console.error(error) })

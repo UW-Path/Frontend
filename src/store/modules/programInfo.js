@@ -1,11 +1,11 @@
 import axios from "axios";
-import { MajorInfo, MinorInfo, OptionInfo } from "../../models/ProgramInfoModel"
+import { ProgramInfo } from "../../models/ProgramInfoModel"
 
 // Production Kubernetes API
-// const backend_api = "";
+const backend_api = "";
 
 // Dev API
-const backend_api = "http://127.0.0.1:8000";
+// const backend_api = "http://127.0.0.1:8000";
 
 //need to move the routes to the configs
 const state = {
@@ -43,7 +43,6 @@ const actions = {
     fetchMajors({ commit }) {
         axios.get(backend_api + "/api/requirements/unique_major")
         .then(response => {
-            console.log("majors list", response.data)
             commit('setMajor', response.data["Major"]);
         })
         .catch(err => {
@@ -55,13 +54,13 @@ const actions = {
 
 const mutations = {
     setMajor: (state, majors) => {
-        state.majors = majors.map(major => { return new MajorInfo(major) })
+        state.majors = majors.map(major => { return new ProgramInfo(major) })
     },
     setMinor: (state, minors) => {
-        state.minors = minors.map(minor => { return new MinorInfo(minor) })
+        state.minors = minors.map(minor => { return new ProgramInfo(minor) })
     },
     setSpecialization: (state, specialization) => {
-        state.specialization = specialization.map(spec => { return new OptionInfo(spec) })
+        state.specialization = specialization.map(spec => { return new ProgramInfo(spec) })
     }
 };
 
