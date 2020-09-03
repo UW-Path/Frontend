@@ -4,10 +4,10 @@ import {MajorRequirement, MinorRequirement, OptionRequirement } from '../../mode
 import { CourseInfo } from '../../models/courseInfoModel'
 
 // Production Kubernetes API
-const backend_api = "";
+// const backend_api = "";
 
 // Dev API
-// const backend_api = "http://127.0.0.1:8000";
+const backend_api = "http://127.0.0.1:8000";
 
 // Fetch course information of a single course code or a course pattern (eg MATH 239 or PHYS 300-)
 // requirement is the courseRequirement object that this course code belongs to
@@ -29,7 +29,7 @@ async function parseRequirement(courseCode, requirement) {
     let response = null
     let parsedCourseInfos = []
 
-    // 1. SEPCIFIC CASES THAT DOES NOT PERTAIN TO A COURSE PATTERN
+    // 1. SPECIFIC CASES THAT DOES NOT PERTAIN TO A COURSE PATTERN
     // Engineering specific/Program Elective 
     if (courseCode.includes("TE")){
         parsedCourseInfos = [{
@@ -85,9 +85,9 @@ async function parseRequirement(courseCode, requirement) {
             course_code: courseCode
         }]
     }
-    //2. QUERIABLE CASES
+    //2. QUERYABLE CASES
     else if (!hasNumber.test(courseCode)){
-        //Handles non numerical courses such as MATH, ACTSCI
+        //Handles non numerical courses such as MATH, ACTSC
         response = await axios.get(backend_api + "/api/course-info/filter", {
             params: {
                 start: 0,

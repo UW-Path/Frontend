@@ -2,10 +2,10 @@ import axios from "axios";
 import { MajorInfo, MinorInfo, OptionInfo } from "../../models/ProgramInfoModel"
 
 // Production Kubernetes API
-const backend_api = "";
+// const backend_api = "";
 
 // Dev API
-// const backend_api = "http://127.0.0.1:8000";
+const backend_api = "http://127.0.0.1:8000";
 
 //need to move the routes to the configs
 const state = {
@@ -20,7 +20,7 @@ const getters = {
     allMajors: (state) => {return state.majors },
     allMinors: (state) => { return state.minors },  
     allSpecializations: (state) => { return state.specialization },
-    //finds the major that maches to a give program name
+    //finds the major that matches to a give program name
     findMajorByProgram: (state) => {
         return (program) => {
             return state.majors.find(obj => { return program == obj.program_name})

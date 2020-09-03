@@ -4,10 +4,10 @@ import { CourseRequirement } from "../../models/courseRequirementModel";
 import * as download from "downloadjs";
 
 // Production Kubernetes API
-const backend_api = "";
+// const backend_api = "";
 
 // Dev API
-// const backend_api = "http://127.0.0.1:8000";
+const backend_api = "http://127.0.0.1:8000";
 
 const defaultTable = [ 
     {
@@ -34,7 +34,7 @@ const defaultTable = [
     {
         courses: []
     }       
- ]
+ ];
 
 const state = {
     table: JSON.parse(JSON.stringify(defaultTable)),
@@ -288,6 +288,7 @@ const actions = {
             }
         })
         .catch(err => {
+            // eslint-disable-next-line no-console
             console.error(err);
             return;
         })
@@ -357,6 +358,7 @@ const mutations = {
                             requirement.prereqs_met = response.data.can_take;
                         })
                         .catch(err => {
+                            // eslint-disable-next-line no-console
                             console.error(err);
                         })
                     }
