@@ -1,5 +1,4 @@
 import axios from "axios";
-import TrieSearch from "trie-search"
 import { CourseRequirement, YEAR_TO_REQ_SECTION_MAP} from '../../models/courseRequirementModel'
 import {MajorRequirement, MinorRequirement, OptionRequirement } from '../../models/ProgramModel'
 import { CourseInfo } from '../../models/courseInfoModel'
@@ -16,18 +15,7 @@ async function parseRequirement(courseCode, requirement) {
     //checks if it exists in the cache and adds it to the cache if it is not currently in the cache
     function addAndReturnCache(courseInfoParam) {
         let courseInfo = new CourseInfo(courseInfoParam)
-
-        let filterArray = courseInfo.course_code.match(/[\d.]+|\D+/g)
-        // console.log(filterArray)
-        // console.log(state.allCourses.get(filterArray, TrieSearch.UNION_REDUCER))
-               
         if (state.courseCache[courseInfo.course_code]) {
-            if (!state.courseCache[courseInfo.course_code].requirements.includes(requirement) && requirement != null) state.courseCache[courseInfo.course_code].requirements.push(requirement)
-            return state.courseCache[courseInfo.course_code]
-        }
-
-        if (state.allCourses.get(filterArray, TrieSearch.UNION_REDUCER).length) {  
-            state.courseCache[courseInfo.course_code] = state.allCourses.get(filterArray, TrieSearch.UNION_REDUCER)[0]
             if (!state.courseCache[courseInfo.course_code].requirements.includes(requirement) && requirement != null) state.courseCache[courseInfo.course_code].requirements.push(requirement)
             return state.courseCache[courseInfo.course_code]
         }
@@ -171,13 +159,6 @@ async function parseRequirement(courseCode, requirement) {
 }
 
 const state = {
-    // old stuff
-    allCourses: new TrieSearch(['course_code', 'course_number'], {
-        idFieldOrFunction: function(course) {
-            return course.course_id + course.course_code;
-        }
-    }),
-    // mew stuff
     majorRequirements: [],
     minorRequirements: [],
     specRequirements:  [],
@@ -187,7 +168,6 @@ const state = {
 };
 
 const getters = {
-    allCourses: (state) => state.allCourses,
     majorRequirements: (state) => state.majorRequirements,
     minorRequirements: (state) => state.minorRequirements,
     specRequirements: (state) => state.specRequirements,
@@ -196,27 +176,6 @@ const getters = {
 
 
 const actions = {
-    // Fetch a list of all available courses
-    async fetchAllCourses({ commit }) {
-        await axios.get(backend_api + "/api/course-info/filter", {
-            params: {
-                start: 0,
-                end: 1000,
-                code: "none",
-            }
-        })
-        .then(response => {
-            response.data.sort((course1, course2) => {
-                if (course1.course_code < course2.course_code) return -1;
-                else if (course1.course_code > course2.course_code) 1;
-                else return 0;
-            })
-            commit('setAllCourses', response.data.map(course => { 
-                return new CourseInfo(course) 
-            }));
-        })
-        .catch(error => { console.error(error) }) 
-    },
     // Fetching requirements simply adds requirements to the requirement column.
     // To delete the requirements, one would need to call the functions in mutation
     async fetchRequirements({ commit, getters, state }, options) {
@@ -371,9 +330,6 @@ const actions = {
 };
 
 const mutations = {
-    setAllCourses: (state, allCourses) => {
-        state.allCourses.addAll(allCourses)
-    },
     addCourseRequirement: (state, requirement) => {
         if (requirement.major.length) {
             let major = state.majorRequirements.find(req => { return req.info.program_name == requirement.major[0].program_name })
