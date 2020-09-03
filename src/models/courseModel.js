@@ -40,7 +40,7 @@ export class CourseRequirement {
         if (data && data.course_choices && data.course_choices.length == 1) this.selected_course = data.course_choices[0]
         else if (data && data.selected_course) this.selected_course = data.selected_course 
         else this.selected_course = {course_code: "WAITING", course_number: 42}
-
+        this.credits_required = data ? data.credits_required : 0
         this.major = data && data.major ? data.major : []
         this.minor = data && data.minor ? data.minor : []
         this.specialization = data && data.specialization ? data.specialization : []
@@ -49,7 +49,7 @@ export class CourseRequirement {
         this.inRequirementBar = data ? data.inRequirementBar : true
         this.prereqs_met = data && data.prereqs_met ? data.prereqs_met : false
         this.additional_requirements = data && data.additional_requirements ? data.additional_requirements : []
-        this.number_of_prereqs_met = data && data.number_of_prereqs_met ? data.number_of_prereqs_met : 0
+        this.credits_of_prereqs_met = data && data.credits_of_prereqs_met ? data.credits_of_prereqs_met : 0
         this.user_selected = data && data.user_selected ? data.user_selected : false
         // the year is x if all course choices that are in the requirement are in the same year, otherwise, it is -1 which is other
         // if additional req indicate when the course should be taken, this takes precedence

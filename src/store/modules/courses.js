@@ -256,9 +256,8 @@ const actions = {
             state.majorRequirements.push(newMajor)
 
             let compiledReqs = []
-            Object.values(newMajor.sections()).forEach(section => { console.log(section); compiledReqs = compiledReqs.concat(section) })
+            Object.values(newMajor.sections()).forEach(section => { compiledReqs = compiledReqs.concat(section) })
 
-            console.log("compiled requirements", newMajor)
             commit('setMinor', response.data["minor_list"]);
             commit('setSpecialization', response.data["option_list"]);
         }
@@ -349,9 +348,9 @@ const mutations = {
             return;
         }
     },
-    addMajor: (state, majorRequirement) => { state.majorRequirements.push(majorRequirement); console.log("added major:", state.majorRequirements); },
-    addMinor: (state, minorRequirement) => { state.minorRequirements.push(minorRequirement); console.log("added minor:", state.minor); },
-    addSpec: (state, specRequirement) => { state.specRequirements.push(specRequirement); console.log("added spec:", state.spec); },
+    addMajor: (state, majorRequirement) => { state.majorRequirements.push(majorRequirement) },
+    addMinor: (state, minorRequirement) => { state.minorRequirements.push(minorRequirement) },
+    addSpec: (state, specRequirement) => { state.specRequirements.push(specRequirement) },
     removeMajor: (state) => { state.majorRequirements = [] },
     removeMinor: (state) => { state.minorRequirements = [] },
     removeOption: (state) => { state.specRequirements = [] },
