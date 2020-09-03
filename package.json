@@ -12,6 +12,7 @@
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
     "downloadjs": "^1.4.7",
+    "js-cookie": "^2.2.1",
     "trie-search": "^1.2.11",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
@@ -19,6 +20,7 @@
     "vuedraggable": "^2.24.0",
     "vuetify": "^2.2.11",
     "vuex": "^3.4.0",
+    "vuex-persistedstate": "^3.1.0",
     "zingtouch": "^1.0.6"
   },
   "devDependencies": {

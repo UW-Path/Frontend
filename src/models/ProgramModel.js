@@ -1,4 +1,5 @@
-import {MajorInfo, MinorInfo, OptionInfo} from "./ProgramInfoModel" 
+import { ProgramInfo } from "./ProgramInfoModel"
+import { CourseRequirement } from "./courseRequirementModel";
 
 export const SECTION_TO_DISPLAY_TITLE_MAP = {
     "others": "Others",
@@ -22,26 +23,45 @@ export const SECTION_TO_DISPLAY_TITLE_MAP = {
 
 export class MajorRequirement {
     constructor(data) {
-        this.info = data && data.info ? data.info : new MajorInfo({})
-        this.firstYear = data && data.firstYear ? this.firstYear : []
-        this.secondYear = data && data.secondYear ? this.secondYear : []
-        this.thirdYear = data && data.thirdYear ? this.thirdYear : []
-        this.fourthYear = data && data.fourthYear ? this.fourthYear : []
+        this.info = data && data.info ? new ProgramInfo({...data.info}) : new ProgramInfo({});
 
-        this.one = data && data.one ? this.one : []
-        this.two = data && data.two ? this.two : []
-        this.three = data && data.three ? this.three : []
-        this.four = data && data.four ? this.four : []
-        this.oneA = data && data.oneA ? this.oneA : []
-        this.oneB = data && data.oneB ? this.oneB : []
-        this.twoA = data && data.twoA ? this.twoA : []
-        this.twoB = data && data.twoB ? this.twoB : []
-        this.threeA = data && data.threeA ? this.threeA : []
-        this.threeB = data && data.threeB ? this.threeB : []
-        this.fourA = data && data.fourA ? this.fourA : []
-        this.fourB = data && data.fourB ? this.fourB : []
+        this.firstYear = data && data.firstYear ? data.firstYear : [];
+        for (var i in this.firstYear) { this.firstYear[i] = new CourseRequirement({...this.firstYear[i]}); }
+        this.secondYear = data && data.secondYear ? data.secondYear : [];
+        for (i in this.secondYear) { this.secondYear[i] = new CourseRequirement({...this.secondYear[i]}); }
+        this.thirdYear = data && data.thirdYear ? data.thirdYear : [];
+        for (i in this.thirdYear) { this.thirdYear[i] = new CourseRequirement({...this.thirdYear[i]}); }
+        this.fourthYear = data && data.fourthYear ? data.fourthYear : [];
+        for (i in this.fourthYear) { this.fourthYear[i] = new CourseRequirement({...this.fourthYear[i]}); }
 
-        this.others = data && data.others ? this.others : []
+        this.one = data && data.one ? data.one : [];
+        for (i in this.one) { this.one[i] = new CourseRequirement({...this.one[i]}); }
+        this.two = data && data.two ? data.two : [];
+        for (i in this.two) { this.two[i] = new CourseRequirement({...this.two[i]}); }
+        this.three = data && data.three ? data.three : [];
+        for (i in this.three) { this.three[i] = new CourseRequirement({...this.three[i]}); }
+        this.four = data && data.four ? data.four : [];
+        for (i in this.four) { this.four[i] = new CourseRequirement({...this.four[i]}); }
+
+        this.oneA = data && data.oneA ? data.oneA : [];
+        for (i in this.oneA) { this.oneA[i] = new CourseRequirement({...this.oneA[i]}); }
+        this.oneB = data && data.oneB ? data.oneB : [];
+        for (i in this.oneB) { this.oneB[i] = new CourseRequirement({...this.oneB[i]}); }
+        this.twoA = data && data.twoA ? data.twoA : [];
+        for (i in this.twoA) { this.twoA[i] = new CourseRequirement({...this.twoA[i]}); }
+        this.twoB = data && data.twoB ? data.twoB : [];
+        for (i in this.twoB) { this.twoB[i] = new CourseRequirement({...this.twoB[i]}); }
+        this.threeA = data && data.threeA ? data.threeA : [];
+        for (i in this.threeA) { this.threeA[i] = new CourseRequirement({...this.threeA[i]}); }
+        this.threeB = data && data.threeB ? data.threeB : [];
+        for (i in this.threeB) { this.threeB[i] = new CourseRequirement({...this.threeB[i]}); }
+        this.fourA = data && data.fourA ? data.fourA : [];
+        for (i in this.fourA) { this.fourA[i] = new CourseRequirement({...this.fourA[i]}); }
+        this.fourB = data && data.fourB ? data.fourB : [];
+        for (i in this.fourB) { this.fourB[i] = new CourseRequirement({...this.fourB[i]}); }
+
+        this.others = data && data.others ? data.others : [];
+        for (i in this.others) { this.others[i] = new CourseRequirement({...this.others[i]}); }
     }
 
     metedata() {
@@ -49,20 +69,27 @@ export class MajorRequirement {
     }
 
     sections() {
-        let section = {...this}
-        delete section.info
+        let section = {...this};
+        delete section.info;
         return section
     }
 }
 
-export class MinorRequirement {
+export class OtherRequirement {
     constructor(data) {
-        this.info = data && data.info ? data.info : new MinorInfo({})
-        this.firstYear = data && data.firstYear ? this.firstYear : []
-        this.secondYear = data && data.secondYear ? this.secondYear : []
-        this.thirdYear = data && data.thirdYear ? this.thirdYear : []
-        this.fourthYear = data && data.fourthYear ? this.fourthYear : []
-        this.others = data && data.others ? this.others : []
+        this.info = data && data.info ? new ProgramInfo({...data.info}) : new ProgramInfo({});
+
+        this.firstYear = data && data.firstYear ? data.firstYear : [];
+        for (var i in this.firstYear) { this.firstYear[i] = new CourseRequirement({...this.firstYear[i]}); }
+        this.secondYear = data && data.secondYear ? data.secondYear : [];
+        for (i in this.secondYear) { this.secondYear[i] = new CourseRequirement({...this.secondYear[i]}); }
+        this.thirdYear = data && data.thirdYear ? data.thirdYear : [];
+        for (i in this.thirdYear) { this.thirdYear[i] = new CourseRequirement({...this.thirdYear[i]}); }
+        this.fourthYear = data && data.fourthYear ? data.fourthYear : [];
+        for (i in this.fourthYear) { this.fourthYear[i] = new CourseRequirement({...this.fourthYear[i]}); }
+
+        this.others = data && data.others ? data.others : [];
+        for (i in this.others) { this.others[i] = new CourseRequirement({...this.others[i]}); }
     }
 
     metedata() {
@@ -70,29 +97,8 @@ export class MinorRequirement {
     }
 
     sections() {
-        let section = {...this}
-        delete section.info
-        return section
-    }
-}
-
-export class OptionRequirement {
-    constructor(data) {
-        this.info = data && data.info ? data.info : new OptionInfo({})
-        this.firstYear = data && data.firstYear ? this.firstYear : []
-        this.secondYear = data && data.secondYear ? this.secondYear : []
-        this.thirdYear = data && data.thirdYear ? this.thirdYear : []
-        this.fourthYear = data && data.fourthYear ? this.fourthYear : []
-        this.others = data && data.others ? this.others : []
-    }
-
-    metedata() {
-        return this.info
-    }
-
-    sections() {
-        let section = {...this}
-        delete section.info
+        let section = {...this};
+        delete section.info;
         return section
     }
 }

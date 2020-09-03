@@ -1,7 +1,7 @@
 <template>
     <v-app-bar elevation="2" color="#4A75AD">
         <v-toolbar-title class="program-titles" v-for="(major,index) in majorRequirements" :key="index" >
-            <a v-bind:href="major.info.link" target="_blank">{{major.info.program_name }}</a>
+            <a v-bind:href="major.info.link" target="_blank">{{ major.info.program_name }}</a>
         </v-toolbar-title>
         <v-toolbar-title class="program-titles minor-font" v-for="(minor, index) in minorRequirements" :key="index + majorRequirements.length" v-bind:href="minor.link">
             <a v-bind:href="minor.info.link" target="_blank">{{ minor.info.program_name  }}</a>

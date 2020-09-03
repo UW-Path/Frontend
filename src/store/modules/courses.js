@@ -1,6 +1,6 @@
 import axios from "axios";
 import { CourseRequirement, YEAR_TO_REQ_SECTION_MAP} from '../../models/courseRequirementModel'
-import {MajorRequirement, MinorRequirement, OptionRequirement } from '../../models/ProgramModel'
+import { MajorRequirement, OtherRequirement } from '../../models/ProgramModel'
 import { CourseInfo } from '../../models/courseInfoModel'
 
 // Production Kubernetes API
@@ -11,17 +11,15 @@ const backend_api = "";
 
 // Fetch course information of a single course code or a course pattern (eg MATH 239 or PHYS 300-)
 // requirement is the courseRequirement object that this course code belongs to
-async function parseRequirement(courseCode, requirement) {
+async function parseRequirement(courseCode) {
     //checks if it exists in the cache and adds it to the cache if it is not currently in the cache
     function addAndReturnCache(courseInfoParam) {
         let courseInfo = new CourseInfo(courseInfoParam)
         if (state.courseCache[courseInfo.course_code]) {
-            if (!state.courseCache[courseInfo.course_code].requirements.includes(requirement) && requirement != null) state.courseCache[courseInfo.course_code].requirements.push(requirement)
             return state.courseCache[courseInfo.course_code]
         }
 
         state.courseCache[courseInfo.course_code] = courseInfo
-        if (requirement != null) courseInfo.requirements.push(requirement)
         return courseInfo
     }
 
@@ -29,7 +27,7 @@ async function parseRequirement(courseCode, requirement) {
     let response = null
     let parsedCourseInfos = []
 
-    // 1. SEPCIFIC CASES THAT DOES NOT PERTAIN TO A COURSE PATTERN
+    // 1. SPECIFIC CASES THAT DOES NOT PERTAIN TO A COURSE PATTERN
     // Engineering specific/Program Elective 
     if (courseCode.includes("TE")){
         parsedCourseInfos = [{
@@ -85,9 +83,9 @@ async function parseRequirement(courseCode, requirement) {
             course_code: courseCode
         }]
     }
-    //2. QUERIABLE CASES
+    //2. QUERYABLE CASES
     else if (!hasNumber.test(courseCode)){
-        //Handles non numerical courses such as MATH, ACTSCI
+        //Handles non numerical courses such as MATH, ACTSC
         response = await axios.get(backend_api + "/api/course-info/filter", {
             params: {
                 start: 0,
@@ -131,7 +129,14 @@ async function parseRequirement(courseCode, requirement) {
             }
         }).catch(error => { console.error(error) });
         parsedCourseInfos = response.data
-    } else if (courseCode.split(" ").length >= 1) {
+    }
+    else if (courseCode.includes("W")){
+        //laurier course
+        parsedCourseInfos =  [{ course_code: courseCode, 
+                            info: "Information about this course is unavailable. Please refer to https://loris.wlu.ca/register/ssb/registration for more details.",
+                            online: false }]
+    }
+    else if (courseCode.split(" ").length >= 1) {
         // Handles normal course case, ege MATH 239
         response = await axios.get(backend_api + "/api/course-info/get", {
             params: {
@@ -141,18 +146,9 @@ async function parseRequirement(courseCode, requirement) {
         parsedCourseInfos = [ response.data ];
     }
     else {
-        //Handles when queries becomes unavailable, Laurier queries are unavailable, so this is necessary
-        if (courseCode.includes("W")){
-            //laurier course
-            parsedCourseInfos =  [{ course_code: courseCode, 
-                                info: "Information about this course is unavailable. Please refer to https://loris.wlu.ca/register/ssb/registration for more details.",
-                                online: false }]
-        }
-        else{
-            parsedCourseInfos = [{ course_code: courseCode, 
-                                info: "Information about this course is unavailable.",
-                                online: false }]
-        }
+        parsedCourseInfos = [{ course_code: courseCode, 
+                            info: "Information about this course is unavailable.",
+                            online: false }]
     }
 
     return parsedCourseInfos.map(element => {
@@ -189,7 +185,6 @@ const actions = {
                 option: options.newSpecialization ? options.newSpecialization.program_name : ""
             }
         });
-        console.log("requirements ", response.data)
         let newMajorRequirements = response.data.requirements;
 
         if (options.newMajor) {
@@ -228,7 +223,7 @@ const actions = {
                 let promises = []
                 let required_courses = requirement.course_codes.split(/,\s|\sor\s|,/)
                 for (let course of required_courses) {
-                    promises.push(parseRequirement(course, ))
+                    promises.push(parseRequirement(course))
                 }
                 Promise.all(promises).then(choices => {
                     // additional req only needed in majors
@@ -243,10 +238,6 @@ const actions = {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
                     }
                     let parsed_req_obj = new CourseRequirement(parsed_requirement);
-                    for (let choice of parsed_requirement.course_choices) {
-                        choice.requirements.push(parsed_req_obj)
-                    }
-                    parsed_req_obj.section = newMajor[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]]
                     newMajor[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]].push(parsed_req_obj)
                 })
                 .catch(error => { console.error(error) })
@@ -263,7 +254,7 @@ const actions = {
         }
         // Minor requirements
         if (response.data.minor_requirements != undefined && options.newMinor) {
-            let newMinor = new MinorRequirement({ info: options.newMinor })
+            let newMinor = new OtherRequirement({ info: options.newMinor })
 
             for (let requirement of response.data.minor_requirements) {
                 let promises = [];
@@ -284,10 +275,6 @@ const actions = {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
                     }                    
                     let parsed_req_obj = new CourseRequirement(parsed_requirement)
-                    for (let choice of parsed_requirement.course_choices) {
-                        choice.requirements.push(parsed_req_obj)
-                    }
-                    parsed_req_obj.section = newMinor[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]]
                     newMinor[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]].push(parsed_req_obj)
                 })
                 .catch(error => { console.error(error) })
@@ -296,7 +283,7 @@ const actions = {
         } 
         // Option requirements
         if (response.data.option_requirements != undefined && options.newSpecialization) {
-            let newSpec = new OptionRequirement({ info: options.newSpecialization })
+            let newSpec = new OtherRequirement({ info: options.newSpecialization })
 
             for (let requirement of response.data.option_requirements) {
                 let promises = [];
@@ -317,10 +304,6 @@ const actions = {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
                     }
                     let parsed_req_obj = new CourseRequirement(parsed_requirement)
-                    for (let choice of parsed_requirement.course_choices) {
-                        choice.requirements.push(parsed_req_obj)
-                    }
-                    parsed_req_obj.section = newSpec[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]]
                     newSpec[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]].push(parsed_req_obj)                    
                 })
                 .catch(error => { console.error(error) })
