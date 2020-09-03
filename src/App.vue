@@ -14,14 +14,12 @@
 import {  mapActions } from "vuex";
 export default {
   methods: {
-  ...mapActions(["fetchMajors", "fetchAllCourses"]),
+  ...mapActions(["fetchMajors"]),
     deleted() {
-      
     }
   },
   created() {
     this.fetchMajors();
-    this.fetchAllCourses();
     window.addEventListener('beforeunload', this.deleted)
     console.log("webpage entered")
   }

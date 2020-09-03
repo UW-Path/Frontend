@@ -58,7 +58,7 @@
 
 
 <script>
-import { mapMutations, mapGetters } from "vuex";
+import { mapMutations } from "vuex";
 import { CourseRequirement } from "../../models/courseRequirementModel";
 import { CourseInfo } from "../../models/courseInfoModel";
 import TrieSearch from 'trie-search';
@@ -68,7 +68,8 @@ export default {
   components: {
   },
   props: {
-      termIndex: Number
+      termIndex: Number,
+      allCourses: Object,
   },
   data() {
     return {
@@ -130,9 +131,6 @@ export default {
       this.addCourse({newRequirement: newRequirement, termIndex: this.termIndex});
       this.validateCourses();
     }
-  },
-  computed: {
-    ...mapGetters(["allCourses"]),
   },
   async mounted() {
     // Wait until allCourses has been populated

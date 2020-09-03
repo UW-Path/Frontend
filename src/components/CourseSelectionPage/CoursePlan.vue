@@ -19,7 +19,7 @@
               :onSelectionBar="false"
             />
           </template>
-          <AddCourseCard :termIndex="termIndex" v-show="termHovered === termIndex"/>
+          <AddCourseCard :termIndex="termIndex" :allCourses="allCourses" v-show="termHovered === termIndex"/>
 
         </draggable>
       </v-card >
@@ -40,6 +40,9 @@ import draggable from 'vuedraggable'
 import { mapGetters, mapMutations } from "vuex";
 import RequirementOptionsModal from '../Modals/RequirementOptionsModal'
 import AddCourseCard from "../Cards/AddCourseCard"
+import TrieSearch from 'trie-search';
+import axios from 'axios';
+import { CourseInfo } from '../../models/courseInfoModel'
 
 export default {
   name: "CoursePlan",
@@ -52,8 +55,38 @@ export default {
   data() {
     return {
       editingEnabled: false,
-      termHovered: -1
+      termHovered: -1,
+      // Production Kubernetes API
+      backend_api: "",
+      // Dev API
+      // backend_api: "http://127.0.0.1:8000",
+
+      allCourses: new TrieSearch(['course_code', 'course_number'], {
+        idFieldOrFunction: function(course) {
+          return course.course_id + course.course_code;
+        }
+      }),
     };
+  },
+  mounted() {
+    axios.get(this.backend_api + "/api/course-info/filter", {
+      params: {
+        start: 0,
+        end: 1000,
+        code: "none",
+      }
+    })
+    .then(response => {
+      response.data.sort((course1, course2) => {
+        if (course1.course_code < course2.course_code) return -1;
+        else if (course1.course_code > course2.course_code) 1;
+        else return 0;
+      })
+      this.allCourses.addAll(response.data.map(course => {
+        return new CourseInfo(course)
+      }));
+    })
+    .catch(error => { console.error(error) })
   },
   methods: {
     ...mapMutations(["addTermToTable", "deleteTermFromTable", "addCourseRequirement", "validateCourses", "decrementRequirementID"]),
