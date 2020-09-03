@@ -6,9 +6,11 @@ import createPersistedState from 'vuex-persistedstate';
 import courses from "./modules/courses";
 import programInfo from "./modules/programInfo"
 import courseSelection from "./modules/courseSelection"
+import email from "./modules/email"
 
 import { CourseRequirement } from "../models/courseRequirementModel";
 import { MajorRequirement, OtherRequirement } from "../models/ProgramModel";
+
 
 Vue.use(Vuex);
 
@@ -16,7 +18,8 @@ export default new Vuex.Store({
     modules: {
         courses,
         courseSelection,
-        programInfo
+        programInfo,
+        email
     },
     plugins: [
         createPersistedState({

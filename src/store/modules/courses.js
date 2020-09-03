@@ -129,7 +129,14 @@ async function parseRequirement(courseCode) {
             }
         }).catch(error => { console.error(error) });
         parsedCourseInfos = response.data
-    } else if (courseCode.split(" ").length >= 1) {
+    }
+    else if (courseCode.includes("W")){
+        //laurier course
+        parsedCourseInfos =  [{ course_code: courseCode, 
+                            info: "Information about this course is unavailable. Please refer to https://loris.wlu.ca/register/ssb/registration for more details.",
+                            online: false }]
+    }
+    else if (courseCode.split(" ").length >= 1) {
         // Handles normal course case, ege MATH 239
         response = await axios.get(backend_api + "/api/course-info/get", {
             params: {
@@ -139,18 +146,9 @@ async function parseRequirement(courseCode) {
         parsedCourseInfos = [ response.data ];
     }
     else {
-        //Handles when queries becomes unavailable, Laurier queries are unavailable, so this is necessary
-        if (courseCode.includes("W")){
-            //laurier course
-            parsedCourseInfos =  [{ course_code: courseCode, 
-                                info: "Information about this course is unavailable. Please refer to https://loris.wlu.ca/register/ssb/registration for more details.",
-                                online: false }]
-        }
-        else{
-            parsedCourseInfos = [{ course_code: courseCode, 
-                                info: "Information about this course is unavailable.",
-                                online: false }]
-        }
+        parsedCourseInfos = [{ course_code: courseCode, 
+                            info: "Information about this course is unavailable.",
+                            online: false }]
     }
 
     return parsedCourseInfos.map(element => {
