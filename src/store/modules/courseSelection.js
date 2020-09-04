@@ -107,7 +107,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
                     if (usedCourses.get(match.selected_course.course_code).length === 0) {
                         numMatchedCredits += match.selected_course.credit;
                         matchedCourses.push(match)
-                        if (numMatchedCredits >= requirement.credits_required) break;
+                        if (numMatchedCredits >= requirement.credits_required || required_courses.length === 1) break;
                     }
                 }
             } else if (course.split("-").length === 2 && course.split("-")[0].length > 0 && course.split("-")[1].length > 0) {
@@ -122,23 +122,23 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
                     if (match.selected_course.course_number <= course.split("-")[1].split(" ")[1] && match.selected_course.course_number >= course.split("-")[0].split(" ")[1] && usedCourses.get(match.selected_course.course_code).length === 0) {
                         numMatchedCredits += match.selected_course.credit;
                         matchedCourses.push(match)
-                        if (numMatchedCredits >= requirement.credits_required) break;
+                        if (numMatchedCredits >= requirement.credits_required || required_courses.length === 1) break;
                     }
                 }
             } else {
                 // Handles normal course case, ege MATH 239
                 let possibleMatches = selectedCourses.get(course)
                 for (let match of possibleMatches) {
-                    if (usedCourses.get(match.selected_course.course_code).length === 0) {
+                    if (usedCourses.get(match.selected_course.course_code).length === 0 && course === match.selected_course.course_code) {
                         numMatchedCredits += match.selected_course.credit;
                         matchedCourses.push(selectedCourses.get(course)[0])
                         break;
                     }
                 }
             }
-            if (numMatchedCredits >= requirement.credits_required) break;
+            if (numMatchedCredits >= requirement.credits_required || (required_courses.length === 1 && matchedCourses.length >= 1)) break;
         }
-        if (numMatchedCredits >= requirement.credits_required) {
+        if (numMatchedCredits >= requirement.credits_required || (required_courses.length === 1 && matchedCourses.length >= 1)) {
             requirement.prereqs_met = true;
             requirement.credits_of_prereqs_met = requirement.credits_required;
             usedCourses.addAll(matchedCourses);
