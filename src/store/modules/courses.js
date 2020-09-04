@@ -233,6 +233,7 @@ const actions = {
                         number_of_courses: requirement.number_of_courses,
                         major: [options.newMajor],
                         additional_requirements: requirement.additional_requirements,
+                        inRequirementBar: true,
                     }
                     for (let choice of choices) {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
@@ -270,6 +271,7 @@ const actions = {
                         number_of_courses: requirement.number_of_courses,
                         minor: [options.newMinor],
                         additional_requirements: requirement.additional_requirements,
+                        inRequirementBar: true,
                     }
                     for (let choice of choices) {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
@@ -299,6 +301,7 @@ const actions = {
                         number_of_courses: requirement.number_of_courses,
                         specialization: [options.newSpecialization],
                         additional_requirements: requirement.additional_requirements,
+                        inRequirementBar: true,
                     }        
                     for (let choice of choices) {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
