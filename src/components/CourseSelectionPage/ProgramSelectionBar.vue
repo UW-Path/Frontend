@@ -1,5 +1,5 @@
 <template>
-    <v-app-bar elevation="2" color="#4A75AD">
+    <v-app-bar elevation="2" color="#A0BDD6">
         <v-toolbar-title class="program-titles" v-for="(major,index) in majorRequirements" :key="index" >
             <a v-bind:href="major.info.link" target="_blank">{{ major.info.program_name }}</a>
         </v-toolbar-title>

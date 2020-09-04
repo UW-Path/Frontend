@@ -4,10 +4,10 @@ import axios from "axios";
 // const getters = {}
 
 // Production Kubernetes API
-const backend_api = "";
+// const backend_api = "";
 
 // Dev API
-// const backend_api = "http://127.0.0.1:8000";
+const backend_api = "http://127.0.0.1:8000";
 
 const actions = {
     async sendEmail({commit},emailInfo){

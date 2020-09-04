@@ -3,10 +3,27 @@
         <v-row >
             <program-selection-bar/>
         </v-row>
-        <v-row class="main-row">
-            <tabs class="primary-tabs default-font">
-                <tab class="primary-tab default-font" title="Course Plan">
-                    <v-container class="course-selection-container">
+        <template>
+            <v-card class="main">
+                <v-tabs dark 
+                        background-color="#2D4763" 
+                        hide-slider
+                        vertical
+                        class="primary-tabs">
+                <v-tab>
+                    <v-icon left>mdi-calendar-range-outline</v-icon>
+                </v-tab>
+                <v-tab>
+                    <v-icon left>mdi-check-box-outline</v-icon>
+                </v-tab>
+                <v-tab>
+                    <v-icon left>mdi-download-outline</v-icon>
+                </v-tab>
+
+                <v-tab-item>
+                    <v-card flat>
+                    <v-card-text class="primary-tab default-font">
+                        <v-container class="course-selection-container">
                         <v-row class="main-row">
                             <v-col class="side-bar" lg="2" md="3" sm="3">
                                 <side-bar/>
@@ -16,27 +33,38 @@
                             </v-col>
                         </v-row>
                     </v-container>
-                </tab>
-                <tab class="primary-tab default-font" title="Program Checklist">
-                    <v-container class="course-selection-container">
+                    </v-card-text>
+                    </v-card>
+                </v-tab-item>
+                <v-tab-item>
+                    <v-card flat>
+                    <v-card-text class="primary-tab default-font">
+                        <v-container class="course-selection-container">
                         <v-row class="main-row">
                             <v-col class="main-panel">
                                 <program-checklist/>
                             </v-col>
                         </v-row>
                     </v-container>
-                </tab>
-                <tab class="primary-tab default-font" title="Export Table">
-                    <v-container class="course-selection-container">
+                    </v-card-text>
+                    </v-card>
+                </v-tab-item>
+                <v-tab-item>
+                    <v-card flat>
+                    <v-card-text class="primary-tab default-font">
+                        <v-container class="course-selection-container">
                         <v-row class="main-row">
                             <v-col class="main-panel">
                                 <export/>
                             </v-col>
                         </v-row>
                     </v-container>
-                </tab>
-            </tabs>
-        </v-row>
+                    </v-card-text>
+                    </v-card>
+                </v-tab-item>
+                </v-tabs>
+            </v-card>
+            </template>
     </v-container>
 </template>
 
@@ -47,7 +75,7 @@ import ProgramSelectionBar from '../components/CourseSelectionPage/ProgramSelect
 import ProgramChecklist from '../components/ProgramChecklistPage/ProgramChecklist.vue'
 import SideBar from '../components/CourseSelectionPage/SideBar.vue'
 
-import { Tabs, Tab } from 'vue-slim-tabs'
+
 
 export default {
     name: "CourseSelection",
@@ -57,11 +85,8 @@ export default {
         ProgramSelectionBar,
         SideBar,
         ProgramChecklist,
-        Tabs,
-        Tab
     },
     data: () => ({
-        tab: "plan"
     }),
 }
 </script>
@@ -78,6 +103,10 @@ export default {
 
 .primary-tab {
     height: 87vh;
+}
+
+.main{
+    margin-top: 0.3rem;
 }
 
 .main-row {
