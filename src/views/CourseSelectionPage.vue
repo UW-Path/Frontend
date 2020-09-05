@@ -4,7 +4,7 @@
             <program-selection-bar/>
         </v-row>
         <template>
-            <v-card class="main">
+            <v-card>
                 <v-tabs dark 
                         background-color="#2D4763" 
                         hide-slider
@@ -21,8 +21,7 @@
                 </v-tab>
 
                 <v-tab-item>
-                    <v-card flat>
-                    <v-card-text class="primary-tab default-font">
+                    <div class="default-font primary-tab">
                         <v-container class="course-selection-container">
                         <v-row class="main-row">
                             <v-col class="side-bar" lg="2" md="3" sm="3">
@@ -33,12 +32,10 @@
                             </v-col>
                         </v-row>
                     </v-container>
-                    </v-card-text>
-                    </v-card>
+                    </div>
                 </v-tab-item>
                 <v-tab-item>
-                    <v-card flat>
-                    <v-card-text class="primary-tab default-font">
+                    <div class="default-font primary-tab">
                         <v-container class="course-selection-container">
                         <v-row class="main-row">
                             <v-col class="main-panel">
@@ -46,21 +43,18 @@
                             </v-col>
                         </v-row>
                     </v-container>
-                    </v-card-text>
-                    </v-card>
+                    </div>
                 </v-tab-item>
                 <v-tab-item>
-                    <v-card flat>
-                    <v-card-text class="primary-tab default-font">
+                    <div class="default-font primary-tab">
                         <v-container class="course-selection-container">
                         <v-row class="main-row">
-                            <v-col class="main-panel">
+                            <v-col class="main-panel top-margin">
                                 <export/>
                             </v-col>
                         </v-row>
                     </v-container>
-                    </v-card-text>
-                    </v-card>
+                    </div>
                 </v-tab-item>
                 </v-tabs>
             </v-card>
@@ -97,21 +91,21 @@ export default {
 .primary-tabs {
     margin-top: 0.5em;
     width: 100%;
-    height: 100%;
+    height:83vh;
     font-size: 0.9em !important;
 }
 
 .primary-tab {
-    height: 87vh;
+    height: 83.3vh;
 }
 
-.main{
-    margin-top: 0.3rem;
+.top-margin{
+    margin-top:1em
 }
 
-.main-row {
-    margin-top: 0.3rem;
-    height: 90%
+.main-row {    
+    height: 104.1%;
+    margin-top: -0.9em
 }
 
 .main-panel {
@@ -122,6 +116,7 @@ export default {
     padding: 0px;
     height: 100%;
 }
+
 
 .checklist-side-bar{
     display:flex;
@@ -139,7 +134,7 @@ export default {
 
 @media only screen and (max-width: 3000px) {
   .course-selection-container {
-    min-width: 95%;
+    min-width: 97%;
   }
 }
 

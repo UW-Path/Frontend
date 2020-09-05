@@ -1,5 +1,6 @@
 <template>
     <v-app-bar elevation="2" color="#A0BDD6">
+        <v-icon class="logo">mdi-home</v-icon>
         <v-toolbar-title class="program-titles" v-for="(major,index) in majorRequirements" :key="index" >
             <a v-bind:href="major.info.link" target="_blank">{{ major.info.program_name }}</a>
         </v-toolbar-title>
@@ -63,6 +64,10 @@ a:hover {
 .spec{
     color:#ffff8d;
     font-size:1.1em;
+}
+
+.logo{
+    margin-right:0.5em
 }
 
 </style>

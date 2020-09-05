@@ -53,7 +53,7 @@ export default {
     background-color: #EFEFEF;
     width: 100%;
     height: 100%;
-    max-height: 96%;
+    max-height: 99.1%;
     overflow-y: auto;
 }
 </style>
