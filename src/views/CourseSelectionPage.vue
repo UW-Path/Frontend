@@ -2,7 +2,7 @@
     <v-container class="course-selection-container">
         <program-selection-bar class="program-selection-bar"/>
         <v-tabs  
-            background-color="rgba(0,0,0,0.0)" 
+            background-color="transparent" 
             hide-slider
             vertical
             dark
@@ -17,7 +17,7 @@
                 <v-icon left x-large >mdi-download-outline</v-icon>
             </v-tab>
 
-            <v-tab-item class="primary-tab">
+            <v-tab-item class="primary-tab transparent">
                     <v-row class="main-row">
                         <v-col class="side-bar" lg="2" md="3" sm="3">
                             <side-bar/>
@@ -27,16 +27,16 @@
                         </v-col>
                     </v-row>
             </v-tab-item>
-            <v-tab-item>
-                <div class="default-font primary-tab">
-                    <v-row class="main-row">
+            <v-tab-item class="primary-tab ">
+                <div class="default-font primary-tab custom-grey">
+                    <v-row class="main-row ">
                         <v-col class="main-panel">
                             <program-checklist/>
                         </v-col>
                     </v-row>
                 </div>
             </v-tab-item>
-            <v-tab-item class="tab-container">
+            <v-tab-item class="primary-tab custom-grey">
                 <div class="default-font primary-tab">
                     <v-row class="main-row">
                         <v-col class="main-panel top-margin">
@@ -120,10 +120,6 @@ export default {
     min-width: 100%;
 }
 
-.tab-container {
-    margin-right: 0 !important;
-    margin-left: 0!important;
-}
 
 .checklist-side-bar{
     display:flex;
@@ -151,6 +147,13 @@ export default {
     font-size: .9em !important;
 }
 
+.custom-grey{
+    background:#efefef;
+}
+
+.transparent{
+    background:transparent !important;
+}
 
 </style>
 

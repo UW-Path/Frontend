@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="custom-grey">
         <v-app-bar color="#4A75AD">
             <v-toolbar-title class="program-titles">
                 UWPath
@@ -151,6 +151,10 @@ export default {
 .header{
     margin-bottom: 0.5em;
     margin-left: 12em;
+}
+
+.custom-grey{
+    background-color: #efefef;
 }
 
 </style>

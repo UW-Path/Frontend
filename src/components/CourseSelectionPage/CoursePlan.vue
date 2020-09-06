@@ -137,6 +137,7 @@ export default {
 
 
   .course-plan-container{
+    margin-left: 1em;
     display: flex;
     flex-flow: column;
     height: 100%;

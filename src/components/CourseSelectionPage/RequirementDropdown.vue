@@ -16,7 +16,7 @@
 			<div v-else class="title"><b>Joint Requirement</b></div>
 			<v-expansion-panels multiple>
 				<template v-for="(section, index) of program.sections()">
-					<v-expansion-panel class="expansion-panel" v-if="section.length" v-bind:key="index">
+					<v-expansion-panel v-if="section.length" v-bind:key="index">
 						<v-expansion-panel-header>{{ sectionToDisplayMap[Object.keys(program).find(key => program[key] === section )] }}</v-expansion-panel-header>
 						<v-expansion-panel-content>
 							<draggable
@@ -182,7 +182,7 @@ export default {
 }
 .v-expansion-panels {
 	width: 95% !important;
-	left: 2.5%;
 	margin-bottom: 1em;
+	left: 2.5%
 }
 </style>
