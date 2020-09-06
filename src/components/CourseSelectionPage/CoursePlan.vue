@@ -131,8 +131,8 @@ export default {
 
   .main-course-selection-panel {
     overflow-x: auto;
-    overflow-y:visible;
-    min-height: 100%;
+    overflow-y:initial;
+    width: 100%;
   }
 
 
@@ -148,7 +148,8 @@ export default {
   }
 
   .term-column {
-    background-color: whitesmoke;
+    background-color: white;
+    border: transparent;
   }
 
   .main-drag {

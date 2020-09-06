@@ -1,64 +1,51 @@
 <template>
-    <v-container class="course-selection-container my-1">
-        <v-row >
-            <program-selection-bar/>
-        </v-row>
-        <template>
-            <v-card>
-                <v-tabs dark 
-                        background-color="#2D4763" 
-                        hide-slider
-                        vertical
-                        class="primary-tabs">
-                <v-tab>
-                    <v-icon left>mdi-calendar-range-outline</v-icon>
-                </v-tab>
-                <v-tab>
-                    <v-icon left>mdi-check-box-outline</v-icon>
-                </v-tab>
-                <v-tab>
-                    <v-icon left>mdi-download-outline</v-icon>
-                </v-tab>
+    <v-container class="course-selection-container">
+        <program-selection-bar class="program-selection-bar"/>
+        <v-tabs  
+            background-color="rgba(0,0,0,0.0)" 
+            hide-slider
+            vertical
+            dark
+            class="primary-tabs">
+            <v-tab class="tab-icon">
+                <v-icon left x-large >mdi-calendar-range-outline</v-icon>
+            </v-tab>
+            <v-tab class="tab-icon">
+                <v-icon left x-large >mdi-check-box-outline</v-icon>
+            </v-tab>
+            <v-tab class="tab-icon">
+                <v-icon left x-large >mdi-download-outline</v-icon>
+            </v-tab>
 
-                <v-tab-item>
-                    <div class="default-font primary-tab">
-                        <v-container class="course-selection-container">
-                        <v-row class="main-row">
-                            <v-col class="side-bar" lg="2" md="3" sm="3">
-                                <side-bar/>
-                            </v-col>
-                            <v-col class="main-panel" lg="10" md="9" sm="9">
-                                <course-plan/>
-                            </v-col>
-                        </v-row>
-                    </v-container>
-                    </div>
-                </v-tab-item>
-                <v-tab-item>
-                    <div class="default-font primary-tab">
-                        <v-container class="course-selection-container">
-                        <v-row class="main-row">
-                            <v-col class="main-panel">
-                                <program-checklist/>
-                            </v-col>
-                        </v-row>
-                    </v-container>
-                    </div>
-                </v-tab-item>
-                <v-tab-item>
-                    <div class="default-font primary-tab">
-                        <v-container class="course-selection-container">
-                        <v-row class="main-row">
-                            <v-col class="main-panel top-margin">
-                                <export/>
-                            </v-col>
-                        </v-row>
-                    </v-container>
-                    </div>
-                </v-tab-item>
-                </v-tabs>
-            </v-card>
-            </template>
+            <v-tab-item class="primary-tab">
+                    <v-row class="main-row">
+                        <v-col class="side-bar" lg="2" md="3" sm="3">
+                            <side-bar/>
+                        </v-col>
+                        <v-col class="main-panel" lg="10" md="9" sm="9">
+                            <course-plan/>
+                        </v-col>
+                    </v-row>
+            </v-tab-item>
+            <v-tab-item>
+                <div class="default-font primary-tab">
+                    <v-row class="main-row">
+                        <v-col class="main-panel">
+                            <program-checklist/>
+                        </v-col>
+                    </v-row>
+                </div>
+            </v-tab-item>
+            <v-tab-item class="tab-container">
+                <div class="default-font primary-tab">
+                    <v-row class="main-row">
+                        <v-col class="main-panel top-margin">
+                            <export/>
+                        </v-col>
+                    </v-row>
+                </div>
+            </v-tab-item>
+        </v-tabs>
     </v-container>
 </template>
 
@@ -68,6 +55,7 @@ import Export from '../components/ExportPage/Export.vue'
 import ProgramSelectionBar from '../components/CourseSelectionPage/ProgramSelectionBar.vue'
 import ProgramChecklist from '../components/ProgramChecklistPage/ProgramChecklist.vue'
 import SideBar from '../components/CourseSelectionPage/SideBar.vue'
+
 
 
 
@@ -88,59 +76,86 @@ export default {
 <style src="vue-slim-tabs/themes/default.css"></style>
 <style scoped>
 
+.primary-tabs-container {
+    min-height: calc(100vh - 64px);
+}
+
+.program-selection-bar {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
 .primary-tabs {
-    margin-top: 0.5em;
-    width: 100%;
-    height:83vh;
     font-size: 0.9em !important;
+    min-height: calc(100vh - 2rem - 64px - 10px);
+    padding-right: 10px;
+}
+
+.tab-icon {
+    margin-bottom: 1.5rem !important;
 }
 
 .primary-tab {
-    height: 83.3vh;
+    height: 100%;
 }
 
 .top-margin{
     margin-top:1em
 }
 
-.main-row {    
-    height: 104.1%;
-    margin-top: -0.9em
+.main-row {   
+    margin: 0;
+    width: 100% ; 
+    height: 100% ;
 }
 
 .main-panel {
+    padding: 0;
     height: 100%;
 }
 
 .course-selection-container {
     padding: 0px;
-    height: 100%;
+    min-height: 100%;
+    min-width: 100%;
 }
 
+.tab-container {
+    margin-right: 0 !important;
+    margin-left: 0!important;
+}
 
 .checklist-side-bar{
     display:flex;
     height: 100%;
     overflow-y: auto;
     background-color: #EEEEEE;
+    padding-bottom: 0;
 }
 
 .side-bar {
     display:flex;
     height: 100%;
     overflow-y: auto;
+    padding: 0;
 }
 
 
-@media only screen and (max-width: 3000px) {
+/* @media only screen and (max-width: 3000px) {
   .course-selection-container {
     min-width: 97%;
   }
-}
+} */
 
 .default-font{
     font-size: .9em !important;
 }
 
 
+</style>
+
+<style>
+.v-window__container {
+    height: 100% !important;
+}
 </style>

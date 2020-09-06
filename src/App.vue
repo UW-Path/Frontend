@@ -72,4 +72,11 @@ body {
 ::-webkit-scrollbar-thumb {
   background-color: #FFD646;
 }
+
+.v-application--wrap {
+background: rgb(51,64,78);
+background: linear-gradient(22deg, rgba(51,64,78,1) 0%, rgba(43,67,93,1) 35%, rgba(129,152,171,1) 100%);
+}
+
+
 </style>
