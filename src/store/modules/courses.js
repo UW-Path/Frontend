@@ -63,7 +63,8 @@ async function parseRequirement(courseCode) {
         let mathcourses = ["ACTSC", "AMATH", "CO", "COMM", "CS", "MATH", "MTHEL", "PMATH", "SE", "STATE"]; void mathcourses
         parsedCourseInfos = [{
             course_name: "Course not offered by the Faculty of Math.",
-            course_code: "NON-MATH"
+            course_code: "NON-MATH",
+            credit: 0.5
         }]
     }
     //TODO: this should be a card if there exists more courses that are more than 1
