@@ -60,14 +60,15 @@ async function parseRequirement(courseCode) {
     }
     //TODO: this should be a card if there exists more courses that are more than 1
     else if (courseCode === "NON-MATH") {
-        let mathcourses = ["ACTSC", "AMATH", "CO", "COMM", "CS", "MATH", "MTHEL", "PMATH", "SE", "STATE"]; void mathcourses
+        let mathCourses = ["ACTSC", "AMATH", "CO", "COMM", "CS", "MATH", "MTHEL", "PMATH", "SE", "STAT"]; 
+        void mathCourses;
         parsedCourseInfos = [{
             course_name: "Course not offered by the Faculty of Math.",
             course_code: "NON-MATH"
         }]
     }
     //TODO: this should be a card if there exists more courses that are more than 1
-    else if (courseCode === "SCIENCE") {
+    else if (courseCode === "SCIENCE" || courseCode === "LANGUAGE" ) {
         response = await axios.get(backend_api + "/api/course-info/filter", {
             params: {
                 start: 0,
@@ -185,6 +186,7 @@ const actions = {
                 option: options.newSpecialization ? options.newSpecialization.program_name : ""
             }
         });
+
         let newMajorRequirements = response.data.requirements;
 
         if (options.newMajor) {
@@ -219,6 +221,7 @@ const actions = {
             if (table2needed) {
                 newMajorRequirements = newMajorRequirements.concat(response.data.table2)
             }
+            
             for (let requirement of newMajorRequirements) {
                 let promises = []
                 let required_courses = requirement.course_codes.split(/,\s|\sor\s|,/)
@@ -259,7 +262,7 @@ const actions = {
 
             for (let requirement of response.data.minor_requirements) {
                 let promises = [];
-                let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
+                let required_courses = requirement.course_codes.split(/,\s|\sor\s/);
                 for (let course of required_courses) {
                     promises.push(parseRequirement(course))
                 }
@@ -363,7 +366,7 @@ const mutations = {
             for (let section of Object.values(major.sections())) collapseAndSort(section)
         }
         for (let minor of state.minorRequirements) {
-            for (let section in Object.values(minor.sections())) collapseAndSort(section)
+            for (let section of Object.values(minor.sections())) collapseAndSort(section)
         }
         for (let spec of state.specRequirements) {
             for (let section of Object.values(spec.sections())) collapseAndSort(section)
@@ -383,7 +386,7 @@ const mutations = {
             for (let section of Object.values(major.sections())) if (checkArrayForID(section)) return
         }
         for (let minor of state.minorRequirements) {
-            for (let section in Object.values(minor.sections())) if (checkArrayForID(section)) return
+            for (let section of Object.values(minor.sections())) if (checkArrayForID(section)) return
         }
         for (let spec of state.specRequirements) {
             for (let section of Object.values(spec.sections())) if (checkArrayForID(section)) return
