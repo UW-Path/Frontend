@@ -11,6 +11,7 @@ const backend_api = "";
 
 const mathCourses = ["ACTSC", "AMATH", "CO", "COMM", "CS", "MATH", "MTHEL", "MATBUS", "PMATH", "SE", "STATE"];
 const nonMathCourses = ["NON-MATH", "AFM", "ASL", "ANTH", "AHS", "APPLS", "ARABIC", "AE", "ARCH", "ARTS", "ARBUS", "AVIA", "BIOL", "BME", "BASE", "BUS", "BET", "CDNST", "CHE", "CHEM", "CHINA", "CMW", "CIVE", "CLAS", "COGSCI", "CROAT", "CI", "DAC", "DUTCH", "EARTH", "EASIA", "ECON", "ECE", "ENGL", "EMLS", "ENBUS", "ERS", "ENVE", "ENVS", "FINE", "FR", "GSJ", "GENE", "GEOG", "GEOE", "GER", "GERON", "GBDA", "GRK", "HLTH", "HIST", "HRM", "HRTS", "HUMSC", "INDG", "INDEV", "INTST", "ITAL", "ITALST", "JAPAN", "JS", "KIN", "INTEG", "KOREA", "LAT", "LS", "MGMT", "MSCI", "MNS", "ME", "MTE", "MEDVL", "MENN", "MOHAWK", "MUSIC", "NE", "OPTOM", "PACS", "PHARM", "PHIL", "PHYS", "PLAN", "PSCI", "PORT", "PSYCH", "PMATH", "REC", "RS", "RUSS", "REES", "SCI", "SCBUS", "SMF", "SDS", "SVENT", "SOCWK", "SWREN", "STV", "SOC", "SPAN", "SPCOM", "SI", "SYDE", "THPERF", "VCULT"];
+const scienceCourses = ["BIOL", "CHEM", "EARTH", "MNS", "OPTOM", "PHARM", "PHYS", "SCI", "SCBUS"]
 
 const defaultTable = [ 
     {
@@ -102,6 +103,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
         }
     });
     var parsed_requirements = [];
+    // Make first pass on requirements to see if any are fulfilled
     for (let requirement of requirements) {
         let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
         let numMatchedCredits = 0;
@@ -113,31 +115,50 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
                     if (usedCourses.get(match.selected_course.course_code).length === 0) {
                         numMatchedCredits += match.selected_course.credit;
                         matchedCourses.push(match)
-                        if (numMatchedCredits >= requirement.credits_required || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
+                        if ((numMatchedCredits >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
                     }
                 }
             } else if (course === "NON-MATH") {
                 let possibleMatches = selectedCourses.get(nonMathCourses)
-                console.log(possibleMatches)
                 for (let match of possibleMatches) {
                     if (usedCourses.get(match.selected_course.course_code).length === 0) {
                         numMatchedCredits += match.selected_course.credit;
                         matchedCourses.push(match)
-                        if (numMatchedCredits >= requirement.credits_required || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
+                        if ((numMatchedCredits >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
+                    }
+                }
+            } else if (course === "SCIENCE") {
+                let possibleMatches = selectedCourses.get(scienceCourses)
+                for (let match of possibleMatches) {
+                    if (usedCourses.get(match.selected_course.course_code).length === 0) {
+                        numMatchedCredits += match.selected_course.credit;
+                        matchedCourses.push(match)
+                        if ((numMatchedCredits >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
                     }
                 }
             } else if (course[course.length - 1] === "-") {
-                // Handles X00's case, eg PHYS 300-
-                let possibleMatches = selectedCourses.get([course.split(" ")[0], course.split(" ")[1][0]], TrieSearch.UNION_REDUCER)
+                // Handles X00's case, eg PHYS 300-, SCIENCE 300-, etc
+                let courseSearchParams = [course.split(" ")[0]];
+                if (course.split(" ")[0] === "SCIENCE") {
+                    courseSearchParams = scienceCourses;
+                } else if (course.split(" ")[0] === "MATH") {
+                    courseSearchParams = mathCourses;
+                } else if (course.split(" ")[0] === "NON-MATH") {
+                    courseSearchParams = nonMathCourses;
+                }
+                let possibleMatches = [];
+                for (let searchParam of courseSearchParams) {
+                    possibleMatches = possibleMatches.concat(selectedCourses.get([searchParam, course.split(" ")[1][0]], TrieSearch.UNION_REDUCER))
+                }
                 for (let match of possibleMatches) {
                     if (usedCourses.get(match.selected_course.course_code).length === 0) {
                         numMatchedCredits += match.selected_course.credit;
                         matchedCourses.push(match)
-                        if (numMatchedCredits >= requirement.credits_required || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
+                        if ((numMatchedCredits >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
                     }
                 }
             } else if (course.split("-").length === 2 && course.split("-")[0].length > 0 && course.split("-")[1].length > 0) {
-                // Handles range case, eg CS 440-CS 498
+                // Handles range case, eg CS 440-CS 498 (NOTE: Does not handle SCIENCE 440-SCIENCE 498 etc)
                 let possibleMatches = [];
                 let start = Math.floor(course.split("-")[0].split(" ")[1]/100);
                 let end = Math.floor(course.split("-")[1].split(" ")[1]/100);
@@ -148,7 +169,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
                     if (match.selected_course.course_number <= course.split("-")[1].split(" ")[1] && match.selected_course.course_number >= course.split("-")[0].split(" ")[1] && usedCourses.get(match.selected_course.course_code).length === 0) {
                         numMatchedCredits += match.selected_course.credit;
                         matchedCourses.push(match)
-                        if (numMatchedCredits >= requirement.credits_required || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
+                        if ((numMatchedCredits >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
                     }
                 }
             } else {
@@ -162,14 +183,15 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
                     }
                 }
             }
-            if (numMatchedCredits >= requirement.credits_required || (required_courses.length === 1 && matchedCourses.length >= 1)) break;
+            if ((numMatchedCredits >= requirement.credits_required && matchedCourses.length > 0)|| (required_courses.length === 1 && matchedCourses.length >= 1)) break;
         }
-        if (numMatchedCredits >= requirement.credits_required || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L' && matchedCourses.length >= 1)) {
+        if ((numMatchedCredits >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L' && matchedCourses.length >= 1)) {
             requirement.prereqs_met = true;
             requirement.credits_of_prereqs_met = requirement.credits_required;
             usedCourses.addAll(matchedCourses);
         }
     }
+    // Make second pass on requirements to match any remaining courses
     for (var requirement of requirements) {
         if (requirement.prereqs_met) {
             parsed_requirements.push(new CourseRequirement(requirement));
@@ -185,7 +207,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
                     if (usedCourses.get(match.selected_course.course_code).length === 0) {
                         requirement.credits_of_prereqs_met += match.selected_course.credit;
                         matchedCourses.push(match)
-                        if (requirement.credits_of_prereqs_met >= requirement.credits_required || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
+                        if ((requirement.credits_of_prereqs_met >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
                     }
                 }
             } else if (course === "NON-MATH") {
@@ -194,17 +216,37 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
                     if (usedCourses.get(match.selected_course.course_code).length === 0) {
                         requirement.credits_of_prereqs_met += match.selected_course.credit;
                         matchedCourses.push(match)
-                        if (requirement.credits_of_prereqs_met >= requirement.credits_required || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
+                        if ((requirement.credits_of_prereqs_met >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
+                    }
+                }
+            } else if (course === "SCIENCE") {
+                let possibleMatches = selectedCourses.get(scienceCourses)
+                for (let match of possibleMatches) {
+                    if (usedCourses.get(match.selected_course.course_code).length === 0) {
+                        requirement.credits_of_prereqs_met += match.selected_course.credit;
+                        matchedCourses.push(match)
+                        if ((requirement.credits_of_prereqs_met >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
                     }
                 }
             } else if (course[course.length - 1] === "-") {
-                // Handles X00's case, eg PHYS 300-
-                let possibleMatches = selectedCourses.get([course.split(" ")[0], course.split(" ")[1][0]], TrieSearch.UNION_REDUCER)
+                // Handles X00's case, eg PHYS 300-, SCIENCE 300-, etc
+                let courseSearchParams = [course.split(" ")[0]];
+                if (course.split(" ")[0] === "SCIENCE") {
+                    courseSearchParams = scienceCourses;
+                } else if (course.split(" ")[0] === "MATH") {
+                    courseSearchParams = mathCourses;
+                } else if (course.split(" ")[0] === "NON-MATH") {
+                    courseSearchParams = nonMathCourses;
+                }
+                let possibleMatches = [];
+                for (let searchParam of courseSearchParams) {
+                    possibleMatches = possibleMatches.concat(selectedCourses.get([searchParam, course.split(" ")[1][0]], TrieSearch.UNION_REDUCER))
+                }
                 for (let match of possibleMatches) {
                     if (usedCourses.get(match.selected_course.course_code).length === 0) {
-                        matchedCourses.push(match);
                         requirement.credits_of_prereqs_met += match.selected_course.credit;
-                        if (requirement.credits_of_prereqs_met >= requirement.credits_required) break;
+                        matchedCourses.push(match)
+                        if ((requirement.credits_of_prereqs_met >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
                     }
                 }
             } else if (course.split("-").length === 2 && course.split("-")[0].length > 0 && course.split("-")[1].length > 0) {
@@ -219,7 +261,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
                     if (match.selected_course.course_number <= course.split("-")[1].split(" ")[1] && match.selected_course.course_number >= course.split("-")[0].split(" ")[1] && usedCourses.get(match.selected_course.course_code).length === 0) {
                         matchedCourses.push(match);
                         requirement.credits_of_prereqs_met += match.selected_course.credit;
-                        if (requirement.credits_of_prereqs_met >= requirement.credits_required) break;
+                        if ((requirement.credits_of_prereqs_met >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
                     }
                 }
             } else {
@@ -233,7 +275,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
                     }
                 }
             }
-            if (requirement.credits_of_prereqs_met>= requirement.credits_required) break;
+            if ((requirement.credits_of_prereqs_met >= requirement.credits_required && matchedCourses.length > 0)) break;
         }
         usedCourses.addAll(matchedCourses);
         parsed_requirements.push(new CourseRequirement(requirement));
