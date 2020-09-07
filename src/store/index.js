@@ -36,15 +36,12 @@ export default new Vuex.Store({
                         let obj = JSON.parse(value);
                         for (var i in obj["courseSelection"]["table"]) {
                             for (var j in obj["courseSelection"]["table"][i]["courses"]) {
-                                obj["courseSelection"]["table"][i]["courses"][j] = new CourseRequirement(obj["courseSelection"]["table"][i]["courses"][j])
+                                let loadedCourseRequirement = new CourseRequirement(obj["courseSelection"]["table"][i]["courses"][j])
+                                loadedCourseRequirement.inRequirementBar = false
+                                obj["courseSelection"]["table"][i]["courses"][j] = loadedCourseRequirement
                             }
                         }
-                        for (i in obj["courses"]) {
-                            console.log(i)
-                        }
-                        console.log(obj["courses"]["majorRequirements"])
                         for (i in obj["courses"]["majorRequirements"]) {
-                            console.log(obj["courses"]["majorRequirements"][i])
                             obj["courses"]["majorRequirements"][i] = new MajorRequirement(obj["courses"]["majorRequirements"][i])
                         }
 
@@ -56,7 +53,6 @@ export default new Vuex.Store({
                             obj["courses"]["specRequirements"][i] = new OtherRequirement(obj["courses"]["specRequirements"][i])
                         }
 
-                        console.log(obj);
                         return obj;
                     }
                 } catch (err) {

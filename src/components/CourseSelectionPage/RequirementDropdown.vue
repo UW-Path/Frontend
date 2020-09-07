@@ -91,7 +91,6 @@ export default {
 			this.sortRequirements();
 		},
 		setLastClicked(requirement) {
-			console.log("last clicked", requirement);
 			this.lastClickdownReq = requirement;
 		}
 	},
