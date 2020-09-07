@@ -87,7 +87,7 @@ export default {
 
 .primary-tabs {
     font-size: 0.9em !important;
-    min-height: calc(100vh - 2rem - 64px - 10px);
+    height: calc(100vh - 2rem - 64px - 10px);
     padding-right: 10px;
 }
 
@@ -122,7 +122,6 @@ export default {
 
 
 .checklist-side-bar{
-    display:flex;
     height: 100%;
     overflow-y: auto;
     background-color: #EEEEEE;
@@ -130,8 +129,8 @@ export default {
 }
 
 .side-bar {
-    display:flex;
-    height: 100%;
+    display: flex;
+    max-height: 100%;
     overflow-y: auto;
     padding: 0;
 }

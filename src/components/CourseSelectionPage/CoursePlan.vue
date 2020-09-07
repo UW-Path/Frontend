@@ -1,8 +1,7 @@
 <template>
   <div class="course-plan-container">
-    <v-row class="main-course-selection-panel">
-      <draggable class= "main-drag" :list="getTable" group="term">
-
+    <v-row class="main-course-selection-panel main-drag">
+      <div class= "main-drag">
       <template v-for="(term, termIndex) in getTable">  
         <v-card class="col-sm-3 col-md-2 term-column" :key="termIndex" @mouseenter="termMouseOver(termIndex)" @mouseleave="termMouseExit()">
         <div class="default-font term-title"><b>{{ getTermList[termIndex] }}</b>
@@ -30,10 +29,9 @@
           </div>
           <v-icon medium >mdi-plus-circle</v-icon>
         </v-card>
-      </draggable>
+      </div>
     </v-row>    
   </div>
-
 </template>
 <script>
 import draggable from 'vuedraggable'
@@ -123,18 +121,11 @@ export default {
 
 
 <style scoped>
-  .problem-message {
-    display: inline-block;
-    bottom: 0px;
-    right: 0px;
-  }
-
   .main-course-selection-panel {
     overflow-x: auto;
-    overflow-y:initial;
+    overflow-y: auto;
     width: 100%;
   }
-
 
   .course-plan-container{
     margin-left: 1em;
@@ -191,6 +182,4 @@ export default {
     font-size: 1em;
     
   }
-
-
 </style>
