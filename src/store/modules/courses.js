@@ -33,21 +33,24 @@ async function parseRequirement(courseCode) {
         parsedCourseInfos = [{
             course_name: "Technical Elective",
             course_code: courseCode,
-            info: "Please refer to degree requirement page for more information. (Click on program heading)"
+            info: "Please refer to degree requirement page for more information. (Click on program heading)",
+            credit: 0.5,
         }]
     }
     else if (courseCode.includes("CSE")){
         parsedCourseInfos = [{
             course_name: "Complementary Studies Elective",
             course_code: courseCode,
-            info: "Please refer to degree requirement page for more information. (Click on program heading)"
+            info: "Please refer to degree requirement page for more information. (Click on program heading)",
+            credit: 0.5,
         }]
     }
     else if (courseCode.includes("Program Elective")){
         parsedCourseInfos = [{
             course_name: courseCode,
             course_code: courseCode.replace("Program Elective", "PE"),
-            info: "Please refer to degree requirement page for more information. (Click on program heading)"
+            info: "Please refer to degree requirement page for more information. (Click on program heading)",
+            credit: 0.5,
         }]
     }
     else if (courseCode.includes("WKRPT")){
@@ -55,12 +58,12 @@ async function parseRequirement(courseCode) {
         parsedCourseInfos = [{ course_code: courseCode, 
             course_name:'Work-term Report',
             info: "Work-term Report. Please refer to degree requirement page for more information. (Click on program heading)",
+            credit: 0.5,
             online: false
         }]
     }
     //TODO: this should be a card if there exists more courses that are more than 1
     else if (courseCode === "NON-MATH") {
-        let mathcourses = ["ACTSC", "AMATH", "CO", "COMM", "CS", "MATH", "MTHEL", "PMATH", "SE", "STATE"]; void mathcourses
         parsedCourseInfos = [{
             course_name: "Course not offered by the Faculty of Math.",
             course_code: "NON-MATH",
@@ -79,10 +82,14 @@ async function parseRequirement(courseCode) {
         parsedCourseInfos = response.data
     }
     else if (courseCode.includes("Elective")) {
-        parsedCourseInfos = [{
-            course_name: "Elective course - Temp Place Holder",
-            course_code: courseCode
-        }]
+        response = await axios.get(backend_api + "/api/course-info/filter", {
+            params: {
+                start: 0,
+                end: 1000,
+                code: "none",
+            }
+        }).catch(error => { void error; return null });
+        parsedCourseInfos = response.data
     }
     //2. QUERYABLE CASES
     else if (!hasNumber.test(courseCode)){
@@ -133,9 +140,12 @@ async function parseRequirement(courseCode) {
     }
     else if (courseCode.includes("W")){
         //laurier course
-        parsedCourseInfos =  [{ course_code: courseCode, 
-                            info: "Information about this course is unavailable. Please refer to https://loris.wlu.ca/register/ssb/registration for more details.",
-                            online: false }]
+        parsedCourseInfos = [{
+            course_code: courseCode,
+            info: "Information about this course is unavailable. Please refer to https://loris.wlu.ca/register/ssb/registration for more details.",
+            online: false,
+            credit: 0.5,
+        }]
     }
     else if (courseCode.split(" ").length >= 1) {
         // Handles normal course case, ege MATH 239
@@ -147,9 +157,12 @@ async function parseRequirement(courseCode) {
         parsedCourseInfos = [ response.data ];
     }
     else {
-        parsedCourseInfos = [{ course_code: courseCode, 
-                            info: "Information about this course is unavailable.",
-                            online: false }]
+        parsedCourseInfos = [{
+            course_code: courseCode,
+            info: "Information about this course is unavailable.",
+            online: false,
+            credit: 0.5
+        }]
     }
 
     return parsedCourseInfos.map(element => {
