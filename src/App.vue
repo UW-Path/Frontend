@@ -16,7 +16,6 @@ export default {
   created() {
     this.fetchMajors();
     window.addEventListener('beforeunload', this.deleted)
-    console.log("webpage entered")
   }
 }
 
