@@ -71,7 +71,7 @@ async function parseRequirement(courseCode) {
         }]
     }
     //TODO: this should be a card if there exists more courses that are more than 1
-    else if (courseCode === "SCIENCE" || courseCode === "MATH") {
+    else if (courseCode === "SCIENCE" || courseCode === "MATH" || courseCode === "LANGUAGE") {
         response = await axios.get(backend_api + "/api/course-info/filter", {
             params: {
                 start: 0,

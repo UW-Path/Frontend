@@ -12,6 +12,8 @@ const backend_api = "";
 const mathCourses = ["ACTSC", "AMATH", "CO", "COMM", "CS", "MATH", "MTHEL", "MATBUS", "PMATH", "SE", "STATE"];
 const nonMathCourses = ["NON-MATH", "AFM", "ASL", "ANTH", "AHS", "APPLS", "ARABIC", "AE", "ARCH", "ARTS", "ARBUS", "AVIA", "BIOL", "BME", "BASE", "BUS", "BET", "CDNST", "CHE", "CHEM", "CHINA", "CMW", "CIVE", "CLAS", "COGSCI", "CROAT", "CI", "DAC", "DUTCH", "EARTH", "EASIA", "ECON", "ECE", "ENGL", "EMLS", "ENBUS", "ERS", "ENVE", "ENVS", "FINE", "FR", "GSJ", "GENE", "GEOG", "GEOE", "GER", "GERON", "GBDA", "GRK", "HLTH", "HIST", "HRM", "HRTS", "HUMSC", "INDG", "INDEV", "INTST", "ITAL", "ITALST", "JAPAN", "JS", "KIN", "INTEG", "KOREA", "LAT", "LS", "MGMT", "MSCI", "MNS", "ME", "MTE", "MEDVL", "MENN", "MOHAWK", "MUSIC", "NE", "OPTOM", "PACS", "PHARM", "PHIL", "PHYS", "PLAN", "PSCI", "PORT", "PSYCH", "PMATH", "REC", "RS", "RUSS", "REES", "SCI", "SCBUS", "SMF", "SDS", "SVENT", "SOCWK", "SWREN", "STV", "SOC", "SPAN", "SPCOM", "SI", "SYDE", "THPERF", "VCULT"];
 const scienceCourses = ["BIOL", "CHEM", "EARTH", "MNS", "OPTOM", "PHARM", "PHYS", "SCI", "SCBUS"]
+const electiveCourses = ["ACTSC", "AMATH", "CO", "COMM", "CS", "MATH", "MTHEL", "MATBUS", "PMATH", "SE", "STATE", "NON-MATH", "AFM", "ASL", "ANTH", "AHS", "APPLS", "ARABIC", "AE", "ARCH", "ARTS", "ARBUS", "AVIA", "BIOL", "BME", "BASE", "BUS", "BET", "CDNST", "CHE", "CHEM", "CHINA", "CMW", "CIVE", "CLAS", "COGSCI", "CROAT", "CI", "DAC", "DUTCH", "EARTH", "EASIA", "ECON", "ECE", "ENGL", "EMLS", "ENBUS", "ERS", "ENVE", "ENVS", "FINE", "FR", "GSJ", "GENE", "GEOG", "GEOE", "GER", "GERON", "GBDA", "GRK", "HLTH", "HIST", "HRM", "HRTS", "HUMSC", "INDG", "INDEV", "INTST", "ITAL", "ITALST", "JAPAN", "JS", "KIN", "INTEG", "KOREA", "LAT", "LS", "MGMT", "MSCI", "MNS", "ME", "MTE", "MEDVL", "MENN", "MOHAWK", "MUSIC", "NE", "OPTOM", "PACS", "PHARM", "PHIL", "PHYS", "PLAN", "PSCI", "PORT", "PSYCH", "PMATH", "REC", "RS", "RUSS", "REES", "SCI", "SCBUS", "SMF", "SDS", "SVENT", "SOCWK", "SWREN", "STV", "SOC", "SPAN", "SPCOM", "SI", "SYDE", "THPERF", "VCULT"];
+const languageCourses = ["ARABIC", "CHINA", "CROAT", "DUTCH", "FR", "GER", "GRK", "ITAL", "JAPAN", "KOREA", "LAT", "PORT", "RUSS", "SPAN"]
 
 const defaultTable = [ 
     {
@@ -76,6 +78,8 @@ function getRequirementFullfillmentSize(requirement) {
         } else {
             if (course === "NON-MATH" || course === "SCIENCE") {
                 sizeScore += 100;
+            } else if (course === "Elective") {
+                sizeScore += 1000;
             } else {
                 sizeScore += 1;
             }
@@ -109,7 +113,25 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
         let numMatchedCredits = 0;
         let matchedCourses = [];
         for (let course of required_courses) {
-            if (course === "MATH") {
+            if (course === "Elective") {
+                let possibleMatches = selectedCourses.get(electiveCourses)
+                for (let match of possibleMatches) {
+                    if (usedCourses.get(match.selected_course.course_code).length === 0) {
+                        numMatchedCredits += match.selected_course.credit;
+                        matchedCourses.push(match)
+                        if ((numMatchedCredits >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
+                    }
+                }
+            } else if (course === "LANGUAGE") {
+                let possibleMatches = selectedCourses.get(languageCourses)
+                for (let match of possibleMatches) {
+                    if (usedCourses.get(match.selected_course.course_code).length === 0) {
+                        numMatchedCredits += match.selected_course.credit;
+                        matchedCourses.push(match)
+                        if ((numMatchedCredits >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
+                    }
+                }
+            } else if (course === "MATH") {
                 let possibleMatches = selectedCourses.get(mathCourses)
                 for (let match of possibleMatches) {
                     if (usedCourses.get(match.selected_course.course_code).length === 0) {
@@ -201,7 +223,25 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
         requirement.credits_of_prereqs_met = 0;
         var matchedCourses = [];
         for (let course of required_courses) {
-            if (course === "MATH") {
+            if (course === "Elective") {
+                let possibleMatches = selectedCourses.get(electiveCourses)
+                for (let match of possibleMatches) {
+                    if (usedCourses.get(match.selected_course.course_code).length === 0) {
+                        requirement.credits_of_prereqs_met += match.selected_course.credit;
+                        matchedCourses.push(match)
+                        if ((requirement.credits_of_prereqs_met >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
+                    }
+                }
+            } else if (course === "LANGUAGE") {
+                let possibleMatches = selectedCourses.get(languageCourses)
+                for (let match of possibleMatches) {
+                    if (usedCourses.get(match.selected_course.course_code).length === 0) {
+                        requirement.credits_of_prereqs_met += match.selected_course.credit;
+                        matchedCourses.push(match)
+                        if ((requirement.credits_of_prereqs_met >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
+                    }
+                }
+            } else if (course === "MATH") {
                 let possibleMatches = selectedCourses.get(mathCourses)
                 for (let match of possibleMatches) {
                     if (usedCourses.get(match.selected_course.course_code).length === 0) {
