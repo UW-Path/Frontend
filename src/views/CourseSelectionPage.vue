@@ -135,13 +135,6 @@ export default {
     padding: 0;
 }
 
-
-/* @media only screen and (max-width: 3000px) {
-  .course-selection-container {
-    min-width: 97%;
-  }
-} */
-
 .default-font{
     font-size: .9em !important;
 }
@@ -150,14 +143,15 @@ export default {
     background:#efefef;
 }
 
-.transparent{
-    background:transparent !important;
-}
-
 </style>
 
 <style>
+/* overwriting vueify classes  */
 .v-window__container {
     height: 100% !important;
+}
+
+.v-tabs-items {
+    background:transparent !important;
 }
 </style>
