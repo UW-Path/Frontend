@@ -69,7 +69,7 @@ export class CourseRequirement {
         this.credits_required = data ? data.credits_required : 0        
         this.overridden = data && data.overridden ? data.overridden : false;
         this.id = data && data.id ? data.id : REQUIREMENT_ID++;
-        this.inRequirementBar = data && data.inRequirementBar ?  data.inRequirementBar  : true;
+        this.inRequirementBar = data && !(data.inRequirementBar == null) ? data.inRequirementBar : true;
         this.prereqs_met = data && data.prereqs_met ? data.prereqs_met : false;
         this.additional_requirements = data && data.additional_requirements ? data.additional_requirements : [];
         this.number_of_prereqs_met = data && data.number_of_prereqs_met ? data.number_of_prereqs_met : 0;

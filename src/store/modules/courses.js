@@ -199,6 +199,7 @@ const actions = {
                 option: options.newSpecialization ? options.newSpecialization.program_name : ""
             }
         });
+
         let newMajorRequirements = response.data.requirements;
 
         if (options.newMajor) {
@@ -233,6 +234,7 @@ const actions = {
             if (table2needed) {
                 newMajorRequirements = newMajorRequirements.concat(response.data.table2)
             }
+            
             for (let requirement of newMajorRequirements) {
                 let promises = []
                 let required_courses = requirement.course_codes.split(/,\s|\sor\s|,/)
@@ -247,6 +249,7 @@ const actions = {
                         number_of_courses: requirement.number_of_courses,
                         major: [options.newMajor],
                         additional_requirements: requirement.additional_requirements,
+                        inRequirementBar: true,
                     }
                     for (let choice of choices) {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
@@ -272,7 +275,7 @@ const actions = {
 
             for (let requirement of response.data.minor_requirements) {
                 let promises = [];
-                let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
+                let required_courses = requirement.course_codes.split(/,\s|\sor\s/);
                 for (let course of required_courses) {
                     promises.push(parseRequirement(course))
                 }
@@ -284,6 +287,7 @@ const actions = {
                         number_of_courses: requirement.number_of_courses,
                         minor: [options.newMinor],
                         additional_requirements: requirement.additional_requirements,
+                        inRequirementBar: true,
                     }
                     for (let choice of choices) {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
@@ -313,6 +317,7 @@ const actions = {
                         number_of_courses: requirement.number_of_courses,
                         specialization: [options.newSpecialization],
                         additional_requirements: requirement.additional_requirements,
+                        inRequirementBar: true,
                     }        
                     for (let choice of choices) {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
@@ -374,7 +379,7 @@ const mutations = {
             for (let section of Object.values(major.sections())) collapseAndSort(section)
         }
         for (let minor of state.minorRequirements) {
-            for (let section in Object.values(minor.sections())) collapseAndSort(section)
+            for (let section of Object.values(minor.sections())) collapseAndSort(section)
         }
         for (let spec of state.specRequirements) {
             for (let section of Object.values(spec.sections())) collapseAndSort(section)
@@ -394,7 +399,7 @@ const mutations = {
             for (let section of Object.values(major.sections())) if (checkArrayForID(section)) return
         }
         for (let minor of state.minorRequirements) {
-            for (let section in Object.values(minor.sections())) if (checkArrayForID(section)) return
+            for (let section of Object.values(minor.sections())) if (checkArrayForID(section)) return
         }
         for (let spec of state.specRequirements) {
             for (let section of Object.values(spec.sections())) if (checkArrayForID(section)) return

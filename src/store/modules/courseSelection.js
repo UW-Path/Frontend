@@ -387,6 +387,38 @@ const actions = {
             }
         })
         .then(response => {
+            //parse table 1 and table 2 data 
+            let table1needed = false;
+            let table2needed = false;
+            let newMajorRequirements = response.data.requirements
+            newMajorRequirements.forEach(req => {
+                let additionalReqs = req.additional_requirements ? req.additional_requirements.toLowerCase().split(", ") : []
+                for (let additionalReq of additionalReqs) {
+                    if (additionalReq == "table ii") table2needed = true           
+                    if (additionalReq == "table i") table1needed = true
+                }
+            });
+
+            if (table1needed) {
+                let list1_courses = response.data.table1.filter( course => {return course.list_number == 1}).map(course => { return course.course_code }).join(",")
+                let list2_courses = response.data.table1.filter( course => {return course.list_number == 2}).map(course => { return course.course_code }).join(",")
+                let list1 = { 
+                    course_codes: list1_courses,
+                    number_of_courses: 1,
+                }
+                let list2 = {
+                    course_codes: list2_courses,
+                    number_of_courses: 1,
+                }
+                newMajorRequirements.push(list1)
+                newMajorRequirements.push(list2)
+            }
+
+            if (table2needed) {
+                newMajorRequirements = newMajorRequirements.concat(response.data.table2)
+            }
+
+
             var selectedCourses = new TrieSearch([['selected_course', 'course_code'], ['selected_course', 'course_number']], {
                 idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
             });
@@ -394,7 +426,7 @@ const actions = {
                 selectedCourses.addAll(term.courses)
             }
             if (response.data.requirements) {
-                commit('setChecklistMajorRequirements', ParseRequirementsForChecklist(response.data.requirements, selectedCourses));
+                commit('setChecklistMajorRequirements', ParseRequirementsForChecklist(newMajorRequirements, selectedCourses));
             }
             else {
                 commit('setChecklistMajorRequirements', []);
