@@ -12,7 +12,7 @@ export class CourseInfo {
         this.course_id = data && data.course_id ? Number(data.course_id): -1;
         this.course_name = data && data.course_name ? data.course_name: "";
         this.course_number = data && data.course_number ? Number(data.course_number) : -1;
-        this.credit = data && data.credit ? Number(data.credit) : -1;
+        this.credit = data && data.credit ? Number(data.credit) : 0;
         this.info = data && data.info ? data.info : "";
         this.offering = data && data.offering ? (typeof data.offering === "string" ? data.offering.split(",") : data.offering) : [];
         this.online = data && data.online ? data.online : false;
