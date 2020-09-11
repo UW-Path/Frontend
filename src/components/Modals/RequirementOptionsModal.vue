@@ -91,14 +91,18 @@ export default {
         onSelectionBar: Boolean
     },
     methods: {
-        ...mapMutations(["validateCourses", "seperateRequirement"]),
+        ...mapMutations(["validateCourses", "separateRequirement"]),
         enableDialog: function() {
-            this.dialog = true;
+            if (!this.course.clickedDelete) {
+                this.dialog = true;
+            } else {
+                this.course.clickedDelete = false;
+            }
         },
         selectCourse: function () {
             this.course.selected_course = this.selectedCourse;
-            this.seperateRequirement(this.course)
-            this.validateCourses()
+            this.separateRequirement(this.course);
+            this.validateCourses();
             this.dialog = false;
         },
         deselectCourse() {
@@ -106,24 +110,24 @@ export default {
             this.dialog = false;
         },
         isSelected: function(courseCode) {
-            if (!this.course.selected_course) return false
-            return courseCode == this.course.selected_course.course_code;
+            if (!this.course.selected_course) return false;
+            return courseCode === this.course.selected_course.course_code;
         },
         isChoice: function() {
             return this.course.course_choices.length > 1
         },
         close: function() {
-            let ok = ""
+            let ok = "";
             void ok
         },
         open: function() {
-            let ok = ""
+            let ok = "";
             void ok
         }
     },
     computed: {
         filteredCourses: function () {
-            if (this.searchText === "") return this.course.course_choices;
+            if (this.searchtext === "") return this.course.course_choices;
             else {
                 return this.course.course_choices.filter((choice => {
                     var matchCode = choice.course_code.toLowerCase().includes(this.searchtext.toLowerCase()) || choice.course_code.toLowerCase().includes(this.searchtext.toLowerCase())
@@ -139,7 +143,7 @@ export default {
             })
         },
         hasSelected: function() {
-            return this.course.selected_course != undefined
+            return this.course.selected_course !== undefined;
         }
     }
 }
