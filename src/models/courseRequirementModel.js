@@ -94,6 +94,9 @@ export class CourseRequirement {
             this.year = this.course_choices.length ? this.course_choices[0].year : -1;
             for(let course of this.course_choices) if (course.year !== this.year) this.year = -1;
         }
+
+        this.clickedDelete = false;
+        this.hidden = false;
     }
 
     deselect() {

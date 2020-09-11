@@ -356,7 +356,7 @@ const mutations = {
     removeMajor: (state) => { state.majorRequirements = [] },
     removeMinor: (state) => { state.minorRequirements = [] },
     removeOption: (state) => { state.specRequirements = [] },
-    seperateRequirement: (state, requirement) => {
+    separateRequirement: (state, requirement) => {
         let program = undefined
         //courses are only seperated if there isnt 1
         if (requirement.number_of_courses == 1) return

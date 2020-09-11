@@ -61,7 +61,7 @@
             
             </div>
             <v-spacer></v-spacer>
-            <v-btn icon class="delete-btn" @click="deleteCourse()" v-if="!onSelectionBar"></v-btn>
+            <v-btn icon class="delete-btn" @click="deleteCourse()" />
           </div>
           <v-list-item-title style="font-size:1.2em; margin-top:0.1em">
             {{ courseData.selected_course.course_code }}
@@ -83,7 +83,7 @@
           <div class="overline mb-1">
             <div  v-if="courseData.course_choices.length > 1"> Select {{courseData.number_of_courses}} </div> 
             <v-spacer></v-spacer>
-            <v-btn icon class="delete-btn" x-small @click="deleteCourse()" v-if="!onSelectionBar" ></v-btn>
+            <v-btn icon class="delete-btn" x-small @click="deleteCourse()" />
           </div>
           <div v-if="courseData.course_codes.length <= 3">
             <template v-for="(code, index) in courseData.course_codes" >
@@ -121,10 +121,18 @@ export default {
   methods: {
     ...mapMutations([ "removeRequirementFromTable", "addCourseRequirement", "sortRequirements"]),
     deleteCourse: function() {
-      this.courseData.inRequirementBar = true
-      this.removeRequirementFromTable(this.courseData)
-      if (this.courseData.major.length || this.courseData.minor.length || this.courseData.specialization.length) this.addCourseRequirement(this.courseData)
-      this.sortRequirements()
+        this.courseData.clickedDelete = true;
+        if (!this.onSelectionBar) {
+            this.courseData.inRequirementBar = true;
+            this.removeRequirementFromTable(this.courseData);
+            if (this.courseData.major.length || this.courseData.minor.length || this.courseData.specialization.length) {
+                this.addCourseRequirement(this.courseData);
+            }
+            this.sortRequirements();
+        }
+        else {
+            this.courseData.hidden = true;
+        }
     },
     isSelected: function(courseCode) {
         if (!this.courseData.selected_course) return false
