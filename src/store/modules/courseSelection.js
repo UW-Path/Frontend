@@ -513,6 +513,9 @@ const mutations = {
                         })
                         .then(response => {
                             requirement.prereqs_met = response.data.can_take;
+                            if (!requirement.prereqs_met){
+                                requirement.validation_message = response.data.msg
+                            }
                         })
                         .catch(err => {
                             // eslint-disable-next-line no-console
