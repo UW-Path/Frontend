@@ -88,7 +88,7 @@ function getRequirementFullfillmentSize(requirement) {
     return sizeScore;
 }
 
-function ParseRequirementsForChecklist(requirements, selectedCourses) {
+function ParseRequirementsForChecklist(requirements, selectedCourses, programInfo) {
     var usedCourses = new TrieSearch([['selected_course', 'course_code'], ['selected_course', 'course_number']], {
         idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
     });
@@ -211,6 +211,15 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
             requirement.prereqs_met = true;
             requirement.credits_of_prereqs_met = requirement.credits_required;
             usedCourses.addAll(matchedCourses);
+            for (let match of matchedCourses) {
+                if (programInfo.plan_type === "Major") {
+                    match.major = [programInfo];
+                } else if (programInfo.plan_type === "Minor") {
+                    match.minor = [programInfo];
+                } else if (programInfo.plan_type === "Specialization") {
+                    match.specialization = [programInfo];
+                }
+            }
         }
     }
     // Make second pass on requirements to match any remaining courses
@@ -318,6 +327,15 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
             if ((requirement.credits_of_prereqs_met >= requirement.credits_required && matchedCourses.length > 0)) break;
         }
         usedCourses.addAll(matchedCourses);
+        for (let match of matchedCourses) {
+            if (programInfo.plan_type === "Major") {
+                match.major = [programInfo];
+            } else if (programInfo.plan_type === "Minor") {
+                match.minor = [programInfo];
+            } else if (programInfo.plan_type === "Specialization") {
+                match.specialization = [programInfo];
+            }
+        }
         parsed_requirements.push(new CourseRequirement(requirement));
     }
     return parsed_requirements;
@@ -411,7 +429,7 @@ const actions = {
             }
 
             if (response.data.requirements) {
-                var parsedMajorRequirements = ParseRequirementsForChecklist(newMajorRequirements, selectedCourses);
+                var parsedMajorRequirements = ParseRequirementsForChecklist(newMajorRequirements, selectedCourses, getters.majorRequirements[0].info);
                 if (table1needed) {
                     let list1_courses = response.data.table1.filter( course => {return course.list_number == 1}).map(course => { return course.course_code }).join(",")
                     let list2_courses = response.data.table1.filter( course => {return course.list_number == 2}).map(course => { return course.course_code }).join(",")
@@ -457,13 +475,13 @@ const actions = {
                 commit('setChecklistMajorRequirements', []);
             }
             if (response.data.minor_requirements) {
-                commit('setChecklistMinorRequirements', ParseRequirementsForChecklist(response.data.minor_requirements, selectedCourses));
+                commit('setChecklistMinorRequirements', ParseRequirementsForChecklist(response.data.minor_requirements, selectedCourses, getters.minorRequirements[0].info));
             }
             else {
                 commit('setChecklistMinorRequirements', []); 
             }
             if (response.data.option_requirements) {
-                commit('setChecklistOptionRequirements', ParseRequirementsForChecklist(response.data.option_requirements, selectedCourses));
+                commit('setChecklistOptionRequirements', ParseRequirementsForChecklist(response.data.option_requirements, selectedCourses, getters.specRequirements[0].info));
             }
             else {
                 commit('setChecklistOptionRequirements', []);
