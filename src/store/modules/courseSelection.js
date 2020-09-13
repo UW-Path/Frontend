@@ -323,7 +323,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
     return parsed_requirements;
 }
 
-function getCoursesTable() {
+function getCoursesTable(state) {
     var course_table = [];
     for (let i = 0; i < state.table.length; i++) {
         let t = [];
@@ -337,7 +337,7 @@ function getCoursesTable() {
             } else {
                 courses.push(state.table[i].courses[j].selected_course.course_code);
             }
-            t.push(courses)
+            t.push(courses);
         }
         course_table.push(t);
     }
@@ -346,7 +346,7 @@ function getCoursesTable() {
 
 const actions = {
     async export({ state }, options) {
-        let course_table = getCoursesTable();
+        let course_table = getCoursesTable(state);
         if (options.PDF) {
             axios.get(backend_api + "/api/requirements/export", {
                 params: {
