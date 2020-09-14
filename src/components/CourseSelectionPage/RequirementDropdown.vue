@@ -2,24 +2,24 @@
 	<div>
 		<div v-for="(program, index) in programArray" :key="index">
 			<div v-if="program.info.plan_type === 'Major'" class="title">
-				<b>Major Requirement</b>
-				<v-btn @click="showHidden(program)" small><v-icon>mdi-plus-circle-outline</v-icon></v-btn>
+				Major Requirement
+				<v-icon small @click="showHidden(program)" class="refresh-icon">mdi-refresh</v-icon>
 			</div>
 			<div v-else-if="program.info.plan_type === 'Minor'" class="title">
-				<b>Minor Requirement</b>
-				<v-btn @click="showHidden(program)" small><v-icon>mdi-plus-circle-outline</v-icon></v-btn>
+				Minor Requirement
+				<v-icon small @click="showHidden(program)" class="refresh-icon">mdi-refresh</v-icon>
 			</div>
 			<div v-else-if="program.info.plan_type === 'Specialization'" class="title">
-				<b>Specialization Requirement</b>
-				<v-btn @click="showHidden(program)" small><v-icon>mdi-plus-circle-outline</v-icon></v-btn>
+				Spec. Requirement
+				<v-icon small @click="showHidden(program)" class="refresh-icon">mdi-refresh</v-icon>
 			</div>
 			<div v-else-if="program.info.plan_type === 'Option'" class="title">
-				<b>Option Requirement</b>
-				<v-btn @click="showHidden(program)" small><v-icon>mdi-plus-circle-outline</v-icon></v-btn>
+				Option Requirement
+				<v-icon small @click="showHidden(program)" class="refresh-icon">mdi-refresh</v-icon>
 			</div>
 			<div v-else class="title">
-				<b>Joint Requirement</b>
-				<v-btn @click="showHidden(program)" small><v-icon>mdi-plus-circle-outline</v-icon></v-btn>
+				Joint Requirement
+				<v-icon small @click="showHidden(program)" class="refresh-icon">mdi-refresh</v-icon>
 			</div>
 			<v-expansion-panels multiple>
 				<template v-for="(section, index) of program.sections()">
@@ -194,13 +194,23 @@ export default {
 .title {
 	text-align: left;
 	padding: 1em;
+	padding-top: 0.5em;
 	font-size: 0.85rem !important;
 	font-weight: 400;
 	background-color: #4a75ad59; /*#ffea3df0;*/
 	margin-top: 0;
 	margin-bottom: 0.5em;
 	font-weight: 500;
+	height: 2em;
+	font-family: 'Montserrat' !important;
 }
+
+
+.refresh-icon{
+	margin-left: 0.2em;
+    margin-top: -.1em;
+}
+
 </style>
 
 <style>
@@ -208,7 +218,7 @@ export default {
 	padding: 0 !important;
 }
 .v-expansion-panel-header {
-	font-size: 1em !important;
+	font-size: 0.8rem !important;
 	height: 3em;
 	min-height: 3em !important;
 }

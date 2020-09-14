@@ -4,7 +4,7 @@
       <div class= "main-drag">
       <template v-for="(term, termIndex) in getTable">  
         <v-card class="col-sm-3 col-md-2 term-column" :key="termIndex" @mouseenter="termMouseOver(termIndex)" @mouseleave="termMouseExit()">
-        <div class="default-font term-title"><b>{{ getTermList[termIndex] }}</b>
+        <div class="default-font term-title">{{ getTermList[termIndex] }}
           <v-btn icon class="delete-btn" x-small @click="deleteTerm(term)">
             <v-icon medium class="delete-term-btn" v-if="termHovered == termIndex">mdi-trash-can</v-icon>
           </v-btn>
@@ -55,9 +55,9 @@ export default {
       editingEnabled: false,
       termHovered: -1,
       // Production Kubernetes API
-      // backend_api: "",
+      backend_api: "",
       // Dev API
-      backend_api: "http://127.0.0.1:8000",
+      // backend_api: "http://127.0.0.1:8000",
 
       allCourses: new TrieSearch(['course_code', 'course_number'], {
         idFieldOrFunction: function(course) {
