@@ -37,7 +37,7 @@
 </template>
 <script>
 import draggable from 'vuedraggable'
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters, mapMutations, mapActions } from "vuex";
 import RequirementOptionsModal from '../Modals/RequirementOptionsModal'
 import AddCourseCard from "../Cards/AddCourseCard"
 import TrieSearch from 'trie-search';
@@ -90,6 +90,7 @@ export default {
   },
   methods: {
     ...mapMutations(["addTermToTable", "deleteTermFromTable", "addCourseRequirement", "validateCourses", "decrementRequirementID"]),
+    ...mapActions(["fillOutChecklist"]),
     termMouseOver(termIndex) {
       this.termHovered = termIndex;
     },
@@ -105,6 +106,7 @@ export default {
     },
     change(event) {
         this.validateCourses();
+        this.fillOutChecklist();
         //we only check add events
         if (!event.added) return;
         let changedReq = event.added.element;

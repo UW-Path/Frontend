@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapActions } from "vuex";
 import CourseCard from "../Cards/CourseCard";
 
 export default {
@@ -92,6 +92,7 @@ export default {
     },
     methods: {
         ...mapMutations(["validateCourses", "separateRequirement"]),
+        ...mapActions(["fillOutChecklist"]),
         enableDialog: function() {
             if (!this.course.clickedDelete) {
                 this.dialog = true;
@@ -103,6 +104,7 @@ export default {
             this.course.selected_course = this.selectedCourse;
             this.separateRequirement(this.course);
             this.validateCourses();
+            this.fillOutChecklist();
             this.dialog = false;
         },
         deselectCourse() {
