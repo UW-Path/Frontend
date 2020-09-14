@@ -61,14 +61,21 @@
             
             </div>
             <v-spacer></v-spacer>
-            <v-btn icon class="delete-btn" @click="deleteCourse()" v-if="!onSelectionBar"></v-btn>
+            <v-btn icon class="delete-btn" @click="deleteCourse()" />
           </div>
-          <v-list-item-title style="font-size:1.2em; margin-top:0.1em" v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met && !courseData.inRequirementBar || courseData.overridden, course_card_prereqs_failed: !courseData.prereqs_met && !courseData.inRequirementBar && !courseData.overridden}">
+          <v-list-item-title style="font-size:1.2em; margin-top:0.1em">
             {{ courseData.selected_course.course_code }}
           </v-list-item-title>
-          <v-list-item-subtitle style="font-size: 0.9em; margin-bottom: 1em;">{{ courseData.selected_course.course_name }}</v-list-item-subtitle>
+          <v-list-item-subtitle class="course-desc">{{ courseData.selected_course.course_name }}</v-list-item-subtitle>
+           <v-tooltip bottom open-delay="300" max-width="350px" v-if="this.courseData.major.length > 0">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-icon v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met || courseData.inRequirementBar || courseData.overridden, course_card_prereqs_failed: !courseData.prereqs_met && !courseData.inRequirementBar && !courseData.overridden}" small class="alert-icon" v-bind="attrs" v-on="on">mdi-alert</v-icon>
+                </template>
+                <span>{{courseData.validation_message}}</span>
+            </v-tooltip>
         </v-list-item-content>
       </v-list-item>
+      
     </template>
     <template v-else>
       <v-list-item>
@@ -76,7 +83,7 @@
           <div class="overline mb-1">
             <div  v-if="courseData.course_choices.length > 1"> Select {{courseData.number_of_courses}} </div> 
             <v-spacer></v-spacer>
-            <v-btn icon class="delete-btn" x-small @click="deleteCourse()" v-if="!onSelectionBar" ></v-btn>
+            <v-btn icon class="delete-btn" x-small @click="deleteCourse()" />
           </div>
           <div v-if="courseData.course_codes.length <= 3">
             <template v-for="(code, index) in courseData.course_codes" >
@@ -114,10 +121,18 @@ export default {
   methods: {
     ...mapMutations([ "removeRequirementFromTable", "addCourseRequirement", "sortRequirements"]),
     deleteCourse: function() {
-      this.courseData.inRequirementBar = true
-      this.removeRequirementFromTable(this.courseData)
-      if (this.courseData.major.length || this.courseData.minor.length || this.courseData.specialization.length) this.addCourseRequirement(this.courseData)
-      this.sortRequirements()
+        this.courseData.clickedDelete = true;
+        if (!this.onSelectionBar) {
+            this.courseData.inRequirementBar = true;
+            this.removeRequirementFromTable(this.courseData);
+            if (this.courseData.major.length || this.courseData.minor.length || this.courseData.specialization.length) {
+                this.addCourseRequirement(this.courseData);
+            }
+            this.sortRequirements();
+        }
+        else {
+            this.courseData.hidden = true;
+        }
     },
     isSelected: function(courseCode) {
         if (!this.courseData.selected_course) return false
@@ -156,6 +171,7 @@ export default {
   margin: 0px;
   height: 0.65rem !important;
   width: 0.65rem !important;
+  right: 2%;
 }
 
 .delete-btn:hover {
@@ -163,11 +179,11 @@ export default {
 }
 
 .course_card_prereqs_met {
-  color: green;
+  visibility: hidden;
 }
 
 .course_card_prereqs_failed {
-  color: red;
+  visibility: visible;
 }
 
 
@@ -181,12 +197,28 @@ export default {
 }
 
 .v-list-item__content {
-  margin-top: -0.4em !important;
+  margin-top: -0.4em !important
+}
+
+.v-list-item{
+      padding: 0 0.7em;
 }
 
 
 .select-font{
   font-size: 1em;
+}
+
+.alert-icon{
+  color:#FFCC00;
+  left: 44%;
+  bottom: 23%;
+}
+
+.course-desc{
+  font-size: 0.9em; 
+  margin-bottom: 1em;
+  margin-right: 0.8em;
 }
 
 </style>
