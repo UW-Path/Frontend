@@ -58,7 +58,7 @@
 
 
 <script>
-import { mapMutations } from "vuex";
+import { mapMutations, mapActions } from "vuex";
 import { CourseRequirement } from "../../models/courseRequirementModel";
 import { CourseInfo } from "../../models/courseInfoModel";
 import TrieSearch from 'trie-search';
@@ -81,6 +81,7 @@ export default {
   },
   methods: {
     ...mapMutations(["addCourse", "validateCourses"]),
+    ...mapActions(["fillOutChecklist"]),
     enableDialog() {
       this.dialog = true;
     },
@@ -115,6 +116,7 @@ export default {
       this.dialog = false;
       this.addCourse({newRequirement: req, termIndex: this.termIndex});
       this.validateCourses();
+      this.fillOutChecklist();
     },
     selectAddedCourse() {
       var addedCourse = this.selectedCourse;
@@ -132,6 +134,7 @@ export default {
       this.dialog = false;
       this.addCourse({newRequirement: newRequirement, termIndex: this.termIndex});
       this.validateCourses();
+      this.fillOutChecklist();
     }
   },
   async mounted() {

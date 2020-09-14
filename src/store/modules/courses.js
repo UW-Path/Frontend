@@ -26,7 +26,6 @@ async function parseRequirement(courseCode) {
     let hasNumber = /\d/;
     let response = null
     let parsedCourseInfos = []
-
     // 1. SPECIFIC CASES THAT DOES NOT PERTAIN TO A COURSE PATTERN
     // Engineering specific/Program Elective 
     if (courseCode.includes("TE")){
@@ -63,15 +62,7 @@ async function parseRequirement(courseCode) {
         }]
     }
     //TODO: this should be a card if there exists more courses that are more than 1
-    else if (courseCode === "NON-MATH") {
-        parsedCourseInfos = [{
-            course_name: "Course not offered by the Faculty of Math.",
-            course_code: "NON-MATH",
-            credit: 0.5
-        }]
-    }
-    //TODO: this should be a card if there exists more courses that are more than 1
-    else if (courseCode === "SCIENCE" || courseCode === "MATH" || courseCode === "LANGUAGE") {
+    else if (courseCode === "SCIENCE" || courseCode === "MATH" || courseCode === "LANGUAGE" || courseCode === "NON-MATH") {
         response = await axios.get(backend_api + "/api/course-info/filter", {
             params: {
                 start: 0,

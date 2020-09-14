@@ -116,7 +116,8 @@ export default {
 
 .autocomplete-container {
     max-width: 600px;
-    width:100%
+    width:100%;
+    min-width: 525px;
 }
 
 .link:hover {
