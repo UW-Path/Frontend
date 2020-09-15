@@ -2,21 +2,28 @@
 	<div>
 		<div v-for="(program, index) in programArray" :key="index">
 			<div v-if="program.info.plan_type === 'Major'" class="title">
-				<b>Major Requirement</b>
+				Major Requirement
+				<v-icon small @click="showHidden(program)" class="refresh-icon">mdi-refresh</v-icon>
 			</div>
 			<div v-else-if="program.info.plan_type === 'Minor'" class="title">
-				<b>Minor Requirement</b>
+				Minor Requirement
+				<v-icon small @click="showHidden(program)" class="refresh-icon">mdi-refresh</v-icon>
 			</div>
 			<div v-else-if="program.info.plan_type === 'Specialization'" class="title">
-				<b>Specialization Requirement</b>
+				Spec. Requirement
+				<v-icon small @click="showHidden(program)" class="refresh-icon">mdi-refresh</v-icon>
 			</div>
 			<div v-else-if="program.info.plan_type === 'Option'" class="title">
-				<b>Option Requirement</b>
+				Option Requirement
+				<v-icon small @click="showHidden(program)" class="refresh-icon">mdi-refresh</v-icon>
 			</div>
-			<div v-else class="title"><b>Joint Requirement</b></div>
+			<div v-else class="title">
+				Joint Requirement
+				<v-icon small @click="showHidden(program)" class="refresh-icon">mdi-refresh</v-icon>
+			</div>
 			<v-expansion-panels multiple>
 				<template v-for="(section, index) of program.sections()">
-					<v-expansion-panel v-if="section.length" v-bind:key="index">
+					<v-expansion-panel class="expansion-panel" v-if="section.length && !allHidden(section)" v-bind:key="index">
 						<v-expansion-panel-header>{{ sectionToDisplayMap[Object.keys(program).find(key => program[key] === section )] }}</v-expansion-panel-header>
 						<v-expansion-panel-content>
 							<draggable
@@ -28,13 +35,15 @@
 							>
 							<template v-for="(requirement, i) in section">
 								<RequirementOptionsModal
-									class="list-group-item course-card"
 									:key="i"
 									:course="requirement"
 									:onSelectionBar="true"
 									@mousedown.native="setLastClicked(requirement)"
 									v-touchscreen="()=>{ setLastClicked(requirement) }"
 									v-if="!requirement.satisfied()"
+									v-bind:class="{ hidden: requirement.hidden,
+													'course-card': !requirement.hidden,
+													'list-group-item':!requirement.hidden }"
 								/>
 							</template>
 							</draggable>
@@ -69,19 +78,19 @@ export default {
 		programArray: Array
 	},
 	methods: {
-		...mapMutations(["sortRequirements", "sortRequirements"]),
+		...mapMutations(["sortRequirements"]),
 		//card is not cloned if it only has one list and that
 		pullFunction: function() {
-			return this.lastClickdownReq.number_of_courses == 1 || this.lastClickdownReq.course_choices.length == 1 ? true : "clone";
+			return this.lastClickdownReq.number_of_courses === 1 ||
+					this.lastClickdownReq.course_choices.length === 1 ? true : "clone";
 		},
 		//event when card is removed
 		clone: function(event) {
-			if (event.course_choices.length == 1) {
+			if (event.course_choices.length === 1) {
 				return event;
 			}
 			//create a shallow copy of the requirement
-			let clone = new CourseRequirement({...event});
-			return clone;
+			return new CourseRequirement({...event});
 		},
 		//event when card is added
 		change: function(event) {
@@ -92,6 +101,27 @@ export default {
 		},
 		setLastClicked(requirement) {
 			this.lastClickdownReq = requirement;
+			this.$forceUpdate();
+		},
+		showHidden(program) {
+			for (var prop in program) {
+				if (prop !== "info") {
+					// eslint-disable-next-line no-prototype-builtins
+					if (program.hasOwnProperty(prop)) {
+						for (var i in program[prop]) {
+							program[prop][i].hidden = false;
+						}
+					}
+				}
+			}
+		},
+		allHidden(section) {
+			for (var i in section) {
+				if (!section[i].hidden) {
+					return false;
+				}
+			}
+			return true;
 		}
 	},
 	computed: {
@@ -111,7 +141,7 @@ export default {
 				let regionOne = new ZingTouch.Region(el, true, false);
 				let longTap = new ZingTouch.Pan({
 					threshold: 0
-				})
+				});
 				regionOne.bind(el, longTap, binding.value)
 			}
 		}
@@ -154,16 +184,33 @@ export default {
 	background-color: ghostwhite;
 }
 
+.hidden {
+	visibility: hidden;
+	height: 0;
+	margin-top: 0;
+	display: none;
+}
+
 .title {
 	text-align: left;
 	padding: 1em;
+	padding-top: 0.5em;
 	font-size: 0.85rem !important;
 	font-weight: 400;
 	background-color: #4a75ad59; /*#ffea3df0;*/
 	margin-top: 0;
 	margin-bottom: 0.5em;
 	font-weight: 500;
+	height: 2em;
+	font-family: 'Montserrat' !important;
 }
+
+
+.refresh-icon{
+	margin-left: 0.2em;
+    margin-top: -.1em;
+}
+
 </style>
 
 <style>
@@ -171,7 +218,7 @@ export default {
 	padding: 0 !important;
 }
 .v-expansion-panel-header {
-	font-size: 1em !important;
+	font-size: 0.8rem !important;
 	height: 3em;
 	min-height: 3em !important;
 }

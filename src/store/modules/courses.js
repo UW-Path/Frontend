@@ -4,10 +4,10 @@ import { MajorRequirement, OtherRequirement } from '../../models/ProgramModel'
 import { CourseInfo } from '../../models/courseInfoModel'
 
 // Production Kubernetes API
-// const backend_api = "";
+const backend_api = "";
 
 // Dev API
-const backend_api = "http://127.0.0.1:8000";
+// const backend_api = "http://127.0.0.1:8000";
 
 // Fetch course information of a single course code or a course pattern (eg MATH 239 or PHYS 300-)
 // requirement is the courseRequirement object that this course code belongs to
@@ -26,7 +26,6 @@ async function parseRequirement(courseCode) {
     let hasNumber = /\d/;
     let response = null
     let parsedCourseInfos = []
-
     // 1. SPECIFIC CASES THAT DOES NOT PERTAIN TO A COURSE PATTERN
     // Engineering specific/Program Elective 
     if (courseCode.includes("TE")){
@@ -63,15 +62,7 @@ async function parseRequirement(courseCode) {
         }]
     }
     //TODO: this should be a card if there exists more courses that are more than 1
-    else if (courseCode === "NON-MATH") {
-        parsedCourseInfos = [{
-            course_name: "Course not offered by the Faculty of Math.",
-            course_code: "NON-MATH",
-            credit: 0.5
-        }]
-    }
-    //TODO: this should be a card if there exists more courses that are more than 1
-    else if (courseCode === "SCIENCE" || courseCode === "MATH" || courseCode === "LANGUAGE") {
+    else if (courseCode === "SCIENCE" || courseCode === "MATH" || courseCode === "LANGUAGE" || courseCode === "NON-MATH") {
         response = await axios.get(backend_api + "/api/course-info/filter", {
             params: {
                 start: 0,
@@ -356,7 +347,7 @@ const mutations = {
     removeMajor: (state) => { state.majorRequirements = [] },
     removeMinor: (state) => { state.minorRequirements = [] },
     removeOption: (state) => { state.specRequirements = [] },
-    seperateRequirement: (state, requirement) => {
+    separateRequirement: (state, requirement) => {
         let program = undefined
         //courses are only seperated if there isnt 1
         if (requirement.number_of_courses == 1) return

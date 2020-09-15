@@ -4,10 +4,10 @@ import { CourseRequirement } from "../../models/courseRequirementModel";
 import * as download from "downloadjs";
 
 // Production Kubernetes API
-// const backend_api = "";
+const backend_api = "";
 
 // Dev API
-const backend_api = "http://127.0.0.1:8000";
+// const backend_api = "http://127.0.0.1:8000";
 
 const mathCourses = ["ACTSC", "AMATH", "CO", "COMM", "CS", "MATH", "MTHEL", "MATBUS", "PMATH", "SE", "STATE"];
 const nonMathCourses = ["NON-MATH", "AFM", "ASL", "ANTH", "AHS", "APPLS", "ARABIC", "AE", "ARCH", "ARTS", "ARBUS", "AVIA", "BIOL", "BME", "BASE", "BUS", "BET", "CDNST", "CHE", "CHEM", "CHINA", "CMW", "CIVE", "CLAS", "COGSCI", "CROAT", "CI", "DAC", "DUTCH", "EARTH", "EASIA", "ECON", "ECE", "ENGL", "EMLS", "ENBUS", "ERS", "ENVE", "ENVS", "FINE", "FR", "GSJ", "GENE", "GEOG", "GEOE", "GER", "GERON", "GBDA", "GRK", "HLTH", "HIST", "HRM", "HRTS", "HUMSC", "INDG", "INDEV", "INTST", "ITAL", "ITALST", "JAPAN", "JS", "KIN", "INTEG", "KOREA", "LAT", "LS", "MGMT", "MSCI", "MNS", "ME", "MTE", "MEDVL", "MENN", "MOHAWK", "MUSIC", "NE", "OPTOM", "PACS", "PHARM", "PHIL", "PHYS", "PLAN", "PSCI", "PORT", "PSYCH", "PMATH", "REC", "RS", "RUSS", "REES", "SCI", "SCBUS", "SMF", "SDS", "SVENT", "SOCWK", "SWREN", "STV", "SOC", "SPAN", "SPCOM", "SI", "SYDE", "THPERF", "VCULT"];
@@ -88,7 +88,7 @@ function getRequirementFullfillmentSize(requirement) {
     return sizeScore;
 }
 
-function ParseRequirementsForChecklist(requirements, selectedCourses) {
+function ParseRequirementsForChecklist(requirements, selectedCourses, programInfo) {
     var usedCourses = new TrieSearch([['selected_course', 'course_code'], ['selected_course', 'course_number']], {
         idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
     });
@@ -211,6 +211,15 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
             requirement.prereqs_met = true;
             requirement.credits_of_prereqs_met = requirement.credits_required;
             usedCourses.addAll(matchedCourses);
+            for (let match of matchedCourses) {
+                if (programInfo.plan_type === "Major") {
+                    match.major = [programInfo];
+                } else if (programInfo.plan_type === "Minor") {
+                    match.minor = [programInfo];
+                } else if (programInfo.plan_type === "Specialization") {
+                    match.specialization = [programInfo];
+                }
+            }
         }
     }
     // Make second pass on requirements to match any remaining courses
@@ -318,12 +327,21 @@ function ParseRequirementsForChecklist(requirements, selectedCourses) {
             if ((requirement.credits_of_prereqs_met >= requirement.credits_required && matchedCourses.length > 0)) break;
         }
         usedCourses.addAll(matchedCourses);
+        for (let match of matchedCourses) {
+            if (programInfo.plan_type === "Major") {
+                match.major = [programInfo];
+            } else if (programInfo.plan_type === "Minor") {
+                match.minor = [programInfo];
+            } else if (programInfo.plan_type === "Specialization") {
+                match.specialization = [programInfo];
+            }
+        }
         parsed_requirements.push(new CourseRequirement(requirement));
     }
     return parsed_requirements;
 }
 
-function getCoursesTable() {
+function getCoursesTable(state) {
     var course_table = [];
     for (let i = 0; i < state.table.length; i++) {
         let t = [];
@@ -337,7 +355,7 @@ function getCoursesTable() {
             } else {
                 courses.push(state.table[i].courses[j].selected_course.course_code);
             }
-            t.push(courses)
+            t.push(courses);
         }
         course_table.push(t);
     }
@@ -346,7 +364,7 @@ function getCoursesTable() {
 
 const actions = {
     async export({ state }, options) {
-        let course_table = getCoursesTable();
+        let course_table = getCoursesTable(state);
         if (options.PDF) {
             axios.get(backend_api + "/api/requirements/export", {
                 params: {
@@ -399,46 +417,71 @@ const actions = {
                 }
             });
 
-            if (table1needed) {
-                let list1_courses = response.data.table1.filter( course => {return course.list_number == 1}).map(course => { return course.course_code }).join(",")
-                let list2_courses = response.data.table1.filter( course => {return course.list_number == 2}).map(course => { return course.course_code }).join(",")
-                let list1 = { 
-                    course_codes: list1_courses,
-                    number_of_courses: 1,
-                }
-                let list2 = {
-                    course_codes: list2_courses,
-                    number_of_courses: 1,
-                }
-                newMajorRequirements.push(list1)
-                newMajorRequirements.push(list2)
-            }
-
-            if (table2needed) {
-                newMajorRequirements = newMajorRequirements.concat(response.data.table2)
-            }
-
-
             var selectedCourses = new TrieSearch([['selected_course', 'course_code'], ['selected_course', 'course_number']], {
                 idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
             });
             for (var term of getters.getTable) {
                 selectedCourses.addAll(term.courses)
             }
+
+            if (table2needed) {
+                newMajorRequirements = newMajorRequirements.concat(response.data.table2)
+            }
+
             if (response.data.requirements) {
-                commit('setChecklistMajorRequirements', ParseRequirementsForChecklist(newMajorRequirements, selectedCourses));
+                var parsedMajorRequirements = ParseRequirementsForChecklist(newMajorRequirements, selectedCourses, getters.majorRequirements[0].info);
+                if (table1needed) {
+                    let list1_courses = response.data.table1.filter( course => {return course.list_number == 1}).map(course => { return course.course_code }).join(",")
+                    let list2_courses = response.data.table1.filter( course => {return course.list_number == 2}).map(course => { return course.course_code }).join(",")
+
+                    var list1 = {
+                        course_codes: list1_courses,
+                        number_of_courses: 1,
+                        credits_required: 0.5,
+                        credits_of_prereqs_met: 0,
+                    }
+                    var list2 = {
+                        course_codes: list2_courses,
+                        number_of_courses: 1,
+                        credits_required: 0.5,
+                        credits_of_prereqs_met: 0,
+                    }
+
+                    var list1_courses_split = list1_courses.split(/,|\sor\s/);
+                    for (let course of list1_courses_split) {
+                        let possibleMatches = selectedCourses.get(course)
+                        if (possibleMatches.length > 0) {
+                            list1.credits_of_prereqs_met = 0.5;
+                            list1.prereqs_met = true;
+                            break;
+                        }
+                    }
+
+                    var list2_courses_split = list2_courses.split(/,|\sor\s/);
+                    for (let course of list2_courses_split) {
+                        let possibleMatches = selectedCourses.get(course)
+                        if (possibleMatches.length > 0) {
+                            list2.credits_of_prereqs_met = 0.5;
+                            list2.prereqs_met = true;
+                            break;
+                        }
+                    }
+                    parsedMajorRequirements.push(new CourseRequirement(list1));
+                    parsedMajorRequirements.push(new CourseRequirement(list2));
+                }
+                commit('setChecklistMajorRequirements', parsedMajorRequirements);
             }
             else {
                 commit('setChecklistMajorRequirements', []);
             }
             if (response.data.minor_requirements) {
-                commit('setChecklistMinorRequirements', ParseRequirementsForChecklist(response.data.minor_requirements, selectedCourses));
+                commit('setChecklistMinorRequirements', ParseRequirementsForChecklist(response.data.minor_requirements, selectedCourses, getters.minorRequirements[0].info));
             }
             else {
                 commit('setChecklistMinorRequirements', []); 
             }
             if (response.data.option_requirements) {
-                commit('setChecklistOptionRequirements', ParseRequirementsForChecklist(response.data.option_requirements, selectedCourses));
+                commit('setChecklistOptionRequirements', ParseRequirementsForChecklist(response.data.option_requirements, selectedCourses, getters.specRequirements[0].info));
             }
             else {
                 commit('setChecklistOptionRequirements', []);
@@ -513,6 +556,9 @@ const mutations = {
                         })
                         .then(response => {
                             requirement.prereqs_met = response.data.can_take;
+                            if (!requirement.prereqs_met){
+                                requirement.validation_message = response.data.msg
+                            }
                         })
                         .catch(err => {
                             // eslint-disable-next-line no-console

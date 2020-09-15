@@ -110,6 +110,7 @@ export default {
 }
 
 .main-panel {
+    margin-left: -0.16em;
     padding: 0;
     height: 100%;
 }

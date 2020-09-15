@@ -2,7 +2,7 @@
     <div class="custom-grey">
         <v-app-bar color="#4A75AD">
             <v-toolbar-title class="program-titles">
-                UWPath
+            <span class="link" @click="goToHome()"> UWPath</span>
             </v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn text color="white" v-on:click="onPlanCoursesPressed"> Plan Your Courses </v-btn>
@@ -99,6 +99,9 @@ export default {
                     this.snackbar = true
                 })
             }
+        },
+        goToHome(){
+            this.$router.push("/")
         }
     }
 }
@@ -155,6 +158,10 @@ export default {
 
 .custom-grey{
     background-color: #efefef;
+}
+
+.link{
+    cursor: pointer
 }
 
 </style>
