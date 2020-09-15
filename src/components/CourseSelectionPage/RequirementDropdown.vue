@@ -3,23 +3,28 @@
 		<div v-for="(program, index) in programArray" :key="index">
 			<div v-if="program.info.plan_type === 'Major'" class="title">
 				Major Requirement
-				<v-icon small @click="showHidden(program)" class="refresh-icon">mdi-refresh</v-icon>
+				<v-spacer></v-spacer>
+				<v-icon @click="showHidden(program)" class="refresh-icon" medium>mdi-refresh</v-icon>
 			</div>
 			<div v-else-if="program.info.plan_type === 'Minor'" class="title">
 				Minor Requirement
-				<v-icon small @click="showHidden(program)" class="refresh-icon">mdi-refresh</v-icon>
+				<v-spacer></v-spacer>
+				<v-icon @click="showHidden(program)" class="refresh-icon" medium>mdi-refresh</v-icon>
 			</div>
 			<div v-else-if="program.info.plan_type === 'Specialization'" class="title">
 				Spec. Requirement
-				<v-icon small @click="showHidden(program)" class="refresh-icon">mdi-refresh</v-icon>
+				<v-spacer></v-spacer>
+				<v-icon @click="showHidden(program)" class="refresh-icon" medium>mdi-refresh</v-icon>
 			</div>
 			<div v-else-if="program.info.plan_type === 'Option'" class="title">
 				Option Requirement
-				<v-icon small @click="showHidden(program)" class="refresh-icon">mdi-refresh</v-icon>
+				<v-spacer></v-spacer>
+				<v-icon @click="showHidden(program)" class="refresh-icon" medium>mdi-refresh</v-icon>
 			</div>
 			<div v-else class="title">
 				Joint Requirement
-				<v-icon small @click="showHidden(program)" class="refresh-icon">mdi-refresh</v-icon>
+				<v-spacer></v-spacer>
+				<v-icon @click="showHidden(program)" class="refresh-icon" medium>mdi-refresh</v-icon>
 			</div>
 			<v-expansion-panels multiple>
 				<template v-for="(section, index) of program.sections()">
@@ -195,14 +200,15 @@ export default {
 	text-align: left;
 	padding: 1em;
 	padding-top: 0.5em;
-	font-size: 0.85rem !important;
+	padding-bottom: 0.5em;
+	font-size: 1.25em !important;
 	font-weight: 400;
-	background-color: #4a75ad59; /*#ffea3df0;*/
+	background-color: #4a75ad59; 
 	margin-top: 0;
 	margin-bottom: 0.5em;
 	font-weight: 500;
-	height: 2em;
 	font-family: 'Montserrat' !important;
+	display: flex;
 }
 
 

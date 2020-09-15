@@ -144,6 +144,7 @@ export default {
   .term-column {
     background-color: white;
     border: transparent;
+    padding-top: 0;
   }
 
   .main-drag {
@@ -156,7 +157,7 @@ export default {
     align-items: center;
     text-align: left;
     justify-content: space-between;
-    margin-top: -0.5em;
+    padding-top: 0.5em;
   }
 
   .add-term-btn {
@@ -181,7 +182,6 @@ export default {
   }
   
   .default-font {
-    font-size: 1em;
-    
+    font-size: 1.25em !important; 
   }
 </style>

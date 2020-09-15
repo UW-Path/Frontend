@@ -209,6 +209,7 @@ export default {
 }
 
 .alert-icon{
+  display: absolute;
   color:#FFCC00;
   left: 44%;
   bottom: 23%;
