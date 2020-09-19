@@ -30,6 +30,8 @@ export class CourseRequirement {
     constructor(data) {
         this.number_of_courses = data && data.number_of_courses? data.number_of_courses : 0;
         this.course_choices = data && data.course_choices ? data.course_choices : [];
+        // if part of SCIENCE, ARTS, MATH ...
+        this.group = data && data.group ? data.group: "";
         for (var i in this.course_choices) {
             // eslint-disable-next-line valid-typeof
             if (typeof this.course_choices[i] !== "CourseInfo") {

@@ -34,6 +34,7 @@ export default new Vuex.Store({
                 try {
                     if (typeof value !== "undefined") {
                         let obj = JSON.parse(value);
+                        debugger
                         for (var i in obj["courseSelection"]["table"]) {
                             for (var j in obj["courseSelection"]["table"][i]["courses"]) {
                                 let loadedCourseRequirement = new CourseRequirement(obj["courseSelection"]["table"][i]["courses"][j])
@@ -62,6 +63,7 @@ export default new Vuex.Store({
                 return undefined;
             },
             setState: (key, state) => {
+                debugger
                 return window.localStorage.setItem(key, JSON.stringify(state));
             },
         })
