@@ -66,15 +66,21 @@
             {{ courseData.selected_course.course_code }}
           </v-list-item-title>
           <v-list-item-subtitle class="course-desc">{{ courseData.selected_course.course_name | truncate(30, '...')  }}</v-list-item-subtitle>
-           <v-tooltip bottom open-delay="300" max-width="350px" v-if="this.courseData.major.length > 0">
-                <template v-slot:activator="{ on, attrs }">
-                  <v-icon v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met || courseData.inRequirementBar || courseData.overridden, course_card_prereqs_failed: !courseData.prereqs_met && !courseData.inRequirementBar && !courseData.overridden}" small class="alert-icon" v-bind="attrs" v-on="on">mdi-alert</v-icon>
-                </template>
-                <span>{{courseData.validation_message}}</span>
-            </v-tooltip>
         </v-list-item-content>
       </v-list-item>
-      
+
+      <v-tooltip bottom open-delay="300" max-width="350px" v-if="this.courseData.major.length> 0">
+        <template v-slot:activator="{ on, attrs }">
+          <v-icon v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met || courseData.inRequirementBar || courseData.overridden, course_card_prereqs_failed: !courseData.prereqs_met && !courseData.inRequirementBar && !courseData.overridden}" 
+                  small 
+                  class="alert-icon" 
+                  v-bind="attrs" 
+                  v-on="on">
+                  mdi-alert
+          </v-icon>
+        </template>
+        <span>Requirement for this course is not met</span>
+      </v-tooltip>
     </template>
     <template v-else>
       <v-list-item>
@@ -141,7 +147,7 @@ export default {
 };
 </script>
 
-<style  scoped>
+<style scoped>
 .chip {
   margin-right: 0.2em;
   padding-left: 0.3rem;
@@ -209,10 +215,10 @@ export default {
 }
 
 .alert-icon{
-  display: absolute;
+  position: absolute !important;
   color:#FFCC00;
-  left: 44%;
-  bottom: 23%;
+  bottom: 0.3em;
+  right: 0.7em;
 }
 
 .course-desc{
