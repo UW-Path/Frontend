@@ -4,27 +4,62 @@
 			<div v-if="program.info.plan_type === 'Major'" class="title">
 				Major Requirement
 				<v-spacer></v-spacer>
-				<v-icon @click="showHidden(program)" class="refresh-icon" medium>mdi-refresh</v-icon>
+				<v-tooltip left open-delay="300" max-width="250px">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn icon  v-bind="attrs" v-on="on" @click="showHidden(program)">
+						<v-icon medium>mdi-refresh</v-icon>
+					</v-btn>
+                  </template>
+                  <span>Repopulate courses deleted from requirement</span>
+              </v-tooltip>
 			</div>
 			<div v-else-if="program.info.plan_type === 'Minor'" class="title">
 				Minor Requirement
 				<v-spacer></v-spacer>
-				<v-icon @click="showHidden(program)" class="refresh-icon" medium>mdi-refresh</v-icon>
+				<v-tooltip left open-delay="300" max-width="250px">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn icon  v-bind="attrs" v-on="on" @click="showHidden(program)">
+						<v-icon medium>mdi-refresh</v-icon>
+					</v-btn>
+                  </template>
+                  <span>Repopulate courses deleted from requirement</span>
+              </v-tooltip>
 			</div>
 			<div v-else-if="program.info.plan_type === 'Specialization'" class="title">
-				Spec. Requirement
+				Specialization Requirement
 				<v-spacer></v-spacer>
-				<v-icon @click="showHidden(program)" class="refresh-icon" medium>mdi-refresh</v-icon>
+				<v-tooltip left open-delay="300" max-width="250px">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn icon  v-bind="attrs" v-on="on" @click="showHidden(program)">
+						<v-icon medium>mdi-refresh</v-icon>
+					</v-btn>
+                  </template>
+                  <span>Repopulate courses deleted from requirement</span>
+              </v-tooltip>
 			</div>
 			<div v-else-if="program.info.plan_type === 'Option'" class="title">
 				Option Requirement
 				<v-spacer></v-spacer>
-				<v-icon @click="showHidden(program)" class="refresh-icon" medium>mdi-refresh</v-icon>
+				<v-tooltip left open-delay="300" max-width="250px">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn icon  v-bind="attrs" v-on="on" @click="showHidden(program)">
+						<v-icon medium>mdi-refresh</v-icon>
+					</v-btn>
+                  </template>
+                  <span>Repopulate courses deleted from requirement</span>
+              </v-tooltip>
 			</div>
 			<div v-else class="title">
 				Joint Requirement
 				<v-spacer></v-spacer>
-				<v-icon @click="showHidden(program)" class="refresh-icon" medium>mdi-refresh</v-icon>
+				<v-tooltip left open-delay="300" max-width="250px">
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn icon  v-bind="attrs" v-on="on" @click="showHidden(program)">
+						<v-icon medium>mdi-refresh</v-icon>
+					</v-btn>
+                  </template>
+                  <span>Repopulate courses deleted from requirement</span>
+              </v-tooltip>
 			</div>
 			<v-expansion-panels multiple>
 				<template v-for="(section, index) of program.sections()">
@@ -201,12 +236,11 @@ export default {
 	padding: 1em;
 	padding-top: 0.5em;
 	padding-bottom: 0.5em;
-	font-size: 1.25em !important;
+	font-size: 0.95em !important;
 	font-weight: 400;
 	background-color: #4a75ad59; 
 	margin-top: 0;
 	margin-bottom: 0.5em;
-	font-weight: 500;
 	font-family: 'Montserrat' !important;
 	display: flex;
 }
@@ -214,7 +248,7 @@ export default {
 
 .refresh-icon{
 	margin-left: 0.2em;
-    margin-top: -.1em;
+    margin-top: 0.1em;
 }
 
 </style>

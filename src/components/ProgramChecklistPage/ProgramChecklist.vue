@@ -1,15 +1,15 @@
 <template>
     <div class="program-checklist">
         <div class="checklist-section">
-            <div v-if="checklistMajorRequirements.length > 0">
+            <div v-if="checklistMajorRequirements.length > 0" class="margin-table">
                 <p class="checklist-title">Major Requirements</p>
                 <ProgramChecklistSection v-bind:requirements="checklistMajorRequirements"/>
             </div>
-            <div v-if="checklistMinorRequirements.length > 0">
+            <div v-if="checklistMinorRequirements.length > 0" class="margin-table">
                 <p class="checklist-title">Minor Requirements</p>
                 <ProgramChecklistSection v-bind:requirements="checklistMinorRequirements"/>
             </div>
-            <div v-if="checklistOptionRequirements.length > 0">
+            <div v-if="checklistOptionRequirements.length > 0" class="margin-table">
                 <p class="checklist-title">Option Requirements</p>
                 <ProgramChecklistSection v-bind:requirements="checklistOptionRequirements"/>
             </div>
@@ -55,5 +55,10 @@ export default {
     height: 100%;
     max-height: 99.1%;
     overflow-y: auto;
+}
+
+.margin-table{
+    margin-bottom: 1.5em;
+    text-align: start;
 }
 </style>
