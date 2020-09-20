@@ -1,6 +1,5 @@
 <template>
     <v-app-bar flat color="rgba(0,0,0,0.0)" class="margin">
-        <!-- <v-icon class="logo">mdi-home</v-icon> -->
         <router-link to="/">
             <svg class="logo" width="40" height="55" viewBox="0 0 61 70" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             
@@ -84,7 +83,7 @@ a:hover {
 }
 
 .margin{
-    margin-left:0.4em
+    margin-left:0.5em
 }
 
 

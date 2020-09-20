@@ -8,15 +8,15 @@
             dark
             class="primary-tabs">
             <v-tab class="tab-icon">
-                <v-icon left x-large >mdi-calendar-range-outline</v-icon>
+                <v-icon x-large >mdi-calendar-range-outline</v-icon>
             </v-tab>
             <v-tab class="tab-icon">
-                <v-icon left x-large >mdi-check-box-outline</v-icon>
+                <v-icon  x-large >mdi-check-box-outline</v-icon>
             </v-tab>
-            <v-tab class="tab-icon">
-                <v-icon left x-large >mdi-download-outline</v-icon>
-            </v-tab>
-
+            <v-btn  class="tab-icon download-button" @click="exportXLS()">
+                <v-icon x-large >mdi-download-outline</v-icon>
+            </v-btn> 
+            
             <v-tab-item class="primary-tab transparent">
                     <v-row class="main-row">
                         <v-col class="side-bar" lg="2" md="3" sm="3">
@@ -36,40 +36,39 @@
                     </v-row>
                 </div>
             </v-tab-item>
-            <v-tab-item class="primary-tab custom-grey">
-                <div class="default-font primary-tab">
-                    <v-row class="main-row">
-                        <v-col class="main-panel top-margin">
-                            <export/>
-                        </v-col>
-                    </v-row>
-                </div>
-            </v-tab-item>
         </v-tabs>
     </v-container>
 </template>
 
 <script>
 import CoursePlan from '../components/CourseSelectionPage/CoursePlan.vue'
-import Export from '../components/ExportPage/Export.vue'
 import ProgramSelectionBar from '../components/CourseSelectionPage/ProgramSelectionBar.vue'
 import ProgramChecklist from '../components/ProgramChecklistPage/ProgramChecklist.vue'
 import SideBar from '../components/CourseSelectionPage/SideBar.vue'
-
-
-
+import { mapActions } from "vuex";
 
 export default {
     name: "CourseSelection",
     components: {
         CoursePlan,
-        Export,
         ProgramSelectionBar,
         SideBar,
         ProgramChecklist,
     },
     data: () => ({
     }),
+    methods: {
+        ...mapActions(["export"]),
+        exportPDF() {
+            this.export({ PDF: true, XLS: false })
+        },
+        exportXLS() {
+            this.export({ PDF: false, XLS: true })
+        },
+        changeTab(event) {
+            console.log(event)
+        }
+    }
 }
 </script>
 
@@ -92,7 +91,18 @@ export default {
 }
 
 .tab-icon {
-    margin-bottom: 1.5rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.download-button {
+    background-color: transparent !important; 
+    box-shadow: none !important;
+    height: 48px !important;
+    opacity: 0.6;
+}
+
+.download-button:hover {
+    opacity: 1;
 }
 
 .primary-tab {
@@ -119,6 +129,7 @@ export default {
     padding: 0px;
     min-height: 100%;
     min-width: 100%;
+    background: linear-gradient(22deg, rgba(51,64,78,1) 0%, rgba(43,67,93,1) 35%, rgba(129,152,171,1) 100%);
 }
 
 
