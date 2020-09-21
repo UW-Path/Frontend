@@ -5,14 +5,15 @@
                 UWPath
             </v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn text color="white" v-on:click="onPlanCoursesPressed"> Plan Your Courses </v-btn>
+            <v-btn text color="white" v-on:click="goToAboutUsPage"> About Us </v-btn>
+            <v-btn text color="white" v-on:click="goToCourseSelectionPage"> Plan Your Courses </v-btn>
         </v-app-bar>
         <div class="contact-page-title">
             <h2 class="header">Help us Improve our Site!</h2>
         </div>
         <div class="contact-page-container">
             <div class="contact-page-info">
-                <p>We strive to provide our users with as accurate of an experience as we can. However, with the thousands of courses that Waterloo offers, we acknowledge that sometimes we will get it wrong.</p>
+                <p>We strive to provide our users with as accurate of an experience as we can. However, with the thousands of courses  the University of Waterloo offers, we acknowledge that sometimes we will get it wrong.</p>
                 <p>That's why your feedback is critical to us.</p>
                 <p>If you see any course or degree information that looks incorrect, report it to us below and we will fix it right away.</p>
                 <p>Check out our <b><a href="https://github.com/UW-Path">Github</a></b>!</p>
@@ -78,8 +79,11 @@ export default {
     },
     methods: {
         ...mapActions(["sendEmail"]),
-        onPlanCoursesPressed() {
+        goToCourseSelectionPage() {
             this.$router.push('/CourseSelection')
+        },
+        goToAboutUsPage() {
+            this.$router.push('/About')
         },
         submitMessage() {
             if(this.$refs.form.validate()){

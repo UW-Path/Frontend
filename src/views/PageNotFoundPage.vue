@@ -4,7 +4,7 @@
             ERROR: 404
         </div>
         <div class="text-h7">
-            The page that you are looking for does not exist. Clicking the following link to go back to the main page
+            The page that you are looking for does not exist. Clicking the following <a href='/'>link</a> to go back to the main page
         </div>
     </v-container>
 </template>

@@ -3,7 +3,7 @@
       <div id="nav">
         <router-link to="/">Home</router-link> |
         <router-link to="/CourseSelection">Course Selection</router-link> |
-        <router-link to="/AboutUs">About Us</router-link>
+        <router-link to="/About">About Us</router-link>
       </div>
       <router-view/>
     </v-app>

@@ -4,6 +4,7 @@ import LandingPage from '../views/LandingPage.vue'
 import CourseSelection from '../views/CourseSelectionPage.vue'
 import PageNotFoundPage from '../views/PageNotFoundPage.vue'
 import ContactPage from '../views/ContactPage.vue'
+import AboutPage from '../views/AboutPage.vue'
 
 Vue.use(VueRouter)
 
@@ -22,6 +23,10 @@ Vue.use(VueRouter)
     path: '/Contact',
     name: 'ContactPage',
     component: ContactPage
+  },{
+    path: '/About',
+    name: 'About',
+    component: AboutPage
   },
   {
     path: '*',
