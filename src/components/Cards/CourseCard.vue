@@ -62,19 +62,25 @@
             <v-spacer></v-spacer>
             <v-btn icon class="delete-btn" @click="deleteCourse()" />
           </div>
-          <v-list-item-title style="font-size:1.2em; margin-top:0.1em">
+          <v-list-item-title class="course-title">
             {{ courseData.selected_course.course_code }}
           </v-list-item-title>
-          <v-list-item-subtitle class="course-desc">{{ courseData.selected_course.course_name }}</v-list-item-subtitle>
-           <v-tooltip bottom open-delay="300" max-width="350px" v-if="this.courseData.major.length > 0">
-                <template v-slot:activator="{ on, attrs }">
-                  <v-icon v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met || courseData.inRequirementBar || courseData.overridden, course_card_prereqs_failed: !courseData.prereqs_met && !courseData.inRequirementBar && !courseData.overridden}" small class="alert-icon" v-bind="attrs" v-on="on">mdi-alert</v-icon>
-                </template>
-                <span>{{courseData.validation_message}}</span>
-            </v-tooltip>
+          <v-list-item-subtitle class="course-desc">{{ courseData.selected_course.course_name | truncate(30, '...')  }}</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
-      
+
+      <v-tooltip bottom open-delay="300" max-width="350px" v-if="this.courseData.major.length> 0">
+        <template v-slot:activator="{ on, attrs }">
+          <v-icon v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met || courseData.inRequirementBar || courseData.overridden, course_card_prereqs_failed: !courseData.prereqs_met && !courseData.inRequirementBar && !courseData.overridden}" 
+                  small 
+                  class="alert-icon" 
+                  v-bind="attrs" 
+                  v-on="on">
+                  mdi-alert
+          </v-icon>
+        </template>
+        <span>Requirement for this course is not met</span>
+      </v-tooltip>
     </template>
     <template v-else>
       <v-list-item>
@@ -141,7 +147,7 @@ export default {
 };
 </script>
 
-<style  scoped>
+<style scoped>
 .chip {
   margin-right: 0.2em;
   padding-left: 0.3rem;
@@ -185,14 +191,13 @@ export default {
   visibility: visible;
 }
 
-
-
-.course-card-font{
-  font-size:5.5 rem !important;
+.course-card{
+  height: 5.2em;
 }
 
-.course-card{
-  height: 6em;
+.course-title{
+  font-size:1em;
+  margin-top:0.1em;
 }
 
 .v-list-item__content {
@@ -205,17 +210,19 @@ export default {
 
 
 .select-font{
-  font-size: 1em;
+  margin-top: 0.1em;
+  font-size: 0.8em;
 }
 
 .alert-icon{
+  position: absolute !important;
   color:#FFCC00;
-  left: 44%;
-  bottom: 23%;
+  bottom: 0.3em;
+  right: 0.7em;
 }
 
 .course-desc{
-  font-size: 0.9em; 
+  font-size: 0.8em; 
   margin-bottom: 1em;
   margin-right: 0.8em;
 }

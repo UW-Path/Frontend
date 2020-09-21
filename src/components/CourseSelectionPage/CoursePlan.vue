@@ -1,11 +1,10 @@
 <template>
   <div class="course-plan-container">
-    <v-row class="main-course-selection-panel">
-      <draggable class= "main-drag" :list="getTable" group="term">
-
+    <v-row class="main-course-selection-panel main-drag">
+      <div class= "main-drag">
       <template v-for="(term, termIndex) in getTable">  
         <v-card class="col-sm-3 col-md-2 term-column" :key="termIndex" @mouseenter="termMouseOver(termIndex)" @mouseleave="termMouseExit()">
-        <div class="default-font term-title"><b>{{ getTermList[termIndex] }}</b>
+        <div class="default-font term-title">{{ getTermList[termIndex] }}
           <v-btn icon class="delete-btn" x-small @click="deleteTerm(term)">
             <v-icon medium class="delete-term-btn" v-if="termHovered == termIndex">mdi-trash-can</v-icon>
           </v-btn>
@@ -30,10 +29,9 @@
           </div>
           <v-icon medium >mdi-plus-circle</v-icon>
         </v-card>
-      </draggable>
+      </div>
     </v-row>    
   </div>
-
 </template>
 <script>
 import draggable from 'vuedraggable'
@@ -125,20 +123,14 @@ export default {
 
 
 <style scoped>
-  .problem-message {
-    display: inline-block;
-    bottom: 0px;
-    right: 0px;
-  }
-
   .main-course-selection-panel {
     overflow-x: auto;
-    overflow-y:visible;
-    min-height: 100%;
+    overflow-y: auto;
+    width: 100%;
   }
 
-
   .course-plan-container{
+    margin-left: 1em;
     display: flex;
     flex-flow: column;
     height: 100%;
@@ -150,7 +142,9 @@ export default {
   }
 
   .term-column {
-    background-color: whitesmoke;
+    background-color: white;
+    border: transparent;
+    padding-top: 0;
   }
 
   .main-drag {
@@ -163,7 +157,7 @@ export default {
     align-items: center;
     text-align: left;
     justify-content: space-between;
-    margin-top: -0.5em;
+    padding-top: 0.5em;
   }
 
   .add-term-btn {
@@ -188,9 +182,6 @@ export default {
   }
   
   .default-font {
-    font-size: 1em;
-    
+    font-size: 1.25em !important; 
   }
-
-
 </style>

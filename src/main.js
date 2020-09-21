@@ -8,6 +8,17 @@ import 'aos/dist/aos.css'
 
 Vue.config.productionTip = false
 
+// Following code allow sentence to be truncated
+var filter = function(text, length, clamp){
+  clamp = clamp || '...';
+  var node = document.createElement('div');
+  node.innerHTML = text;
+  var content = node.textContent;
+  return content.length > length ? content.slice(0, length) + clamp : content;
+};
+
+Vue.filter('truncate', filter);
+
 new Vue({
   created(){
     AOS.init();

@@ -1,122 +1,169 @@
 <template>
-    <v-container class="course-selection-container my-1">
-        <v-row >
-            <program-selection-bar/>
-        </v-row>
-        <v-row class="main-row">
-            <tabs class="primary-tabs default-font">
-                <tab class="primary-tab default-font" title="Course Plan">
-                    <v-container class="course-selection-container">
-                        <v-row class="main-row">
-                            <v-col class="side-bar" lg="2" md="3" sm="3">
-                                <side-bar/>
-                            </v-col>
-                            <v-col class="main-panel" lg="10" md="9" sm="9">
-                                <course-plan/>
-                            </v-col>
-                        </v-row>
-                    </v-container>
-                </tab>
-                <tab class="primary-tab default-font" title="Program Checklist">
-                    <v-container class="course-selection-container">
-                        <v-row class="main-row">
-                            <v-col class="main-panel">
-                                <program-checklist/>
-                            </v-col>
-                        </v-row>
-                    </v-container>
-                </tab>
-                <tab class="primary-tab default-font" title="Export Table">
-                    <v-container class="course-selection-container">
-                        <v-row class="main-row">
-                            <v-col class="main-panel">
-                                <export/>
-                            </v-col>
-                        </v-row>
-                    </v-container>
-                </tab>
-            </tabs>
-        </v-row>
+    <v-container class="course-selection-container">
+        <program-selection-bar class="program-selection-bar"/>
+        <v-tabs  
+            background-color="transparent" 
+            hide-slider
+            vertical
+            dark
+            class="primary-tabs">
+            <v-tab class="tab-icon">
+                <v-icon x-large >mdi-calendar-range-outline</v-icon>
+            </v-tab>
+            <v-tab class="tab-icon">
+                <v-icon  x-large >mdi-check-box-outline</v-icon>
+            </v-tab>
+            <v-btn  class="tab-icon download-button" @click="exportXLS()">
+                <v-icon x-large >mdi-download-outline</v-icon>
+            </v-btn> 
+            
+            <v-tab-item class="primary-tab transparent">
+                    <v-row class="main-row">
+                        <v-col class="side-bar" lg="2" md="3" sm="3">
+                            <side-bar/>
+                        </v-col>
+                        <v-col class="main-panel" lg="10" md="9" sm="9">
+                            <course-plan/>
+                        </v-col>
+                    </v-row>
+            </v-tab-item>
+            <v-tab-item class="primary-tab ">
+                <div class="default-font primary-tab custom-grey">
+                    <v-row class="main-row ">
+                        <v-col class="main-panel">
+                            <program-checklist/>
+                        </v-col>
+                    </v-row>
+                </div>
+            </v-tab-item>
+        </v-tabs>
     </v-container>
 </template>
 
 <script>
 import CoursePlan from '../components/CourseSelectionPage/CoursePlan.vue'
-import Export from '../components/ExportPage/Export.vue'
 import ProgramSelectionBar from '../components/CourseSelectionPage/ProgramSelectionBar.vue'
 import ProgramChecklist from '../components/ProgramChecklistPage/ProgramChecklist.vue'
 import SideBar from '../components/CourseSelectionPage/SideBar.vue'
-
-import { Tabs, Tab } from 'vue-slim-tabs'
+import { mapActions } from "vuex";
 
 export default {
     name: "CourseSelection",
     components: {
         CoursePlan,
-        Export,
         ProgramSelectionBar,
         SideBar,
         ProgramChecklist,
-        Tabs,
-        Tab
     },
     data: () => ({
-        tab: "plan"
     }),
+    methods: {
+        ...mapActions(["export"]),
+        exportPDF() {
+            this.export({ PDF: true, XLS: false })
+        },
+        exportXLS() {
+            this.export({ PDF: false, XLS: true })
+        },
+        changeTab(event) {
+            console.log(event)
+        }
+    }
 }
 </script>
 
 <style src="vue-slim-tabs/themes/default.css"></style>
 <style scoped>
 
+.primary-tabs-container {
+    min-height: calc(100vh - 64px);
+}
+
+.program-selection-bar {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
 .primary-tabs {
-    margin-top: 0.5em;
-    width: 100%;
-    height: 100%;
     font-size: 0.9em !important;
+    height: calc(100vh - 2rem - 64px - 10px);
+    padding-right: 10px;
+}
+
+.tab-icon {
+    margin-bottom: 1rem !important;
+}
+
+.download-button {
+    background-color: transparent !important; 
+    box-shadow: none !important;
+    height: 48px !important;
+    opacity: 0.6;
+}
+
+.download-button:hover {
+    opacity: 1;
 }
 
 .primary-tab {
-    height: 87vh;
+    height: 100%;
 }
 
-.main-row {
-    margin-top: 0.3rem;
-    height: 90%
+.top-margin{
+    margin-top:1em
+}
+
+.main-row {   
+    margin: 0;
+    width: 100% ; 
+    height: 100% ;
 }
 
 .main-panel {
+    margin-left: -0.16em;
+    padding: 0;
     height: 100%;
 }
 
 .course-selection-container {
     padding: 0px;
-    height: 100%;
+    min-height: 100%;
+    min-width: 100%;
+    background: linear-gradient(22deg, rgba(51,64,78,1) 0%, rgba(43,67,93,1) 35%, rgba(129,152,171,1) 100%);
 }
 
+
 .checklist-side-bar{
-    display:flex;
     height: 100%;
     overflow-y: auto;
     background-color: #EEEEEE;
+    padding-bottom: 0;
 }
 
 .side-bar {
-    display:flex;
-    height: 100%;
+    display: flex;
+    max-height: 100%;
     overflow-y: auto;
-}
-
-
-@media only screen and (max-width: 3000px) {
-  .course-selection-container {
-    min-width: 95%;
-  }
+    padding: 0;
 }
 
 .default-font{
     font-size: .9em !important;
 }
 
+.custom-grey{
+    background:#efefef;
+}
 
+</style>
+
+<style>
+/* overwriting vueify classes  */
+.v-window__container {
+    height: 100% !important;
+}
+
+.v-tabs-items {
+    background:transparent !important;
+}
 </style>

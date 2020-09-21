@@ -228,6 +228,7 @@ export default {
 .modal-course:hover {
     cursor: pointer;
     font-weight: 550;
+    color: rgb(51, 153, 255) !important;
 }
 
 .course-title {

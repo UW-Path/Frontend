@@ -1,10 +1,5 @@
 <template>
     <v-app id="app" style="overflow-y: hidden;">
-      <div id="nav">
-        <router-link to="/">Home</router-link> |
-        <router-link to="/CourseSelection">Course Selection</router-link> |
-        <router-link to="/AboutUs">About Us</router-link>
-      </div>
       <router-view/>
     </v-app>
 </template>
@@ -28,29 +23,14 @@ export default {
 </script>
 
 <style lang="scss">
+@import 'style.css';
 #app {
-  font-family: Avenir, Helvetica , Arial, sans-serif;
+  font-family: Montserrat;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
   height: 100%;
-}
-
-#nav {
-  font-size: .9em;
-  position: fixed;
-  bottom: 1%;
-  right: 3%;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
 }
 
 body {
@@ -70,5 +50,9 @@ body {
 
 ::-webkit-scrollbar-thumb {
   background-color: #FFD646;
+}
+
+.v-application {
+  font-family: 'Montserrat' !important;
 }
 </style>
