@@ -2,7 +2,7 @@
 	<div>
 		<div v-for="(program, index) in programArray" :key="index">
 			<div v-if="program.info.plan_type === 'Major'" class="title">
-				Major Requirement
+				Major<br>Requirement
 				<v-spacer></v-spacer>
 				<v-tooltip left open-delay="300" max-width="250px">
                   <template v-slot:activator="{ on, attrs }">
@@ -14,7 +14,7 @@
               </v-tooltip>
 			</div>
 			<div v-else-if="program.info.plan_type === 'Minor'" class="title">
-				Minor Requirement
+				Minor<br>Requirement
 				<v-spacer></v-spacer>
 				<v-tooltip left open-delay="300" max-width="250px">
                   <template v-slot:activator="{ on, attrs }">
@@ -26,7 +26,7 @@
               </v-tooltip>
 			</div>
 			<div v-else-if="program.info.plan_type === 'Specialization'" class="title">
-				Specialization Requirement
+				Specialization<br>Requirement
 				<v-spacer></v-spacer>
 				<v-tooltip left open-delay="300" max-width="250px">
                   <template v-slot:activator="{ on, attrs }">
@@ -38,7 +38,7 @@
               </v-tooltip>
 			</div>
 			<div v-else-if="program.info.plan_type === 'Option'" class="title">
-				Option Requirement
+				Option<br>Requirement
 				<v-spacer></v-spacer>
 				<v-tooltip left open-delay="300" max-width="250px">
                   <template v-slot:activator="{ on, attrs }">
@@ -50,7 +50,7 @@
               </v-tooltip>
 			</div>
 			<div v-else class="title">
-				Joint Requirement
+				Joint<br>Requirement
 				<v-spacer></v-spacer>
 				<v-tooltip left open-delay="300" max-width="250px">
                   <template v-slot:activator="{ on, attrs }">
