@@ -115,7 +115,6 @@
 </template>
 
 <script>
-import { mapMutations } from "vuex";
 export default {
   name: "CourseCard",
   order: 1,
@@ -130,22 +129,11 @@ export default {
     }
   },
   methods: {
-    ...mapMutations([ "removeRequirementFromTable", "addCourseRequirement", "sortRequirements"]),
-    deleteCourse: function() {
+    deleteCourse(){
         this.courseData.clickedDelete = true;
-        if (!this.onSelectionBar) {
-            this.courseData.inRequirementBar = true;
-            this.removeRequirementFromTable(this.courseData);
-            if (this.courseData.major.length || this.courseData.minor.length || this.courseData.specialization.length) {
-                this.addCourseRequirement(this.courseData);
-            }
-            this.sortRequirements();
-        }
-        else {
-            this.courseData.hidden = true;
-        }
+        
     },
-    isSelected: function(courseCode) {
+    isSelected(courseCode) {
         if (!this.courseData.selected_course) return false
         return courseCode == this.courseData.selected_course.course_code;
     }
