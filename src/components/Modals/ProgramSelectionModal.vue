@@ -98,15 +98,15 @@ export default {
     name: "ProgramSelectionModal",
     methods: {
         ...mapActions(["fetchRequirements", "fillOutChecklist"]),
-        ...mapMutations(["clearTable", "clearMinorFromTable", "clearOptionTable", "removeMajor", "removeMinor", "removeOption" ]),
+        ...mapMutations(["clearTable", "clearMinorFromTable", "clearOptionTable", "removeMajor", "removeMinor", "removeOption", "updateCacheTime"]),
         enableDialog: function() {
             this.dialog = true;
             this.inConfirmation = false;
         },
         select: function() { this.inConfirmation = true; },
-        selectMajor: function (major) { this.newMajor = major },
-        selectMinor: function (minor) { this.newMinor = minor },
-        selectSpec: function (spec) { this.newSpec = spec },
+        selectMajor: function (major) { this.newMajor = major; this.updateCacheTime(); },
+        selectMinor: function (minor) { this.newMinor = minor; this.updateCacheTime(); },
+        selectSpec: function (spec) { this.newSpec = spec; this.updateCacheTime(); },
         getMajorList: function() { 
             let majList = this.allMajors.map(e => { return e.program_name })
             return majList
@@ -154,8 +154,8 @@ export default {
             this.newSpec = ""
             this.dialog = false
             this.inConfirmation = false;
-           
-            
+
+            this.updateCacheTime();
         },
         cancelSelection: function() {
             this.inConfirmation = false;
