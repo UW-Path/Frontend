@@ -87,7 +87,8 @@ export default {
     .catch(error => { console.error(error) })
   },
   methods: {
-    ...mapMutations(["addTermToTable", "deleteTermFromTable", "addCourseRequirement", "validateCourses", "decrementRequirementID"]),
+    ...mapMutations(["addTermToTable", "deleteTermFromTable", "addCourseRequirement",
+      "validateCourses", "decrementRequirementID", "updateCacheTime"]),
     ...mapActions(["fillOutChecklist"]),
     termMouseOver(termIndex) {
       this.termHovered = termIndex;
@@ -96,6 +97,7 @@ export default {
       this.termHovered = -1;
     },
     deleteTerm(term) {
+      this.updateCacheTime();
       for (let req of term.courses) {
         if (req.major.length || req.minor.length || req.specialization.length) 
           this.addCourseRequirement(req)
@@ -103,16 +105,17 @@ export default {
       this.deleteTermFromTable(term)
     },
     change(event) {
-        this.validateCourses();
-        this.fillOutChecklist();
-        //we only check add events
-        if (!event.added) return;
-        let changedReq = event.added.element;
-        if (changedReq.number_of_courses > 1 && changedReq.inRequirementBar) {
-          changedReq.number_of_courses = 1;
-          this.decrementRequirementID(changedReq.id)
-        }
-        changedReq.inRequirementBar = false;
+      this.updateCacheTime();
+      this.validateCourses();
+      this.fillOutChecklist();
+      //we only check add events
+      if (!event.added) return;
+      let changedReq = event.added.element;
+      if (changedReq.number_of_courses > 1 && changedReq.inRequirementBar) {
+        changedReq.number_of_courses = 1;
+        this.decrementRequirementID(changedReq.id)
+      }
+      changedReq.inRequirementBar = false;
     }
   },
   computed: {

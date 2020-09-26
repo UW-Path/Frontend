@@ -90,7 +90,7 @@
            onSelectionBar: Boolean
        },
        methods: {
-           ...mapMutations(["validateCourses", "separateRequirement",  "removeRequirementFromTable", "addCourseRequirement", "sortRequirements"]),
+           ...mapMutations(["validateCourses", "separateRequirement",  "removeRequirementFromTable", "addCourseRequirement", "sortRequirements", "updateCacheTime"]),
            ...mapActions(["fillOutChecklist"]),
            enableDialog() {
                if (!this.course.clickedDelete) {
@@ -112,6 +112,7 @@
                }
            },
            selectCourse: function () {
+               this.updateCacheTime();
                this.course.selected_course = this.selectedCourse;
                this.separateRequirement(this.course);
                this.validateCourses();
@@ -119,6 +120,7 @@
                this.dialog = false;
            },
            deselectCourse() {
+               this.updateCacheTime();
                this.course.deselect();
                this.dialog = false;
            },

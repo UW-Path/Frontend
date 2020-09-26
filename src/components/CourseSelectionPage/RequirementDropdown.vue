@@ -118,7 +118,7 @@ export default {
 		programArray: Array
 	},
 	methods: {
-		...mapMutations(["sortRequirements"]),
+		...mapMutations(["sortRequirements", "updateCacheTime"]),
 		//card is not cloned if it only has one list and that
 		pullFunction: function() {
 			return this.lastClickdownReq.number_of_courses === 1 ||
@@ -134,6 +134,7 @@ export default {
 		},
 		//event when card is added
 		change: function(event) {
+			this.updateCacheTime();
 			if (!event.added) return;
 			let changedReq = event.added.element;
 			changedReq.inRequirementBar = true;

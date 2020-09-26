@@ -49,6 +49,7 @@ const state = {
     checklistMajorRequirements: [],
     checklistMinorRequirements: [],
     checklistOptionRequirements: [],
+    cacheTime: 0
 };
 
 const getters = {
@@ -64,7 +65,8 @@ const getters = {
     },
     getCourse: (state) => (termIndex, courseIndex) => {
         return state.table[termIndex].courses[courseIndex]
-    }
+    },
+    cacheTime: (state) => state.cacheTime
 };
 
 function getRequirementFullfillmentSize(requirement) {
@@ -496,6 +498,7 @@ const actions = {
 };
 
 const mutations = {
+    updateCacheTime: (state) => {state.cacheTime = new Date();},
     setChecklistMajorRequirements: (state, checklistMajorRequirements) => {
         state.checklistMajorRequirements = checklistMajorRequirements
     },
@@ -586,12 +589,13 @@ const mutations = {
     },
     clearTable: (state) => {
         state.table = JSON.parse(JSON.stringify(defaultTable))
-    }
+    },
 };
 
 export default {
     state,
     getters,
     actions,
-    mutations
+    mutations,
+    defaultTable
 }
