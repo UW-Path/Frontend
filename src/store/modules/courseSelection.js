@@ -422,8 +422,13 @@ const actions = {
             var selectedCourses = new TrieSearch([['selected_course', 'course_code'], ['selected_course', 'course_number']], {
                 idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
             });
-            for (var term of getters.getTable) {
+            for (let term of getters.getTable) {
                 selectedCourses.addAll(term.courses)
+                for (let course of term.courses) {
+                    course.major = [];
+                    course.minor = [];
+                    course.specialization = [];
+                }
             }
 
             if (table2needed) {
