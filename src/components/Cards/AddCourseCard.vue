@@ -101,7 +101,8 @@ export default {
       let customCourse = new CourseInfo({
         course_code: this.searchtext,
         course_name: "Custom Added Course",
-        info: "This course was not found by UWPath and was entered manually."
+        info: "This course was not found by UWPath and was entered manually.",
+        credit: 0.5,
       });
       let req = new CourseRequirement ({
         selected_course: customCourse,
