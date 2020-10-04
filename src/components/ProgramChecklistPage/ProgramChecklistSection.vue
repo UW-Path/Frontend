@@ -46,7 +46,7 @@ export default {
 .requirements-list {
     display: flex;
     flex-wrap: wrap;
-    margin-right: 7em;
+    margin-right: 2em;
 }
 
 .requirements-list-item {

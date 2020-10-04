@@ -1,17 +1,15 @@
 <template>
-    <div>
+    <div class="contact-page-container">
         <v-app-bar color="#4A75AD">
             <v-toolbar-title class="program-titles">
-                UWPath
+            <span class="link" @click="goToHome()"> UWPath</span>
             </v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn text color="white" v-on:click="goToAboutUsPage"> About Us </v-btn>
             <v-btn text color="white" v-on:click="goToCourseSelectionPage"> Plan Your Courses </v-btn>
         </v-app-bar>
-        <div class="contact-page-title">
+        <v-container class="contact-page-content-container">
             <h2 class="header">Help us Improve our Site!</h2>
-        </div>
-        <div class="contact-page-container">
             <div class="contact-page-info">
                 <p>We strive to provide our users with as accurate of an experience as we can. However, with the thousands of courses  the University of Waterloo offers, we acknowledge that sometimes we will get it wrong.</p>
                 <p>That's why your feedback is critical to us.</p>
@@ -20,13 +18,16 @@
             </div>
             <div class="contact-page-form">
                 <v-form ref="form" v-model="valid" :lazy-validation="false">
-                    <v-text-field v-model="name" :counter="40" :rules="nameRules" label="Name" required></v-text-field>
-                    <v-text-field v-model="subject" :counter="40" :rules="subjectRules" label="Subject" required></v-text-field>
-                    <v-text-field v-model="email" :counter="40" :rules="emailRules" label="Email" required></v-text-field>
-                    <v-textarea v-model="message" :counter="200" :rules="messageRules" label="Message" required></v-textarea>
+                    <v-text-field outlined v-model="name" :counter="40" :rules="nameRules" label="Name" required solo></v-text-field>
+                    <v-text-field outlined v-model="subject" :counter="40" :rules="subjectRules" label="Subject" required solo></v-text-field>
+                    <v-text-field  outlined v-model="email" :counter="40" :rules="emailRules" label="Email" required solo></v-text-field>
+                    <v-textarea  outlined v-model="message" :counter="200" :rules="messageRules" label="Message" required solo class="message-area"></v-textarea>
                 </v-form>
             </div>
-            <v-btn color="info" class="mr-4" @click="submitMessage">Submit</v-btn>
+            <div class="button-container">
+                <v-btn color="info" class="mr-4" @click="submitMessage">Submit</v-btn>
+            </div>
+
             <v-snackbar
                 v-model="snackbar"
                 >
@@ -43,7 +44,7 @@
                     </v-btn>
                 </template>
             </v-snackbar>
-        </div>
+        </v-container>
     </div>
 </template>
 
@@ -103,20 +104,22 @@ export default {
                     this.snackbar = true
                 })
             }
+        },
+        goToHome(){
+            this.$router.push("/")
         }
     }
 }
 </script>
 
 <style scoped>
+
 .contact-page-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 19em;
     overflow-y: auto;
-    height: 44em;
+}
+
+.contact-page-content-container {
+    margin-bottom: 2rem;
 }
 
 .contact-page-title {
@@ -134,8 +137,6 @@ export default {
 .contact-page-info {
     width: 100%;
     text-align: left;
-    padding-left: 2em;
-    padding-right: 2em;
     padding-top: 1em;
 }
 
@@ -147,14 +148,25 @@ export default {
     color:ghostwhite;
 }
 
-.spec{
-    color:#ffff8d;
-    font-size:1.1em;
+.button-container {
+    display: block !important;
+    width: 100%;
+    text-align: left;
 }
 
 .header{
-    margin-bottom: 0.5em;
-    margin-left: 12em;
+    text-align: left;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.message-area {
+    margin-bottom: 0;
+}
+
+
+.link{
+    cursor: pointer
 }
 
 </style>

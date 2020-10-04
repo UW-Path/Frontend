@@ -6,8 +6,8 @@
                     
                 </v-col>
                 <v-col class="centerpiece-container" data-aos="fade-up" data-aos-duration="1200">
-                    <div class="text-h3 title">UWPath</div>
-                    <div class="text-h5 caption" >Plan your degree ahead</div>
+                    <div class="title"><h1>UWPath</h1></div>
+                    <div class="slogan"><h4> Plan your degree ahead</h4></div>
                     <div class="autocomplete-container">
                         <v-autocomplete
                             :disabled="inConfirmation"
@@ -23,7 +23,7 @@
                             height="3rem"
                             color="black"
                         ></v-autocomplete>
-                        <div class="findprogram" @click="findProgram()" v-if="!inConfirmation">Can't find your program?</div>
+                        <div class="findprogram" @click="findProgram()" v-if="!inConfirmation"><span class="link">Can't find your program?</span></div>
                     </div>
 
                     <div v-if="inConfirmation">
@@ -87,15 +87,17 @@ export default {
     top: 30px;
 }
 
-.title {
-    color: ghostwhite;
-    margin-bottom: 1rem;
+.title{
+    color:ghostwhite; 
+    margin-bottom: 0.1em;
 }
 
-.caption {
-    color: ghostwhite;
-    margin-bottom: 1rem;
+
+.slogan{
+    color:ghostwhite; 
+    margin-bottom: 0.7em;
 }
+
 
 .centerpiece-container {
     margin-left: 20% !important; 
@@ -118,9 +120,13 @@ export default {
     min-width: 525px;
 }
 
+.link:hover {
+    cursor: pointer
+}
 
 
 .findprogram {
+    
     text-align: end;
     color: ghostwhite;
     margin-top: 1rem;
@@ -141,6 +147,7 @@ export default {
     color:ghostwhite;
     margin-top: 1rem;
     margin-bottom: 0.5rem;
+    margin-left: 0.4em;
 }
 .background { 
   background: url(../assets/cover.png)  !important;
