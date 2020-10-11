@@ -49,6 +49,7 @@ const state = {
     checklistMajorRequirements: [],
     checklistMinorRequirements: [],
     checklistOptionRequirements: [],
+    cacheTime: 0
 };
 
 const getters = {
@@ -64,7 +65,8 @@ const getters = {
     },
     getCourse: (state) => (termIndex, courseIndex) => {
         return state.table[termIndex].courses[courseIndex]
-    }
+    },
+    cacheTime: (state) => state.cacheTime
 };
 
 function getRequirementFullfillmentSize(requirement) {
@@ -363,37 +365,21 @@ function getCoursesTable(state) {
 }
 
 const actions = {
-    async export({ state }, options) {
+    async export({ state }) {
         let course_table = getCoursesTable(state);
-        if (options.PDF) {
-            axios.get(backend_api + "/api/requirements/export", {
-                params: {
-                    table: course_table,
-                    termList : state.termList
-                },
-                responseType: 'arraybuffer'
-            }).then((response) => {
-                download(
-                    response.data,
-                    'uwpath-schedule.xls',
-                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                );
-            });
-        } else if (options.XLS) {
-            axios.get(backend_api + "/api/requirements/export", {
-                params: {
-                    table: course_table,
-                    termList: state.termList
-                },
-                responseType: 'arraybuffer'
-            }).then((response) => {
-                download(
-                    response.data,
-                    'uwpath-schedule.xls',
-                    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-                );
-            });
-        }
+        axios.post(backend_api + "/api/requirements/export", {
+            table: course_table,
+            termList: state.termList,
+            responseType: 'blob',
+        }).then((response) => {
+            download(
+                response.data,
+                'uwpath-schedule.csv',
+                'text/csv'
+            );
+        }).catch(function (error) {
+            console.log(error);
+        });
     },
     fillOutChecklist({ commit, getters }) {
         if (!getters.majorRequirements.length) return
@@ -496,6 +482,7 @@ const actions = {
 };
 
 const mutations = {
+    updateCacheTime: (state) => {state.cacheTime = new Date();},
     setChecklistMajorRequirements: (state, checklistMajorRequirements) => {
         state.checklistMajorRequirements = checklistMajorRequirements
     },
@@ -586,12 +573,13 @@ const mutations = {
     },
     clearTable: (state) => {
         state.table = JSON.parse(JSON.stringify(defaultTable))
-    }
+    },
 };
 
 export default {
     state,
     getters,
     actions,
-    mutations
+    mutations,
+    defaultTable
 }

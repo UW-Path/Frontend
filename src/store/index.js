@@ -24,7 +24,7 @@ export default new Vuex.Store({
     plugins: [
         createPersistedState({
             paths: [
-                "courseSelection.table", "courseSelection.termList",
+                "courseSelection.table", "courseSelection.termList", "courseSelection.cacheTime",
                 "courses.majorRequirements", "courses.minorRequirements", "courses.specRequirements",
                 "programInfo"
             ],
@@ -34,26 +34,52 @@ export default new Vuex.Store({
                 try {
                     if (typeof value !== "undefined") {
                         let obj = JSON.parse(value);
-                        debugger
-                        for (var i in obj["courseSelection"]["table"]) {
-                            for (var j in obj["courseSelection"]["table"][i]["courses"]) {
-                                let loadedCourseRequirement = new CourseRequirement(obj["courseSelection"]["table"][i]["courses"][j])
-                                loadedCourseRequirement.inRequirementBar = false
-                                obj["courseSelection"]["table"][i]["courses"][j] = loadedCourseRequirement
+                        let today = new Date();
+                        obj["courseSelection"]["cacheTime"] = new Date(obj["courseSelection"]["cacheTime"]);
+                        if (!(obj["courseSelection"]["cacheTime"] instanceof Date &&
+                              !isNaN(obj["courseSelection"]["cacheTime"]))) {
+                            obj["courseSelection"]["cacheTime"] = today;
+                        }
+
+                        let hours = Math.abs(today - obj["courseSelection"]["cacheTime"]) / 36e5;
+                        obj["courseSelection"]["cacheTime"] = today;
+
+                        if (hours <= 24) {
+                            for (var i in obj["courseSelection"]["table"]) {
+                                for (var j in obj["courseSelection"]["table"][i]["courses"]) {
+                                    let loadedCourseRequirement = new CourseRequirement(obj["courseSelection"]["table"][i]["courses"][j])
+                                    loadedCourseRequirement.inRequirementBar = false
+                                    obj["courseSelection"]["table"][i]["courses"][j] = loadedCourseRequirement
+                                }
                             }
-                        }
-                        for (i in obj["courses"]["majorRequirements"]) {
-                            obj["courses"]["majorRequirements"][i] = new MajorRequirement(obj["courses"]["majorRequirements"][i])
-                        }
+                            for (i in obj["courses"]["majorRequirements"]) {
+                                obj["courses"]["majorRequirements"][i] = new MajorRequirement(obj["courses"]["majorRequirements"][i])
+                            }
 
-                        for (i in obj["courses"]["minorRequirements"]) {
-                            obj["courses"]["minorRequirements"][i] = new OtherRequirement(obj["courses"]["minorRequirements"][i])
-                        }
+                            for (i in obj["courses"]["minorRequirements"]) {
+                                obj["courses"]["minorRequirements"][i] = new OtherRequirement(obj["courses"]["minorRequirements"][i])
+                            }
 
-                        for (i in obj["courses"]["specRequirements"]) {
-                            obj["courses"]["specRequirements"][i] = new OtherRequirement(obj["courses"]["specRequirements"][i])
-                        }
+                            for (i in obj["courses"]["specRequirements"]) {
+                                obj["courses"]["specRequirements"][i] = new OtherRequirement(obj["courses"]["specRequirements"][i])
+                            }
+                            obj["courseSelection"]["cacheTime"] = new Date(obj["courseSelection"]["cacheTime"]);
+                        } else {
+                            obj["courseSelection"]["cacheTime"] = today;
+                            obj["courseSelection"]["table"] = JSON.parse(JSON.stringify(courseSelection.defaultTable));
+                            obj["courseSelection"]["termList"] = ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B", "5A", "5B"];
+                            obj["courseSelection"]["checklistMajorRequirements"] = [];
+                            obj["courseSelection"]["checklistMinorRequirements"] = [];
+                            obj["courseSelection"]["checklistOptionRequirements"] = [];
 
+                            obj["courses"]["majorRequirements"] = [];
+                            obj["courses"]["minorRequirements"] = [];
+                            obj["courses"]["specRequirements"] = [];
+
+                            obj["programInfo"]["majors"] = [];
+                            obj["programInfo"]["minors"] = [];
+                            obj["programInfo"]["specialization"] = [];
+                        }
                         return obj;
                     }
                 } catch (err) {

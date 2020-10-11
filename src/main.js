@@ -5,8 +5,9 @@ import vuetify from './plugins/vuetify'
 import router from './router'
 import AOS from "aos"
 import 'aos/dist/aos.css'
+import VueAnalytics from 'vue-analytics';
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 // Following code allow sentence to be truncated
 var filter = function(text, length, clamp){
@@ -27,4 +28,9 @@ new Vue({
   vuetify,
   router,
   render: h => h(App)
-}).$mount('#app')
+}).$mount('#app');
+
+Vue.use(VueAnalytics, {
+  id: 'UA-168225112-1',
+  router
+});
