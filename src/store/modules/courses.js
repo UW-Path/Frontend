@@ -18,6 +18,11 @@ async function parseRequirement(courseCode) {
         if (state.courseCache[courseInfo.course_code]) {
             return state.courseCache[courseInfo.course_code]
         }
+        else if (courseCode === "SCIENCE" || courseCode === "MATH" 
+        || courseCode === "LANGUAGE" || courseCode === "NON-MATH" || courseCode.includes("Elective")){
+            debugger
+            return courseInfo
+        }
 
         state.courseCache[courseInfo.course_code] = courseInfo
         return courseInfo
@@ -62,6 +67,7 @@ async function parseRequirement(courseCode) {
         }]
     }
     //TODO: this should be a card if there exists more courses that are more than 1
+    //TODO: Adrian. This shouldn't called the api everytime
     else if (courseCode === "SCIENCE" || courseCode === "MATH" || courseCode === "LANGUAGE" || courseCode === "NON-MATH") {
         response = await axios.get(backend_api + "/api/course-info/filter", {
             params: {
@@ -232,6 +238,11 @@ const actions = {
                 for (let course of required_courses) {
                     promises.push(parseRequirement(course))
                 }
+                const code = requirement.course_codes
+                const group = (code === "SCIENCE" || code === "MATH" 
+                                || code === "LANGUAGE" || code === "NON-MATH" || 
+                                (code !== "Program Elective" && code.includes("Elective"))) ? code : ""
+
                 Promise.all(promises).then(choices => {
                     // additional req only needed in majors
                     let parsed_requirement = {
@@ -241,6 +252,7 @@ const actions = {
                         major: [options.newMajor],
                         additional_requirements: requirement.additional_requirements,
                         inRequirementBar: true,
+                        group: group,
                     }
                     for (let choice of choices) {
                         parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
