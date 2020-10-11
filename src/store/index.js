@@ -89,6 +89,7 @@ export default new Vuex.Store({
                 return undefined;
             },
             setState: (key, state) => {
+                debugger
                 return window.localStorage.setItem(key, JSON.stringify(state));
             },
         })
