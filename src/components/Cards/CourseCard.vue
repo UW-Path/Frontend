@@ -95,6 +95,12 @@
                 <v-list-item-subtitle  :key="index" v-if="isSelected(code)">{{  code  }}</v-list-item-subtitle>
                 <v-list-item-subtitle class="select-font" :key="index" v-else>{{  code  }}</v-list-item-subtitle>
             </template>
+          </div>
+          <div v-else-if="courseData.course_codes.length > 3 && courseData.group">
+            <template v-for="(code, index) in courseData.course_codes" >
+                <v-list-item-subtitle  :key="index" v-if="isSelected(code)">{{  code  }}</v-list-item-subtitle>
+                <v-list-item-subtitle  class="select-font" :key="index" v-else-if="index==0">{{  courseData.group  }}</v-list-item-subtitle>
+            </template>
           </div>    
           <div v-else>
             <template v-for="(code, index) in courseData.course_codes_raw.split(/,\s|\sor\s|,/).slice(0,3)" >

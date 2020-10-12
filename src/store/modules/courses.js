@@ -72,12 +72,18 @@ const actions = {
                 newMajorRequirements = newMajorRequirements.concat(response.data.table2)
             }
             for (let requirement of newMajorRequirements) {
+                const code = requirement.course_codes
+                const group = (code === "SCIENCE" || code === "MATH" 
+                    || code === "LANGUAGE" || code === "NON-MATH" || 
+                    (code !== "Program Elective" && code.includes("Elective"))) ? code : ""
+
                 let parsed_requirement = {
                     course_codes_raw: requirement.course_codes,
                     number_of_courses: requirement.number_of_courses,
                     major: [options.newMajor],
                     additional_requirements: requirement.additional_requirements,
                     inRequirementBar: true,
+                    group: group,
                 }
                 let parsed_req_obj = new CourseRequirement(parsed_requirement);
                 newMajor[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]].push(parsed_req_obj)

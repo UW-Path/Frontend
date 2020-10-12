@@ -35,6 +35,8 @@ export class CourseRequirement {
         } else {
             this.course_codes_raw = "";
         }
+        // if part of SCIENCE, ARTS, MATH ...
+        this.group = data && data.group ? data.group: "";
         this.number_of_choices = data && data.course_codes_raw ? data.course_codes_raw.split(/,\s|\sor\s|,/).length : 0;
         if (data && data.selected_course) this.selected_course = data.selected_course;
         else this.selected_course = {course_code: "WAITING", course_number: 42};

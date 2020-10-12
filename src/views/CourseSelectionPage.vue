@@ -13,7 +13,7 @@
             <v-tab class="tab-icon">
                 <v-icon  x-large >mdi-check-box-outline</v-icon>
             </v-tab>
-            <v-btn  class="tab-icon download-button" @click="exportXLS()">
+            <v-btn  class="tab-icon download-button" @click="exportCSV()">
                 <v-icon x-large >mdi-download-outline</v-icon>
             </v-btn> 
             
@@ -59,11 +59,8 @@ export default {
     }),
     methods: {
         ...mapActions(["export"]),
-        exportPDF() {
-            this.export({ PDF: true, XLS: false })
-        },
-        exportXLS() {
-            this.export({ PDF: false, XLS: true })
+        exportCSV() {
+            this.export()
         },
         changeTab(event) {
             console.log(event)
