@@ -26,13 +26,13 @@
             <h1>Our Mission</h1>
             <br>
             <p class="mission-text" data-aos="fade" data-aos-duration="1000">
-               UW Path started with a bold idea. Every term, students have to plan out their courses in order to make 
+               UWPath started with a bold idea. Every term, students have to plan out their courses in order to make
                sure they graduate with all their major, minor and specialization requirements.
                What if there's a website that allows you to plan your degree accordingly - just like how you plan your class schedule every 
-               term? And voila, that's how UW Path started! The project started with two friends who met on their first co-op
+               term? And voila, that's how UWPath started! The project started with two friends who met on their first co-op
                and the team has grown into 5 people since then!
                <br/><br/>
-               We hope UW Path allows everyone to easily plan and visualize their degree!
+               We hope UWPath allows everyone to easily plan and visualize their degree!
             </p>
          </div>
          <div class="our-team"  data-aos="fade-up" data-aos-duration="1000">
@@ -41,7 +41,8 @@
             <div class="row">
                <div class="col">
                   <v-avatar size="200">
-                  <img src="../assets/hao-wei.png" alt="Hao Wei"></v-avatar>
+                     <img src="../assets/hao-wei.png" alt="Hao Wei">
+                  </v-avatar>
                </div>
                <div class="col-12 col-lg-9" style="text-align:left">
                   <h3>Co-Founder - Hao Wei Huang</h3>
@@ -49,7 +50,7 @@
                   <p>
                      <br/>
                      Hao Wei never thought he would be a programmer. He started as a Math/Business student but found a passion in
-                     programming over the years at UW. He is extremely grateful to have such a talented team to bring his vision of UW Path to 
+                     programming over the years at UW. He is extremely grateful to have such a talented team to bring his vision of UWPath to
                      life! 
                      <br/><br/>
                      You can find Hao Wei playing basketball at CIF (pre-covid), traveling around the world, and watching movies in his free time. 
@@ -58,20 +59,21 @@
             </div>
             <div class="row">
                <div class="col">
-                  <v-avatar color="grey" size="200"></v-avatar>
+                  <v-avatar size="200">
+                     <img src="../assets/calder.png" alt="Calder">
+                  </v-avatar>
                </div>
                <div class="col-12 col-lg-9" style="text-align:left">
                   <h3>Co-Founder - Calder Lund</h3>
-                  <a href="" target="_blank">Linkedin</a> | <a href="" target="_blank">Website</a>
+                  <a href="https://github.com/CalderLund" target="_blank">GitHub</a> | <a href="https://www.linkedin.com/in/calder-lund-874381156/" target="_blank">Linkedin</a> | <a href="https://www.youtube.com/user/TheBurntLemons" target="_blank">YouTube</a>
                   <p>
                      <br/>
-                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                     Nulla in enim ex. Proin suscipit tincidunt quam, quis convallis nulla interdum id. 
-                     In hac habitasse platea dictumst. Mauris tincidunt arcu id porttitor maximus. 
-                     Mauris sit amet metus eget tellus vestibulum facilisis ut at lectus. 
-                     Pellentesque velit nibh, aliquam sed nisi eu, feugiat porta erat. 
-                     Curabitur quis tincidunt enim. Curabitur ornare elementum lacus, sed tempus nisl consectetur scelerisque. 
-                     Sed nec condimentum nisl, vel ultrices velit. 
+                     Calder is a former pro hockey player turned musician turned film creator turned computer scientist.
+                     Outside of school, Calder spends most of his time playing basketball, writing music or improving
+                     his slightly above mediocre chess skills.
+                     <br/><br/>
+                     He currently specializes in Infrastructure Engineering, but has worked on a variety of projects
+                     that include machine learning, website design, software security, computer networks and much more.
                   </p>
                </div>
             </div>
