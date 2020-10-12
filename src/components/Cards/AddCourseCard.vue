@@ -219,7 +219,7 @@ export default {
     margin-top: 1rem;
     /* margin-bottom: 1rem; */
     width: 90%;
-    max-height: 400px;
+    max-height: 100%;
     /* height:auto; */
     overflow-y: auto;
 }

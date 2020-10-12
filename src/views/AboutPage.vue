@@ -36,6 +36,19 @@
             </p>
          </div>
          <div class="our-team"  data-aos="fade-up" data-aos-duration="1000">
+            <h1 style="text-align:left"> Welcome to UWPath </h1>
+            <div class="row">
+               <div class="col" style="text-align:left">
+                  UWPath is a degree planning website built for UWaterloo students. 
+                  You can plan your courses in our degree planner, where we verify prerequisites, corequisites, antirequisites and degree fulfillment on your behalf. 
+                  <br/><br/>
+                  Want to take a specific degree with a minor and a specialization? 
+                  We provide automated software that shows you what courses you need to take for each part of your degree. 
+                  See our checklist to verify you meet the degree requirements.
+                  </div>
+            </div>
+         
+            <br/>
             <h1 style="text-align:left"> Meet the Team </h1>
             <br/>
             <div class="row">
