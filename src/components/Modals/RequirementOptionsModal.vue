@@ -71,7 +71,9 @@
    import { mapMutations, mapActions } from "vuex";
    import CourseCard from "../Cards/CourseCard";
    import axios from "axios";
-   import { CourseInfo } from '../../models/courseInfoModel'
+   import { CourseInfo } from "../../models/courseInfoModel";
+   import TrieSearch from "trie-search";
+
    
    export default {
        name: "RequirementOptionsModal",
@@ -84,6 +86,11 @@
                 searchtext: "",
                 selectedCourse: this.course.selected_course && this.course.selected_course.course_code !== "WAITING" ? this.course.selected_course : undefined,
                 allCourseChoices: [],
+                allCourseChoicesTrie: new TrieSearch(['course_code', 'course_number'], {
+                    idFieldOrFunction: function(course) {
+                    return course.course_id + course.course_code;
+                    }
+                }),
                 // Production Kubernetes API
                 //backend_api: "",
                 // Dev API
@@ -101,8 +108,8 @@
             let required_courses = this.course.course_codes_raw.split(/,\s|\sor\s|,/);
 
             // Set a temporary number_of_choices while we wait for the course choices to get loaded.
-            if (this.course.number_of_courses > 1) {
-                this.course.number_of_choices = this.course.number_of_courses;
+            if (this.course.number_of_courses > 1 || !this.course.course_codes_raw.match(/\d/)) {
+                this.course.number_of_choices = 2;
             }
 
             for (let course of required_courses) {
@@ -110,8 +117,9 @@
             }
             Promise.all(promises).then(choices => {
                 for (let choice of choices) {
-                    this.allCourseChoices = this.allCourseChoices.concat(choice)
+                    this.allCourseChoices = this.allCourseChoices.concat(choice);
                 }
+                this.allCourseChoicesTrie.addAll(this.allCourseChoices);
                 this.course.number_of_choices = this.allCourseChoices.length;
                 if ((this.allCourseChoices.length === 1) && (!this.course.selected_course || this.course.selected_course.course_code === "WAITING")) {
                     this.course.selected_course = this.allCourseChoices[0];
@@ -311,15 +319,8 @@
        },
        computed: {
            filteredCourses: function () {
-               if (this.searchtext === "") return this.allCourseChoices;
-               else {
-                   return this.allCourseChoices.filter((choice => {
-                       var matchCode = choice.course_code.toLowerCase().includes(this.searchtext.toLowerCase()) || choice.course_code.toLowerCase().includes(this.searchtext.toLowerCase())
-                       var matchDescription = choice.info.toLowerCase().includes(this.searchtext.toLowerCase());
-                       var matchName = choice.course_name.toLowerCase().includes(this.searchtext.toLowerCase());
-                       return matchCode || matchDescription || matchName;
-                   }))
-               }
+               if (this.searchtext === "") return this.allCourseChoices.slice(0,100);
+               else return this.allCourseChoicesTrie.get(this.searchtext).slice(0,100);
            },
            courseCodes: function () {
                return this.allCourseChoices.map(choice => {
