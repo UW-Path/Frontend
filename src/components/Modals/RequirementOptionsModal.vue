@@ -10,60 +10,67 @@
          />
       <!-- Course Popup Modal -->
       <v-dialog v-model="dialog" :max-width="isChoice() ? 1200 : 700">
-         <v-card>
+        <v-card v-if="!loadingCourses">
             <v-container fluid class="modal-course-list-container">
-               <v-row class="modal-course-list-row">
-                  <v-col align="center" v-if="isChoice()">
-                     <v-text-field class="modal-search" v-model="searchtext" label="Search for a Course" prepend-inner-icon="mdi-magnify" hide-details="true" single-line outlined dense></v-text-field>
-                     <div class="modal-course-list">
+                <v-row class="modal-course-list-row">
+                    <v-col align="center" v-if="isChoice()">
+                        <v-text-field class="modal-search" v-model="searchtext" label="Search for a Course" prepend-inner-icon="mdi-magnify" hide-details="true" single-line outlined dense></v-text-field>
+                        <div class="modal-course-list">
                         <div class="modal-course" v-bind:class="{ selectedCourseCode: course && selectedCourse && (selectedCourse.course_code === course.course_code) }" v-for="(course,index) in filteredCourses" :key="index"
-                           v-on:click="selectedCourse = course">
-                           {{course.course_code + ": " + course.course_name}}
+                            v-on:click="selectedCourse = course">
+                            {{course.course_code + ": " + course.course_name}}
                         </div>
-                     </div>
-                  </v-col>
-                  <v-col v-if="selectedCourse" class="course-description-col" align="left">
-                     <v-card-title class="course-title">
+                        </div>
+                    </v-col>
+                    <v-col v-if="selectedCourse" class="course-description-col" align="left">
+                        <v-card-title class="course-title">
                         {{ selectedCourse.course_code }}
                         <v-spacer></v-spacer>
                         <template v-if="!this.course.prereqs_met">
-                           <v-btn class="select-btn" text @click="course.toggleOverride()" v-if="!this.course.overridden" large outlined>
-                              Override
-                           </v-btn>
-                           <v-btn class="select-btn" text @click="course.toggleOverride()" v-else-if="this.course.overridden" large outlined>
-                              de-Override
-                           </v-btn>
+                            <v-btn class="select-btn" text @click="course.toggleOverride()" v-if="!this.course.overridden" large outlined>
+                                Override
+                            </v-btn>
+                            <v-btn class="select-btn" text @click="course.toggleOverride()" v-else-if="this.course.overridden" large outlined>
+                                de-Override
+                            </v-btn>
                         </template>
                         <template v-if="isChoice()">
-                           <v-btn class="select-btn" text @click="selectCourse()" v-if="selectedCourse != this.course.selected_course" large outlined>
-                              Select
-                              <v-icon>mdi-plus-circle</v-icon>
-                           </v-btn>
-                           <v-btn class="select-btn" text @click="deselectCourse()" v-else large outlined>
-                              Deselect
-                              <v-icon>mdi-minus-circle</v-icon>
-                           </v-btn>
+                            <v-btn class="select-btn" text @click="selectCourse()" v-if="selectedCourse != this.course.selected_course" large outlined>
+                                Select
+                                <v-icon>mdi-plus-circle</v-icon>
+                            </v-btn>
+                            <v-btn class="select-btn" text @click="deselectCourse()" v-else large outlined>
+                                Deselect
+                                <v-icon>mdi-minus-circle</v-icon>
+                            </v-btn>
                         </template>
-                     </v-card-title>
-                     <v-card-subtitle class="course-name">
+                        </v-card-title>
+                        <v-card-subtitle class="course-name">
                         {{ selectedCourse.course_name}}
-                     </v-card-subtitle>
-                     <template v-if="selectedCourse.course_id != -1">
-                        <v-card-subtitle class="course-info-subheading">
-                           Credits: {{ selectedCourse.credit }} | ID: {{ selectedCourse.course_id }} | <a style="text-decoration:none" target="_blank" :href="'https://uwflow.com/course/' + selectedCourse.course_code.replace(/\s/g, '').toLowerCase()">UWFlow link</a>
                         </v-card-subtitle>
-                     </template>
-                     <v-card-text>{{ selectedCourse.info + (selectedCourse.offering == "" ? "" :  " Offered in: " + selectedCourse.offering.slice(0,-1) + ". ") + (selectedCourse.online ? "Also offered online." : "")}}</v-card-text>
-                     <template v-if="selectedCourse.course_id != -1">
+                        <template v-if="selectedCourse.course_id != -1">
+                        <v-card-subtitle class="course-info-subheading">
+                            Credits: {{ selectedCourse.credit }} | ID: {{ selectedCourse.course_id }} | <a style="text-decoration:none" target="_blank" :href="'https://uwflow.com/course/' + selectedCourse.course_code.replace(/\s/g, '').toLowerCase()">UWFlow link</a>
+                        </v-card-subtitle>
+                        </template>
+                        <v-card-text>{{ selectedCourse.info + (selectedCourse.offering == "" ? "" :  " Offered in: " + selectedCourse.offering.slice(0,-1) + ". ") + (selectedCourse.online ? "Also offered online." : "")}}</v-card-text>
+                        <template v-if="selectedCourse.course_id != -1">
                         <v-card-text class="course-description-text">{{ "Credits: " + selectedCourse.credit }}</v-card-text>
                         <v-card-text class="course-description-text" v-if="selectedCourse.prereqs && selectedCourse.prereqs.length > 0">{{ "Prerequisites: " + selectedCourse.prereqs }}</v-card-text>
                         <v-card-text class="course-description-text" v-if="selectedCourse.antireqs && selectedCourse.antireqs.length > 0">{{ "Antirequisites: " + selectedCourse.antireqs }}</v-card-text>
                         <v-card-text class="course-description-text" v-if="selectedCourse.coreqs && selectedCourse.coreqs.length > 0">{{ "Corequisites: " + selectedCourse.coreqs }}</v-card-text>
-                     </template>
-                  </v-col>
-               </v-row>
+                        </template>
+                    </v-col>
+                </v-row>
             </v-container>
-         </v-card>
+        </v-card>
+        <v-card v-else class="loading-card">
+            <v-progress-circular
+                size=75
+                indeterminate
+                color="primary"
+            ></v-progress-circular>
+        </v-card>
       </v-dialog>
    </div>
 </template>
@@ -91,6 +98,7 @@
                     return course.course_id + course.course_code;
                     }
                 }),
+                loadingCourses: true,
                 // Production Kubernetes API
                 //backend_api: "",
                 // Dev API
@@ -106,7 +114,7 @@
        created() {
             let promises = [];
             let required_courses = this.course.course_codes_raw.split(/,\s|\sor\s|,/);
-
+            this.loadingCourses = true;
             // Set a temporary number_of_choices while we wait for the course choices to get loaded.
             if (this.course.number_of_courses > 1 || !this.course.course_codes_raw.match(/\d/)) {
                 this.course.number_of_choices = 2;
@@ -124,6 +132,8 @@
                 if ((this.allCourseChoices.length === 1) && (!this.course.selected_course || this.course.selected_course.course_code === "WAITING")) {
                     this.course.selected_course = this.allCourseChoices[0];
                 }
+                this.selectedCourse = this.allCourseChoices[0];
+                this.loadingCourses = false;
             })
             .catch(error => { console.error(error) })
        },
@@ -401,5 +411,11 @@
 }
 .course-title {
     padding-top: 0px;
+}
+.loading-card {
+    padding: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>
