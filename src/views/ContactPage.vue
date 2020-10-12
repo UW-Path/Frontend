@@ -1,71 +1,64 @@
 <template>
-    <div class="contact-page-container">
-        <v-app-bar style="background: linear-gradient(38.92deg, #8198AB 36.61%, #2B435D 102.9%), #4A75AD;">
-             <router-link to="/">
-            <svg class="logo" width="40" height="55" viewBox="0 0 61 70" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-            
-            <rect width="60" height="70" fill="url(#pattern0)"/>
-            <defs>
-            <pattern id="pattern0" patternContentUnits="objectBoundingBox" width="1" height="1">
-            <use xlink:href="#image0" transform="translate(-0.0368325) scale(0.00492507 0.00429185)"/>
-            </pattern>
-            <image id="image0" width="218" height="233" xlink:href="data:image/png;base64,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"/>
-            </defs>
-            </svg>
-        </router-link>
-            <v-toolbar-title class="uwpath-title">
+   <div class="contact-page-container">
+      <v-app-bar style="background: linear-gradient(38.92deg, #8198AB 36.61%, #2B435D 102.9%), #4A75AD;">
+         <router-link to="/">
+            <span class="logo">
+               <UWPathIcon/>
+            </span>
+         </router-link>
+         <v-toolbar-title class="uwpath-title">
             <span class="link" @click="goToHome()"> UWPath</span>
-            </v-toolbar-title>
-            <v-spacer></v-spacer>
-            <v-btn text color="white" v-on:click="goToAboutUsPage"> About Us </v-btn>
-            <v-btn text color="white" v-on:click="goToCourseSelectionPage"> Plan Courses </v-btn>
-        </v-app-bar>
-        <v-container class="contact-page-content-container" data-aos="fade-up" data-aos-duration="1200">
-            <h2 class="header">Help us Improve our Site!</h2>
-            <div class="contact-page-info">
-                <p>We strive to provide our users with as accurate of an experience as we can. However, with the thousands of courses  the University of Waterloo offers, we acknowledge that sometimes we will get it wrong.</p>
-                <p>That's why your feedback is critical to us.</p>
-                <p>If you see any course or degree information that looks incorrect, report it to us below and we will fix it right away.</p>
-                <p><i>Note: We recognized many majors in the Faculty of Arts aren't available right now. We hope to fully support majors and minors soon!</i></p>
-                <p>Check out our <b><a href="https://github.com/UW-Path">Github</a></b> !</p>
-            </div>
-            <div class="contact-page-form">
-                <v-form ref="form" v-model="valid" :lazy-validation="false">
-                    <v-text-field rounded dense filled v-model="name" :counter="40" :rules="nameRules" label="Name" required></v-text-field>
-                    <v-text-field rounded dense filled v-model="subject" :counter="40" :rules="subjectRules" label="Subject" required ></v-text-field>
-                    <v-text-field  rounded dense filled v-model="email" :counter="40" :rules="emailRules" label="Email" required ></v-text-field>
-                    <v-textarea  rounded dense filled v-model="message" :counter="200" :rules="messageRules" label="Message" required class="message-area"></v-textarea>
-                </v-form>
-            </div>
-            <div class="button-container">
-                <v-btn color="info" class="mr-4" @click="submitMessage">Submit</v-btn>
-            </div>
-
-            <v-snackbar
-                v-model="snackbar"
-                >
-                {{ toastMessage }}
-
-                <template v-slot:action="{ attrs }">
-                    <v-btn
-                    color="pink"
-                    text
-                    v-bind="attrs"
-                    @click="snackbar = false"
-                    >
-                    Close
-                    </v-btn>
-                </template>
-            </v-snackbar>
-        </v-container>
-    </div>
+         </v-toolbar-title>
+         <v-spacer></v-spacer>
+         <v-btn text color="white" v-on:click="goToAboutUsPage"> About Us </v-btn>
+         <v-btn text color="white" v-on:click="goToCourseSelectionPage"> Plan Courses </v-btn>
+      </v-app-bar>
+      <v-container class="contact-page-content-container" data-aos="fade-up" data-aos-duration="1200">
+         <h2 class="header">Help us Improve our Site!</h2>
+         <div class="contact-page-info">
+            <p>We strive to provide our users with as accurate of an experience as we can. However, with the thousands of courses  the University of Waterloo offers, we acknowledge that sometimes we will get it wrong.</p>
+            <p>That's why your feedback is critical to us.</p>
+            <p>If you see any course or degree information that looks incorrect, report it to us below and we will fix it right away.</p>
+            <p><i>Note: We recognized many majors in the Faculty of Arts aren't available right now. We hope to fully support majors and minors soon!</i></p>
+            <p>Check out our <b><a href="https://github.com/UW-Path">Github</a></b> !</p>
+         </div>
+         <div class="contact-page-form">
+            <v-form ref="form" v-model="valid" :lazy-validation="false">
+               <v-text-field rounded dense filled v-model="name" :counter="40" :rules="nameRules" label="Name" required></v-text-field>
+               <v-text-field rounded dense filled v-model="subject" :counter="40" :rules="subjectRules" label="Subject" required ></v-text-field>
+               <v-text-field  rounded dense filled v-model="email" :counter="40" :rules="emailRules" label="Email" required ></v-text-field>
+               <v-textarea  rounded dense filled v-model="message" :counter="200" :rules="messageRules" label="Message" required class="message-area"></v-textarea>
+            </v-form>
+         </div>
+         <div class="button-container">
+            <v-btn color="info" class="mr-4" @click="submitMessage">Submit</v-btn>
+         </div>
+         <v-snackbar
+            v-model="snackbar"
+            >
+            {{ toastMessage }}
+            <template v-slot:action="{ attrs }">
+               <v-btn
+                  color="pink"
+                  text
+                  v-bind="attrs"
+                  @click="snackbar = false"
+                  >
+                  Close
+               </v-btn>
+            </template>
+         </v-snackbar>
+      </v-container>
+   </div>
 </template>
 
 <script>
 import {  mapActions } from "vuex";
+import UWPathIcon from "../components/UWPathIcon"
 export default {
     name: "CourseSelection",
     components: {
+        UWPathIcon
     },
     data() {
         return {
