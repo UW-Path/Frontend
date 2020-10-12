@@ -86,7 +86,15 @@ export class CourseRequirement {
         else if (data.additional_requirements === "4A") this.year = 15;
         else if (data.additional_requirements === "4B") this.year = 16;
         else{
-            this.year = this.selected_course && this.selected_course.course_code !== "WAITING" ? this.selected_course.year : -1;
+            var possible_courses = this.course_codes_raw.split(/,\s|\sor\s|,/)
+            this.year = possible_courses[0].match(/\d/) ? possible_courses[0].match(/\d/)[0] : -1;
+            for (let possible_course of possible_courses) {
+                var courseNumberMatch = possible_course.match(/\d/);
+                if (!courseNumberMatch || this.year !== courseNumberMatch[0]) {
+                    this.year == -1;
+                    break;
+                }
+            }
         }
 
         this.clickedDelete = false;
