@@ -349,6 +349,7 @@ function getCoursesTable(state) {
         let t = [];
         for (let j = 0; j < state.table[i].courses.length; j++) {
             let courses = [];
+            courses.push(state.table[i].courses[j].course_codes_raw);
             if (!state.table[i].courses[j].selected_course) {
                 courses.push("WAITING");
             } else {
