@@ -98,7 +98,13 @@
        },
        created() {
             let promises = [];
-            let required_courses = this.course.course_codes_raw.split(/,\s|\sor\s|,/)
+            let required_courses = this.course.course_codes_raw.split(/,\s|\sor\s|,/);
+
+            // Set a temporary number_of_choices while we wait for the course choices to get loaded.
+            if (this.course.number_of_courses > 1) {
+                this.course.number_of_choices = this.course.number_of_courses;
+            }
+
             for (let course of required_courses) {
                 promises.push(this.parseRequirement(course))
             }
