@@ -109,8 +109,8 @@ export default {
         user_selected: true,
         inRequirementBar: false,
         number_of_courses: 1,
+        number_of_choices: 1,
         credits_required: 0.5,
-        course_choices: [customCourse],
         additional_requirements: "",
         prereqs_met: true,
       })
@@ -126,8 +126,8 @@ export default {
           user_selected: true,
           inRequirementBar: false,
           number_of_courses: 1,
+          number_of_choices: 1,
           credits_required: 0.5,
-          course_choices: [addedCourse],
           additional_requirements: "",
           prereqs_met: true,
       }

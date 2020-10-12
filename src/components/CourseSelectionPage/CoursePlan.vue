@@ -55,9 +55,9 @@ export default {
       editingEnabled: false,
       termHovered: -1,
       // Production Kubernetes API
-      backend_api: "",
+      //backend_api: "",
       // Dev API
-      // backend_api: "http://127.0.0.1:8000",
+      backend_api: "http://127.0.0.1:8000",
 
       allCourses: new TrieSearch(['course_code', 'course_number'], {
         idFieldOrFunction: function(course) {

@@ -16,7 +16,7 @@
                   <v-col align="center" v-if="isChoice()">
                      <v-text-field class="modal-search" v-model="searchtext" label="Search for a Course" prepend-inner-icon="mdi-magnify" hide-details="true" single-line outlined dense></v-text-field>
                      <div class="modal-course-list">
-                        <div class="modal-course" v-for="(course,index) in filteredCourses" :key="index"
+                        <div class="modal-course" v-bind:class="{ selectedCourseCode: course && selectedCourse && (selectedCourse.course_code === course.course_code) }" v-for="(course,index) in filteredCourses" :key="index"
                            v-on:click="selectedCourse = course">
                            {{course.course_code + ": " + course.course_name}}
                         </div>
@@ -70,6 +70,8 @@
 <script>
    import { mapMutations, mapActions } from "vuex";
    import CourseCard from "../Cards/CourseCard";
+   import axios from "axios";
+   import { CourseInfo } from '../../models/courseInfoModel'
    
    export default {
        name: "RequirementOptionsModal",
@@ -78,9 +80,14 @@
        },
        data () {
            return {
-               searchtext: "",
-               selectedCourse: this.course.selected_course && this.course.selected_course.course_code !== "WAITING" ? this.course.selected_course : this.course.course_choices[0],
-               dialog: false
+                dialog: false,
+                searchtext: "",
+                selectedCourse: this.course.selected_course && this.course.selected_course.course_code !== "WAITING" ? this.course.selected_course : undefined,
+                allCourseChoices: [],
+                // Production Kubernetes API
+                //backend_api: "",
+                // Dev API
+                backend_api: "http://127.0.0.1:8000",
            }
        },
        props: {
@@ -89,62 +96,218 @@
            courseIndex: Number,
            onSelectionBar: Boolean
        },
+       created() {
+            let promises = [];
+            let required_courses = this.course.course_codes_raw.split(/,\s|\sor\s|,/)
+            for (let course of required_courses) {
+                promises.push(this.parseRequirement(course))
+            }
+            Promise.all(promises).then(choices => {
+                for (let choice of choices) {
+                    this.allCourseChoices = this.allCourseChoices.concat(choice)
+                }
+                this.course.number_of_choices = this.allCourseChoices.length;
+                if ((this.allCourseChoices.length === 1) && (!this.course.selected_course || this.course.selected_course.course_code === "WAITING")) {
+                    this.course.selected_course = this.allCourseChoices[0];
+                }
+            })
+            .catch(error => { console.error(error) })
+       },
        methods: {
-           ...mapMutations(["validateCourses", "separateRequirement",  "removeRequirementFromTable", "addCourseRequirement", "sortRequirements", "updateCacheTime"]),
-           ...mapActions(["fillOutChecklist"]),
-           enableDialog() {
-               if (!this.course.clickedDelete) {
-                   this.selectedCourse = this.course.selected_course && this.course.selected_course.course_code !== "WAITING" ? this.course.selected_course : this.course.course_choices[0]
-                   this.dialog = true;
-               } else {
-                   if (!this.onSelectionBar) {
-               this.course.inRequirementBar = true;
-               this.removeRequirementFromTable(this.course);
-               if (this.course.major.length || this.course.minor.length || this.course.specialization.length) {
-                   this.addCourseRequirement(this.course);
-               }
-               this.sortRequirements();
-               }
-               else {
-                   this.course.hidden = true;
-               }
-                   this.course.clickedDelete = false;
-               }
-           },
-           selectCourse: function () {
-               this.updateCacheTime();
-               this.course.selected_course = this.selectedCourse;
-               this.separateRequirement(this.course);
-               this.validateCourses();
-               this.fillOutChecklist();
-               this.dialog = false;
-           },
-           deselectCourse() {
-               this.updateCacheTime();
-               this.course.deselect();
-               this.dialog = false;
-           },
-           isSelected: function(courseCode) {
-               if (!this.course.selected_course) return false;
-               return courseCode === this.course.selected_course.course_code;
-           },
-           isChoice: function() {
-               return this.course.course_choices.length > 1
-           },
-           close: function() {
-               let ok = "";
-               void ok
-           },
-           open: function() {
-               let ok = "";
-               void ok
-           }
+            ...mapMutations(["validateCourses", "separateRequirement",  "removeRequirementFromTable", "addCourseRequirement", "sortRequirements", "updateCacheTime"]),
+            ...mapActions(["fillOutChecklist"]),
+            enableDialog() {
+                if (!this.course.clickedDelete) {
+                    this.selectedCourse = this.course.selected_course && this.course.selected_course.course_code !== "WAITING" ? this.course.selected_course : this.allCourseChoices[0]
+                    this.dialog = true;
+                } else {
+                    if (!this.onSelectionBar) {
+                this.course.inRequirementBar = true;
+                this.removeRequirementFromTable(this.course);
+                if (this.course.major.length || this.course.minor.length || this.course.specialization.length) {
+                    this.addCourseRequirement(this.course);
+                }
+                this.sortRequirements();
+                }
+                else {
+                    this.course.hidden = true;
+                }
+                    this.course.clickedDelete = false;
+                }
+            },
+            selectCourse: function () {
+                this.updateCacheTime();
+                this.course.selected_course = this.selectedCourse;
+                this.separateRequirement(this.course);
+                this.validateCourses();
+                this.fillOutChecklist();
+                this.dialog = false;
+            },
+            deselectCourse() {
+                this.updateCacheTime();
+                this.course.deselect();
+                this.dialog = false;
+            },
+            isSelected: function(courseCode) {
+                if (!this.course.selected_course) return false;
+                return courseCode === this.course.selected_course.course_code;
+            },
+            isChoice: function() {
+                return this.course.number_of_choices > 1
+            },
+            close: function() {
+                let ok = "";
+                void ok
+            },
+            open: function() {
+                let ok = "";
+                void ok
+            },
+            // Fetch course information of a single course code or a course pattern (eg MATH 239 or PHYS 300-)
+            // requirement is the courseRequirement object that this course code belongs to
+            async parseRequirement(courseCode) {
+                let hasNumber = /\d/;
+                let response = null;
+                let parsedCourseInfos = [];
+                // 1. SPECIFIC CASES THAT DOES NOT PERTAIN TO A COURSE PATTERN
+                // Engineering specific/Program Elective
+                if (courseCode.includes("TE")){
+                    parsedCourseInfos = [{
+                        course_name: "Technical Elective",
+                        course_code: courseCode,
+                        info: "Please refer to degree requirement page for more information. (Click on program heading)",
+                        credit: 0.5,
+                    }];
+                }
+                else if (courseCode.includes("CSE")){
+                    parsedCourseInfos = [{
+                        course_name: "Complementary Studies Elective",
+                        course_code: courseCode,
+                        info: "Please refer to degree requirement page for more information. (Click on program heading)",
+                        credit: 0.5,
+                    }];
+                }
+                else if (courseCode.includes("Program Elective")){
+                    parsedCourseInfos = [{
+                        course_name: courseCode,
+                        course_code: courseCode.replace("Program Elective", "PE"),
+                        info: "Please refer to degree requirement page for more information. (Click on program heading)",
+                        credit: 0.5,
+                    }];
+                }
+                else if (courseCode.includes("WKRPT")){
+                    // Work Term Report
+                    parsedCourseInfos = [{ course_code: courseCode,
+                        course_name:'Work-term Report',
+                        info: "Work-term Report. Please refer to degree requirement page for more information. (Click on program heading)",
+                        credit: 0.5,
+                        online: false
+                    }];
+                }
+                // TODO: this should be a card if there exists more courses that are more than 1
+                else if (courseCode === "SCIENCE" || courseCode === "MATH" || courseCode === "LANGUAGE" || courseCode === "NON-MATH") {
+                    response = await axios.get(this.backend_api + "/api/course-info/filter", {
+                        params: {
+                            start: 0,
+                            end: 499,
+                            code: courseCode,
+                        }
+                    }).catch(error => { void error; return null });
+                    parsedCourseInfos = response.data;
+                } else if (courseCode.includes("Elective")) {
+                    response = await axios.get(this.backend_api + "/api/course-info/filter", {
+                        params: {
+                            start: 0,
+                            end: 1000,
+                            code: "none",
+                        }
+                    }).catch(error => { void error; return null });
+                    parsedCourseInfos = response.data;
+                }
+                // 2. QUERYABLE CASES
+                else if (!hasNumber.test(courseCode)){
+                    // Handles non numerical courses such as MATH, ACTSC
+                    response = await axios.get(this.backend_api + "/api/course-info/filter", {
+                        params: {
+                            start: 0,
+                            end: 499,
+                            code: courseCode,
+                        }
+                    }).catch(error => { void error; return null });
+                    parsedCourseInfos = response.data;
+                }
+                else if (courseCode[courseCode.length - 1] === "-") {
+                    // Handles X00's case, eg PHYS 300-
+                    let split = courseCode.split(" ");
+                    if(split[1] === "LAB"){
+                        response = await axios.get(this.backend_api + "/api/course-info/filter", {
+                            params: {
+                                start: Number(split[2].slice(0, -1)),
+                                end: Number(split[2].slice(0, -1)) + 99,
+                                code: split[0] + " " + split[1],
+                            }
+                        }).catch(error => { console.error(error) })
+                    }
+                    else{
+                        response = await axios.get(this.backend_api + "/api/course-info/filter", {
+                            params: {
+                                start: Number(split[1].slice(0, -1)),
+                                end: Number(split[1].slice(0, -1)) + 99,
+                                code: split[0],
+                            }
+                        }).catch(error => { console.error(error)  })
+                    }
+                    parsedCourseInfos = response.data;
+                }
+                else if (courseCode.split("-").length === 2 && courseCode.split("-")[0].length > 0 && courseCode.split("-")[1].length > 0) {
+                    // Handles range case, eg CS 440-CS 498
+                    let split = courseCode.split("-");
+                    response = await axios.get(this.backend_api + "/api/course-info/filter", {
+                        params: {
+                            start: Number(split[0].split(" ")[1]),
+                            end: Number(split[1].split(" ")[1]),
+                            code: split[0].split(" ")[0],
+                        }
+                    }).catch(error => { console.error(error) });
+                    parsedCourseInfos = response.data;
+                }
+                else if (courseCode.includes("W")){
+                    // Laurier course
+                    parsedCourseInfos = [{
+                        course_code: courseCode,
+                        info: "Information about this course is unavailable. Please refer to https://loris.wlu.ca/register/ssb/registration for more details.",
+                        online: false,
+                        credit: 0.5,
+                    }];
+                }
+                else if (courseCode.split(" ").length >= 1) {
+                    // Handles normal course case, ege MATH 239
+                    response = await axios.get(this.backend_api + "/api/course-info/get", {
+                        params: {
+                            pk: courseCode,
+                        }
+                    }).catch(error => { console.error(error) })
+                    parsedCourseInfos = [ response.data ];
+                }
+                else {
+                    parsedCourseInfos = [{
+                        course_code: courseCode,
+                        info: "Information about this course is unavailable.",
+                        online: false,
+                        credit: 0.5
+                    }];
+                }
+
+                return parsedCourseInfos.map(courseInfo => {
+                    return new CourseInfo(courseInfo);
+                });
+            }
        },
        computed: {
            filteredCourses: function () {
-               if (this.searchtext === "") return this.course.course_choices;
+               if (this.searchtext === "") return this.allCourseChoices;
                else {
-                   return this.course.course_choices.filter((choice => {
+                   return this.allCourseChoices.filter((choice => {
                        var matchCode = choice.course_code.toLowerCase().includes(this.searchtext.toLowerCase()) || choice.course_code.toLowerCase().includes(this.searchtext.toLowerCase())
                        var matchDescription = choice.info.toLowerCase().includes(this.searchtext.toLowerCase());
                        var matchName = choice.course_name.toLowerCase().includes(this.searchtext.toLowerCase());
@@ -153,7 +316,7 @@
                }
            },
            courseCodes: function () {
-               return this.course.course_choices.map(choice => {
+               return this.allCourseChoices.map(choice => {
                    return choice.course_code
                })
            },
@@ -164,72 +327,72 @@
    }
 </script>
 <style scoped>
-   .course-list-block {
-   display: flex;
-   width: 100%;
-   justify-content: center;
-   align-items: center;
-   overflow-y: hidden;
-   overflow-x: hidden;
-   margin-top: 5%;
-   }
-   .course-name {
-   padding-top: 0.5rem;
-   padding-bottom: 0.5rem;
-   color: rgb(51, 153, 255) !important;
-   }
-   .course-info-subheading {
-   padding-top: 0px;
-   }
-   .overline {
-   color: red;
-   display: flex;
-   align-items: center;
-   justify-content: space-between;
-   }
-   .select-btn {
-   padding: 0.5rem 0.5rem !important;
-   border: transparent;
-   }
-   .course-description-text {
-   margin: 0px;
-   padding-top: 5px;
-   padding-bottom: 5px;
-   }
-   .modal-actions {
-   position: absolute;
-   right: 0px;
-   }
-   .modal-course-list-row {
-   height: 100%;
-   width: 100%;
-   }
-   .modal-course-list-container {
-   margin: 0px;
-   }
-   .modal-search {
-   width: 90%;
-   }
-   .modal-course-list {
-   margin-top: 1rem;
-   /* margin-bottom: 1rem; */
-   width: 90%;
-   max-height: 500px;
-   /* height:auto; */
-   overflow-y: auto;
-   }
-   .modal-course {
-   margin-top: 5%;
-   text-align: left;
-   }
-   .modal-course:hover {
-   cursor: pointer;
-   font-weight: 550;
-   }
-   .course-title {
-   padding-top: 0px;
-   }
-   .selected-course-code {
-   font-weight: bold;
-   }
+.course-list-block {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    margin-top: 5%;
+}
+.course-name {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    color: rgb(51, 153, 255) !important;
+}
+.course-info-subheading {
+    padding-top: 0px;
+}
+.overline {
+    color: red;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.select-btn {
+    padding: 0.5rem 0.5rem !important;
+    border: transparent;
+}
+.course-description-text {
+    margin: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.modal-actions {
+    position: absolute;
+    right: 0px;
+}
+.modal-course-list-row {
+    height: 100%;
+    width: 100%;
+}
+.modal-course-list-container {
+    margin: 0px;
+}
+.modal-search {
+    width: 90%;
+}
+.modal-course-list {
+    margin-top: 1rem;
+    /* margin-bottom: 1rem; */
+    width: 90%;
+    max-height: 500px;
+    /* height:auto; */
+    overflow-y: auto;
+}
+.modal-course {
+    margin-top: 5%;
+    text-align: left;
+}
+.modal-course:hover {
+    cursor: pointer;
+    font-weight: 600;
+}
+.selectedCourseCode {
+    font-weight: 600;
+}
+.course-title {
+    padding-top: 0px;
+}
 </style>

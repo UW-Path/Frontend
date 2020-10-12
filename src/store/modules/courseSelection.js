@@ -4,10 +4,10 @@ import { CourseRequirement } from "../../models/courseRequirementModel";
 import * as download from "downloadjs";
 
 // Production Kubernetes API
-const backend_api = "";
+// const backend_api = "";
 
 // Dev API
-// const backend_api = "http://127.0.0.1:8000";
+const backend_api = "http://127.0.0.1:8000";
 
 const mathCourses = ["ACTSC", "AMATH", "CO", "COMM", "CS", "MATH", "MTHEL", "MATBUS", "PMATH", "SE", "STATE"];
 const nonMathCourses = ["NON-MATH", "AFM", "ASL", "ANTH", "AHS", "APPLS", "ARABIC", "AE", "ARCH", "ARTS", "ARBUS", "AVIA", "BIOL", "BME", "BASE", "BUS", "BET", "CDNST", "CHE", "CHEM", "CHINA", "CMW", "CIVE", "CLAS", "COGSCI", "CROAT", "CI", "DAC", "DUTCH", "EARTH", "EASIA", "ECON", "ECE", "ENGL", "EMLS", "ENBUS", "ERS", "ENVE", "ENVS", "FINE", "FR", "GSJ", "GENE", "GEOG", "GEOE", "GER", "GERON", "GBDA", "GRK", "HLTH", "HIST", "HRM", "HRTS", "HUMSC", "INDG", "INDEV", "INTST", "ITAL", "ITALST", "JAPAN", "JS", "KIN", "INTEG", "KOREA", "LAT", "LS", "MGMT", "MSCI", "MNS", "ME", "MTE", "MEDVL", "MENN", "MOHAWK", "MUSIC", "NE", "OPTOM", "PACS", "PHARM", "PHIL", "PHYS", "PLAN", "PSCI", "PORT", "PSYCH", "PMATH", "REC", "RS", "RUSS", "REES", "SCI", "SCBUS", "SMF", "SDS", "SVENT", "SOCWK", "SWREN", "STV", "SOC", "SPAN", "SPCOM", "SI", "SYDE", "THPERF", "VCULT"];
@@ -349,9 +349,6 @@ function getCoursesTable(state) {
         let t = [];
         for (let j = 0; j < state.table[i].courses.length; j++) {
             let courses = [];
-            for (let k = 0; k < state.table[i].courses[j].course_choices.length; k++) {
-                courses.push(state.table[i].courses[j].course_choices[k].course_code);
-            }
             if (!state.table[i].courses[j].selected_course) {
                 courses.push("WAITING");
             } else {
@@ -545,7 +542,7 @@ const mutations = {
             });
             for (let requirement of state.table[i].courses) {
                 // If course has no prereq, then course can be taken
-                if (requirement.course_choices.length == 1 && requirement.course_choices[0].prereqs.length === 0){
+                if (requirement.selected_course.course_code !== "WAITING" && requirement.selected_course.prereqs.length === 0){
                     requirement.prereqs_met = true;
                 }
                 //there if course has not been selected yet then dont do anything

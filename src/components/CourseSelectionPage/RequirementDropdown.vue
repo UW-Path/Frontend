@@ -122,11 +122,11 @@ export default {
 		//card is not cloned if it only has one list and that
 		pullFunction: function() {
 			return this.lastClickdownReq.number_of_courses === 1 ||
-					this.lastClickdownReq.course_choices.length === 1 ? true : "clone";
+					this.lastClickdownReq.number_of_choices === 1 ? true : "clone";
 		},
 		//event when card is removed
 		clone: function(event) {
-			if (event.course_choices.length === 1) {
+			if (event.number_of_choices === 1) {
 				return event;
 			}
 			//create a shallow copy of the requirement
