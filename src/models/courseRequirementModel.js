@@ -94,7 +94,7 @@ export class CourseRequirement {
             for (let possible_course of possible_courses) {
                 var courseNumberMatch = possible_course.match(/\d/);
                 if (!courseNumberMatch || this.year !== courseNumberMatch[0]) {
-                    this.year == -1;
+                    this.year = -1;
                     break;
                 }
             }
