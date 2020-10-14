@@ -116,7 +116,7 @@ export default {
 }
 
 .autocomplete-container {
-    max-width: 525px;
+    max-width: 600px;
     width:100%;
     min-width: 525px;
 }
