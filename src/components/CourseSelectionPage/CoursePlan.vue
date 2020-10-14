@@ -113,7 +113,7 @@ export default {
       let changedReq = event.added.element;
       if (changedReq.number_of_courses > 1 && changedReq.inRequirementBar) {
         changedReq.number_of_courses = 1;
-        this.decrementRequirementID(changedReq.id)
+        this.decrementRequirementID(changedReq.original_requirement_id)
       }
       changedReq.inRequirementBar = false;
     }

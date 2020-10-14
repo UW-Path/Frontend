@@ -122,8 +122,7 @@ export default {
 		...mapMutations(["sortRequirements", "updateCacheTime"]),
 		//card is not cloned if it only has one list and that
 		pullFunction: function() {
-			return this.lastClickdownReq.number_of_courses === 1 ||
-					this.lastClickdownReq.number_of_choices === 1 ? true : "clone";
+			return this.lastClickdownReq.number_of_courses === 1 || this.lastClickdownReq.number_of_choices === 1 ? true : "clone";
 		},
 		//event when card is removed
 		clone: function(event) {

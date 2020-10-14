@@ -66,6 +66,7 @@ export class CourseRequirement {
         this.credits_required = data ? data.credits_required : 0        
         this.overridden = data && data.overridden ? data.overridden : false;
         this.id = data && data.id ? data.id : REQUIREMENT_ID++;
+        this.original_requirement_id = data && data.original_requirement_id ? data.original_requirement_id : this.id;
         this.inRequirementBar = data && !(data.inRequirementBar == null) ? data.inRequirementBar : true;
         this.prereqs_met = data && data.prereqs_met ? data.prereqs_met : false;
         this.validation_message = data && data.validation_message ? data.validation_message : ""; // Error message when prereq not met
