@@ -2,12 +2,7 @@ import axios from "axios";
 import { CourseRequirement, YEAR_TO_REQ_SECTION_MAP} from '../../models/courseRequirementModel'
 import { MajorRequirement, OtherRequirement } from '../../models/ProgramModel'
 import { CourseInfo } from '../../models/courseInfoModel'
-
-// Production Kubernetes API
-const backend_api = "";
-
-// Dev API
-// const backend_api = "http://127.0.0.1:8000";
+import { backend_api } from '../../backendAPI';
 
 // Fetch course information of a single course code or a course pattern (eg MATH 239 or PHYS 300-)
 // requirement is the courseRequirement object that this course code belongs to
