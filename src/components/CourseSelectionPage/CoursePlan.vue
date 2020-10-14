@@ -40,7 +40,8 @@ import RequirementOptionsModal from '../Modals/RequirementOptionsModal'
 import AddCourseCard from "../Cards/AddCourseCard"
 import TrieSearch from 'trie-search';
 import axios from 'axios';
-import { CourseInfo } from '../../models/courseInfoModel'
+import { CourseInfo } from '../../models/courseInfoModel';
+import { backend_api } from '../../backendAPI';
 
 export default {
   name: "CoursePlan",
@@ -54,11 +55,6 @@ export default {
     return {
       editingEnabled: false,
       termHovered: -1,
-      // Production Kubernetes API
-      //backend_api: "",
-      // Dev API
-      backend_api: "http://127.0.0.1:8000",
-
       allCourses: new TrieSearch(['course_code', 'course_number'], {
         idFieldOrFunction: function(course) {
           return course.course_id + course.course_code;
@@ -67,7 +63,7 @@ export default {
     };
   },
   mounted() {
-    axios.get(this.backend_api + "/api/course-info/filter", {
+    axios.get(backend_api + "/api/course-info/filter", {
       params: {
         start: 0,
         end: 1000,
@@ -79,7 +75,7 @@ export default {
         if (course1.course_code < course2.course_code) return -1;
         else if (course1.course_code > course2.course_code) 1;
         else return 0;
-      })
+      });
       this.allCourses.addAll(response.data.map(course => {
         return new CourseInfo(course)
       }));

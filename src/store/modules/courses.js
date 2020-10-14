@@ -1,12 +1,7 @@
 import axios from "axios";
 import { CourseRequirement, YEAR_TO_REQ_SECTION_MAP} from '../../models/courseRequirementModel'
 import { MajorRequirement, OtherRequirement } from '../../models/ProgramModel'
-
-// Production Kubernetes API
-// const backend_api = "";
-
-// Dev API
-const backend_api = "http://127.0.0.1:8000";
+import { backend_api } from '../../backendAPI';
 
 const state = {
     majorRequirements: [],
