@@ -10,7 +10,7 @@ import * as download from "downloadjs";
 const backend_api = "http://127.0.0.1:8000";
 
 const mathCourses = ["ACTSC", "AMATH", "CO", "COMM", "CS", "MATH", "MTHEL", "MATBUS", "PMATH", "SE", "STATE"];
-const nonMathCourses = ["NON-MATH", "AFM", "ASL", "ANTH", "AHS", "APPLS", "ARABIC", "AE", "ARCH", "ARTS", "ARBUS", "AVIA", "BIOL", "BME", "BASE", "BUS", "BET", "CDNST", "CHE", "CHEM", "CHINA", "CMW", "CIVE", "CLAS", "COGSCI", "CROAT", "CI", "DAC", "DUTCH", "EARTH", "EASIA", "ECON", "ECE", "ENGL", "EMLS", "ENBUS", "ERS", "ENVE", "ENVS", "FINE", "FR", "GSJ", "GENE", "GEOG", "GEOE", "GER", "GERON", "GBDA", "GRK", "HLTH", "HIST", "HRM", "HRTS", "HUMSC", "INDG", "INDEV", "INTST", "ITAL", "ITALST", "JAPAN", "JS", "KIN", "INTEG", "KOREA", "LAT", "LS", "MGMT", "MSCI", "MNS", "ME", "MTE", "MEDVL", "MENN", "MOHAWK", "MUSIC", "NE", "OPTOM", "PACS", "PHARM", "PHIL", "PHYS", "PLAN", "PSCI", "PORT", "PSYCH", "PMATH", "REC", "RS", "RUSS", "REES", "SCI", "SCBUS", "SMF", "SDS", "SVENT", "SOCWK", "SWREN", "STV", "SOC", "SPAN", "SPCOM", "SI", "SYDE", "THPERF", "VCULT"];
+const nonMathCourses = ["AFM", "ASL", "ANTH", "AHS", "APPLS", "ARABIC", "AE", "ARCH", "ARTS", "ARBUS", "AVIA", "BIOL", "BME", "BASE", "BUS", "BET", "CDNST", "CHE", "CHEM", "CHINA", "CMW", "CIVE", "CLAS", "COGSCI", "CROAT", "CI", "DAC", "DUTCH", "EARTH", "EASIA", "ECON", "ECE", "ENGL", "EMLS", "ENBUS", "ERS", "ENVE", "ENVS", "FINE", "FR", "GSJ", "GENE", "GEOG", "GEOE", "GER", "GERON", "GBDA", "GRK", "HLTH", "HIST", "HRM", "HRTS", "HUMSC", "INDG", "INDEV", "INTST", "ITAL", "ITALST", "JAPAN", "JS", "KIN", "INTEG", "KOREA", "LAT", "LS", "MGMT", "MSCI", "MNS", "ME", "MTE", "MEDVL", "MENN", "MOHAWK", "MUSIC", "NE", "OPTOM", "PACS", "PHARM", "PHIL", "PHYS", "PLAN", "PSCI", "PORT", "PSYCH", "PMATH", "REC", "RS", "RUSS", "REES", "SCI", "SCBUS", "SMF", "SDS", "SVENT", "SOCWK", "SWREN", "STV", "SOC", "SPAN", "SPCOM", "SI", "SYDE", "THPERF", "VCULT"];
 const scienceCourses = ["BIOL", "CHEM", "EARTH", "MNS", "OPTOM", "PHARM", "PHYS", "SCI", "SCBUS"]
 const electiveCourses = ["ACTSC", "AMATH", "CO", "COMM", "CS", "MATH", "MTHEL", "MATBUS", "PMATH", "SE", "STATE", "NON-MATH", "AFM", "ASL", "ANTH", "AHS", "APPLS", "ARABIC", "AE", "ARCH", "ARTS", "ARBUS", "AVIA", "BIOL", "BME", "BASE", "BUS", "BET", "CDNST", "CHE", "CHEM", "CHINA", "CMW", "CIVE", "CLAS", "COGSCI", "CROAT", "CI", "DAC", "DUTCH", "EARTH", "EASIA", "ECON", "ECE", "ENGL", "EMLS", "ENBUS", "ERS", "ENVE", "ENVS", "FINE", "FR", "GSJ", "GENE", "GEOG", "GEOE", "GER", "GERON", "GBDA", "GRK", "HLTH", "HIST", "HRM", "HRTS", "HUMSC", "INDG", "INDEV", "INTST", "ITAL", "ITALST", "JAPAN", "JS", "KIN", "INTEG", "KOREA", "LAT", "LS", "MGMT", "MSCI", "MNS", "ME", "MTE", "MEDVL", "MENN", "MOHAWK", "MUSIC", "NE", "OPTOM", "PACS", "PHARM", "PHIL", "PHYS", "PLAN", "PSCI", "PORT", "PSYCH", "PMATH", "REC", "RS", "RUSS", "REES", "SCI", "SCBUS", "SMF", "SDS", "SVENT", "SOCWK", "SWREN", "STV", "SOC", "SPAN", "SPCOM", "SI", "SYDE", "THPERF", "VCULT"];
 const languageCourses = ["ARABIC", "CHINA", "CROAT", "DUTCH", "FR", "GER", "GRK", "ITAL", "JAPAN", "KOREA", "LAT", "PORT", "RUSS", "SPAN"]
@@ -91,7 +91,7 @@ function getRequirementFullfillmentSize(requirement) {
 }
 
 function ParseRequirementsForChecklist(requirements, selectedCourses, programInfo) {
-    var usedCourses = new TrieSearch([['selected_course', 'course_code'], ['selected_course', 'course_number']], {
+    var usedCourses = new TrieSearch([['selected_course', 'course_code'], ['selected_course', 'course_number'], ['course_codes_raw']], {
         idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
     });
     // Since a single course could apply to multiple different requirements, we need to keep track of
@@ -114,7 +114,19 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
         let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
         let numMatchedCredits = 0;
         let matchedCourses = [];
+
+        // See if any unselected requirements match
+        let unselectedMatches = selectedCourses.get(requirement.course_codes);
+        let usedUnselectedMatches = usedCourses.get(requirement.course_codes);
+
+        if (unselectedMatches.length - usedUnselectedMatches.length > 0) {
+            let unselectedCreditsUsed = Math.min(0.5 * (unselectedMatches.length - usedUnselectedMatches.length), requirement.credits_required);
+            numMatchedCredits += unselectedCreditsUsed;
+            matchedCourses = matchedCourses.concat(unselectedMatches.slice(0, unselectedCreditsUsed * 2));
+        }
+
         for (let course of required_courses) {
+            if ((numMatchedCredits >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
             if (course === "Elective") {
                 let possibleMatches = selectedCourses.get(electiveCourses)
                 for (let match of possibleMatches) {
@@ -233,6 +245,17 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
         var required_courses = requirement.course_codes.split(/,\s|\sor\s/)
         requirement.credits_of_prereqs_met = 0;
         var matchedCourses = [];
+
+        // See if any unselected requirements match
+        let unselectedMatches = selectedCourses.get(requirement.course_codes);
+        let usedUnselectedMatches = usedCourses.get(requirement.course_codes);
+
+        if (unselectedMatches.length - usedUnselectedMatches.length > 0) {
+            let unselectedCreditsUsed = Math.min(0.5 * (unselectedMatches.length - usedUnselectedMatches.length), requirement.credits_required);
+            requirement.credits_of_prereqs_met += unselectedCreditsUsed;
+            matchedCourses = matchedCourses.concat(unselectedMatches.slice(0, unselectedCreditsUsed * 2));
+        }
+
         for (let course of required_courses) {
             if (course === "Elective") {
                 let possibleMatches = selectedCourses.get(electiveCourses)
@@ -401,7 +424,7 @@ const actions = {
                 }
             });
 
-            var selectedCourses = new TrieSearch([['selected_course', 'course_code'], ['selected_course', 'course_number']], {
+            var selectedCourses = new TrieSearch([['selected_course', 'course_code'], ['selected_course', 'course_number'], ['course_codes_raw']], {
                 idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
             });
             for (let term of getters.getTable) {

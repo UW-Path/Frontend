@@ -102,6 +102,7 @@ import RequirementOptionsModal from "../Modals/RequirementOptionsModal";
 import { CourseRequirement } from "../../models/courseRequirementModel";
 import { SECTION_TO_DISPLAY_TITLE_MAP } from "../../models/ProgramModel";
 import ZingTouch from 'zingtouch';
+import { v4 as uuidv4 } from 'uuid';
 
 export default {
 	name: "RequirementDropdown",
@@ -130,7 +131,9 @@ export default {
 				return event;
 			}
 			//create a shallow copy of the requirement
-			return new CourseRequirement({...event});
+			var clonedRequirement = new CourseRequirement({...event});
+			clonedRequirement.id = uuidv4();
+			return clonedRequirement;
 		},
 		//event when card is added
 		change: function(event) {
