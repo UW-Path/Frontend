@@ -10,10 +10,10 @@
           </v-btn>
         </div>
         <draggable class="list-group draggable-column" :disabled="editingEnabled" :list="term.courses" group="course" @change="change"> 
-          <template v-for="(requirement, courseIndex) in term.courses">
+          <template v-for="(requirement) in term.courses">
             <RequirementOptionsModal
               class="list-group-item card"
-              :key="courseIndex"
+              :key="requirement.id"
               :course="requirement"
               :onSelectionBar="false"
             />
