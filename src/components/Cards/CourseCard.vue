@@ -60,7 +60,7 @@
               </v-tooltip>
             </div>
             <v-spacer></v-spacer>
-            <v-btn icon class="delete-btn" @click="deleteCourse()" />
+            <v-icon icon class="delete-btn" x-small @click="deleteCourse()" >mdi-close</v-icon>
           </div>
           <v-list-item-title class="course-title">
             {{ courseData.selected_course.course_code }}
@@ -88,7 +88,7 @@
           <div class="overline mb-1">
             <div  v-if="courseData.course_choices.length > 1"> Select {{courseData.number_of_courses}} </div> 
             <v-spacer></v-spacer>
-            <v-btn icon class="delete-btn" x-small @click="deleteCourse()" />
+            <v-icon icon class="delete-btn" x-small @click="deleteCourse()" >mdi-close</v-icon>
           </div>
           <div v-if="courseData.course_codes.length <= 3">
             <template v-for="(code, index) in courseData.course_codes" >
@@ -149,6 +149,7 @@ export default {
   text-align: center;
   height: 1.6em !important;
   font-size: 0.8em !important;
+  letter-spacing: normal !important;
 }
 
 .card {
@@ -163,18 +164,13 @@ export default {
 }
 
 .delete-btn {
-  border: solid;
-  border-color: black;
   display: block;
-  border-width: thin;
   margin: 0px;
-  height: 0.65rem !important;
-  width: 0.65rem !important;
   right: 2%;
 }
 
 .delete-btn:hover {
-  background-color: rgb(255, 122, 122);
+  color: rgb(255, 122, 122);
 }
 
 .course_card_prereqs_met {

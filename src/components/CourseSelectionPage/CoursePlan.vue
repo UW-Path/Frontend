@@ -6,7 +6,7 @@
         <v-card class="col-sm-3 col-md-2 term-column" :key="termIndex" @mouseenter="termMouseOver(termIndex)" @mouseleave="termMouseExit()">
         <div class="default-font term-title">{{ getTermList[termIndex] }}
           <v-btn icon class="delete-btn" x-small @click="deleteTerm(term)">
-            <v-icon medium class="delete-term-btn" v-if="termHovered == termIndex">mdi-trash-can</v-icon>
+            <v-icon medium class="delete-term-btn" v-if="termHovered == termIndex || checkMobile()">mdi-trash-can</v-icon>
           </v-btn>
         </div>
         <draggable class="list-group draggable-column" :disabled="editingEnabled" :list="term.courses" group="course" @change="change"> 
@@ -18,7 +18,7 @@
               :onSelectionBar="false"
             />
           </template>
-          <AddCourseCard :termIndex="termIndex" :allCourses="allCourses" v-show="termHovered === termIndex"/>
+          <AddCourseCard :termIndex="termIndex" :allCourses="allCourses" v-show="termHovered === termIndex || checkMobile()"/>
 
         </draggable>
       </v-card >
@@ -41,6 +41,7 @@ import AddCourseCard from "../Cards/AddCourseCard"
 import TrieSearch from 'trie-search';
 import axios from 'axios';
 import { CourseInfo } from '../../models/courseInfoModel'
+import isMobile from 'ismobilejs';
 
 export default {
   name: "CoursePlan",
@@ -87,6 +88,7 @@ export default {
     .catch(error => { console.error(error) })
   },
   methods: {
+    
     ...mapMutations(["addTermToTable", "deleteTermFromTable", "addCourseRequirement",
       "validateCourses", "decrementRequirementID", "updateCacheTime"]),
     ...mapActions(["fillOutChecklist"]),
@@ -116,6 +118,9 @@ export default {
         this.decrementRequirementID(changedReq.id)
       }
       changedReq.inRequirementBar = false;
+    },
+    checkMobile() {
+      return isMobile(window.navigator).any
     }
   },
   computed: {
@@ -129,7 +134,7 @@ export default {
   .main-course-selection-panel {
     overflow-x: auto;
     overflow-y: auto;
-    width: 100%;
+    max-width: 100%;
   }
 
   .course-plan-container{
