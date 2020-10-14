@@ -83,20 +83,18 @@
             </div>
             <div class="row">
                <div class="col">
-                  <v-avatar color="grey" size="200"></v-avatar>
+                  <v-avatar color="grey" size="200">
+                      <img src="../assets/kevinf.jpeg" alt="Kevin">
+                  </v-avatar>
                </div>
                <div class="col-12 col-lg-9" style="text-align:left">
                   <h3>Front-End Developer - Kevin Feng</h3>
-                  <a href="" target="_blank">Linkedin</a> | <a href="" target="_blank">Website</a>
+                  <a href="https://www.linkedin.com/in/wen-liang-feng/" target="_blank">Linkedin</a> | <a href="https://kevinfwl.com/" target="_blank">Website</a> | <a href="https://www.strava.com/athletes/57015798" target="_blank">Strava</a>
                   <p>
-                     <br/>
-                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                     Nulla in enim ex. Proin suscipit tincidunt quam, quis convallis nulla interdum id. 
-                     In hac habitasse platea dictumst. Mauris tincidunt arcu id porttitor maximus. 
-                     Mauris sit amet metus eget tellus vestibulum facilisis ut at lectus. 
-                     Pellentesque velit nibh, aliquam sed nisi eu, feugiat porta erat. 
-                     Curabitur quis tincidunt enim. Curabitur ornare elementum lacus, sed tempus nisl consectetur scelerisque. 
-                     Sed nec condimentum nisl, vel ultrices velit. 
+                     Kevin is a 3rd year student computer science student currently pursuing a minor in combinatorics and optimization.  
+                     His main area of interest is in software security, but has experience in full stack development, distributed systems and blockchain. 
+                     <br/><br/>
+                     Outside of classes, Kevin is an avid badminton player, mid distance runner and biker. Feel free to check out his Strava! 
                   </p>
                </div>
             </div>
