@@ -222,11 +222,11 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
             usedCourses.addAll(matchedCourses);
             for (let match of matchedCourses) {
                 if (programInfo.plan_type === "Major") {
-                    match.major = [programInfo];
+                    match.satisfiesMajorReq = true;
                 } else if (programInfo.plan_type === "Minor") {
-                    match.minor = [programInfo];
+                    match.satisfiesMinorReq = true;
                 } else if (programInfo.plan_type === "Specialization") {
-                    match.specialization = [programInfo];
+                    match.satisfiesSpecializationReq = true;
                 }
             }
         }
@@ -356,11 +356,11 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
         }
         for (let match of matchedCourses) {
             if (programInfo.plan_type === "Major") {
-                match.major = [programInfo];
+                match.satisfiesMajorReq = true;
             } else if (programInfo.plan_type === "Minor") {
-                match.minor = [programInfo];
+                match.satisfiesMinorReq = true;
             } else if (programInfo.plan_type === "Specialization") {
-                match.specialization = [programInfo];
+                match.satisfiesSpecializationReq = true;
             }
         }
         parsed_requirements.push(new CourseRequirement(requirement));
@@ -401,7 +401,7 @@ const actions = {
                 'text/csv'
             );
         }).catch(function (error) {
-            console.log(error);
+            console.error(error);
         });
     },
     fillOutChecklist({ commit, getters }) {
@@ -432,9 +432,9 @@ const actions = {
             for (let term of getters.getTable) {
                 selectedCourses.addAll(term.courses)
                 for (let course of term.courses) {
-                    course.major = [];
-                    course.minor = [];
-                    course.specialization = [];
+                    course.satisfiesMajorReq = false;
+                    course.satisfiesMinorReq = false;
+                    course.satisfiesSpecializationReq = false;
                 }
             }
 
