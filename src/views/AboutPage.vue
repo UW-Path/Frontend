@@ -73,11 +73,11 @@
                   <p>
                      <br/>
                      Calder is a former pro hockey player turned musician turned film creator turned computer scientist.
-                     Outside of school, Calder spends most of his time playing basketball, writing music or improving
-                     his slightly above mediocre chess skills.
-                     <br/><br/>
                      He currently specializes in Infrastructure Engineering, but has worked on a variety of projects
                      that include machine learning, website design, software security, computer networks and much more.
+                     <br/><br/>
+                     Outside of school, Calder spends most of his time playing basketball, writing music or improving
+                     his slightly above mediocre chess skills.
                   </p>
                </div>
             </div>
@@ -113,25 +113,6 @@
                      After experimenting with several ideas on his own, Adrian joined UWPath to help bring their plan to life.
                      <br/><br/>
                      Adrian has also been spotted running around campus hunting for zombies in his free time.
-                  </p>
-               </div>
-            </div>
-            <div class="row">
-               <div class="col">
-                  <v-avatar color="grey" size="200"></v-avatar>
-               </div>
-               <div class="col-12 col-lg-9" style="text-align:left">
-                  <h3>Designer - Elizabeth Tam</h3>
-                  <a href="" target="_blank">Linkedin</a> | <a href="" target="_blank">Website</a>
-                  <p>
-                     <br/>
-                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                     Nulla in enim ex. Proin suscipit tincidunt quam, quis convallis nulla interdum id. 
-                     In hac habitasse platea dictumst. Mauris tincidunt arcu id porttitor maximus. 
-                     Mauris sit amet metus eget tellus vestibulum facilisis ut at lectus. 
-                     Pellentesque velit nibh, aliquam sed nisi eu, feugiat porta erat. 
-                     Curabitur quis tincidunt enim. Curabitur ornare elementum lacus, sed tempus nisl consectetur scelerisque. 
-                     Sed nec condimentum nisl, vel ultrices velit. 
                   </p>
                </div>
             </div>
