@@ -76,11 +76,11 @@ a:hover {
 }
 
 .logo{
-    margin-right:1.2em
+    margin-right:0.3em !important
 }
 
 .margin{
-    margin-left:0.5em
+    margin-left:0
 }
 
 

@@ -25,7 +25,7 @@
                             height="3rem"
                             color="black"
                         ></v-autocomplete>
-                        <div class="findprogram" @click="findProgram()" v-if="!inConfirmation"><span class="link">Can't find your program?</span></div>
+                        <div class="findprogram" v-if="!inConfirmation"><span @click="findProgram()" class="link">Can't find your program?</span></div>
                     </div>
 
                     <div v-if="inConfirmation">

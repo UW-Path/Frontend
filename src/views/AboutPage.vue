@@ -18,7 +18,7 @@
             <br>
             <h1>Our Story</h1>
             <br>
-            <p class="mission-text" data-aos="fade" data-aos-duration="1000">
+            <p class="mission-text" data-aos="fade" data-aos-duration="2500">
                UWPath started with a bold idea. Every term, students have to plan out their courses in order to make
                sure they graduate with all their major, minor and specialization requirements.
                What if there's a website that allows you to plan your degree accordingly - just like how you plan your class schedule every 
