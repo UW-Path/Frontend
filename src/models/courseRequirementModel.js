@@ -1,4 +1,3 @@
-import { CourseInfo } from "./courseInfoModel";
 import { ProgramInfo } from "./ProgramInfoModel";
 
 var REQUIREMENT_ID = 10000;
@@ -29,39 +28,35 @@ export const YEAR_TO_REQ_SECTION_MAP = {
 export class CourseRequirement {
     constructor(data) {
         this.number_of_courses = data && data.number_of_courses? data.number_of_courses : 0;
-        this.course_choices = data && data.course_choices ? data.course_choices : [];
+        if (data && data.course_codes_raw) {
+            this.course_codes_raw = data.course_codes_raw;
+        } else if (data && data.course_codes) {
+            this.course_codes_raw = data.course_codes;
+        } else {
+            this.course_codes_raw = "";
+        }
         // if part of SCIENCE, ARTS, MATH ...
         this.group = data && data.group ? data.group: "";
-        for (var i in this.course_choices) {
-            // eslint-disable-next-line valid-typeof
-            if (typeof this.course_choices[i] !== "CourseInfo") {
-                this.course_choices[i] = new CourseInfo({...this.course_choices[i]})
-            }
-        }
-        this.course_codes = this.course_choices.map(choice => {
-            return choice.course_code
-        });
-        this.course_codes_raw = data && data.course_codes ? data.course_codes : "";
-        if (data && data.course_choices && data.course_choices.length === 1) this.selected_course = data.course_choices[0];
-        else if (data && data.selected_course) this.selected_course = data.selected_course;
+        this.number_of_choices = data && data.course_codes_raw ? data.course_codes_raw.split(/,\s|\sor\s|,/).length : 0;
+        if (data && data.selected_course) this.selected_course = data.selected_course;
         else this.selected_course = {course_code: "WAITING", course_number: 42};
 
         this.major = data && data.major ? data.major : [];
-        for (i in this.major) {
+        for (let i in this.major) {
             // eslint-disable-next-line valid-typeof
             if (typeof this.major[i] !== "ProgramInfo") {
                 this.major[i] = new ProgramInfo({...this.major[i]})
             }
         }
         this.minor = data && data.minor ? data.minor : [];
-        for (i in this.minor) {
+        for (let i in this.minor) {
             // eslint-disable-next-line valid-typeof
             if (typeof this.minor[i] !== "ProgramInfo") {
                 this.minor[i] = new ProgramInfo({...this.minor[i]})
             }
         }
         this.specialization = data && data.specialization ? data.specialization : [];
-        for (i in this.specialization) {
+        for (let i in this.specialization) {
             // eslint-disable-next-line valid-typeof
             if (typeof this.specialization[i] !== "ProgramInfo") {
                 this.specialization[i] = new ProgramInfo({...this.specialization[i]})
@@ -71,6 +66,7 @@ export class CourseRequirement {
         this.credits_required = data ? data.credits_required : 0        
         this.overridden = data && data.overridden ? data.overridden : false;
         this.id = data && data.id ? data.id : REQUIREMENT_ID++;
+        this.original_requirement_id = data && data.original_requirement_id ? data.original_requirement_id : this.id;
         this.inRequirementBar = data && !(data.inRequirementBar == null) ? data.inRequirementBar : true;
         this.prereqs_met = data && data.prereqs_met ? data.prereqs_met : false;
         this.validation_message = data && data.validation_message ? data.validation_message : ""; // Error message when prereq not met
@@ -93,8 +89,15 @@ export class CourseRequirement {
         else if (data.additional_requirements === "4A") this.year = 15;
         else if (data.additional_requirements === "4B") this.year = 16;
         else{
-            this.year = this.course_choices.length ? this.course_choices[0].year : -1;
-            for(let course of this.course_choices) if (course.year !== this.year) this.year = -1;
+            var possible_courses = this.course_codes_raw.split(/,\s|\sor\s|,/)
+            this.year = possible_courses[0].match(/\d/) ? possible_courses[0].match(/\d/)[0] : -1;
+            for (let possible_course of possible_courses) {
+                var courseNumberMatch = possible_course.match(/\d/);
+                if (!courseNumberMatch || this.year !== courseNumberMatch[0]) {
+                    this.year = -1;
+                    break;
+                }
+            }
         }
 
         this.clickedDelete = false;
@@ -102,7 +105,7 @@ export class CourseRequirement {
     }
 
     deselect() {
-        if (this.course_choices.length === 1) return;
+        if (this.number_of_choices === 1) return;
         this.selected_course = {course_code: "WAITING", course_number: 42}
     }
 

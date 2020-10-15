@@ -10,10 +10,10 @@
           </v-btn>
         </div>
         <draggable class="list-group draggable-column" :disabled="editingEnabled" :list="term.courses" group="course" @change="change"> 
-          <template v-for="(requirement, courseIndex) in term.courses">
+          <template v-for="(requirement) in term.courses">
             <RequirementOptionsModal
               class="list-group-item card"
-              :key="courseIndex"
+              :key="requirement.id"
               :course="requirement"
               :onSelectionBar="false"
             />
@@ -56,7 +56,6 @@ export default {
     return {
       editingEnabled: false,
       termHovered: -1,
-
       allCourses: new TrieSearch(['course_code', 'course_number'], {
         idFieldOrFunction: function(course) {
           return course.course_id + course.course_code;
@@ -112,7 +111,7 @@ export default {
       let changedReq = event.added.element;
       if (changedReq.number_of_courses > 1 && changedReq.inRequirementBar) {
         changedReq.number_of_courses = 1;
-        this.decrementRequirementID(changedReq.id)
+        this.decrementRequirementID(changedReq.original_requirement_id)
       }
       changedReq.inRequirementBar = false;
     },

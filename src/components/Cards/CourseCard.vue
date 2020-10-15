@@ -32,7 +32,7 @@
                   <span>Option/Specialization</span>
               </v-tooltip>
 
-              <v-tooltip top open-delay="300" max-width="350px" v-if="this.courseData.course_choices.length > 1">
+              <v-tooltip top open-delay="300" max-width="350px" v-if="this.courseData.number_of_choices > 1">
                   <template v-slot:activator="{ on, attrs }">
                     <v-chip  color="grey" label x-small text-color="white" class="chip" v-bind="attrs" v-on="on">
                       C
@@ -86,24 +86,24 @@
       <v-list-item>
         <v-list-item-content>
           <div class="overline mb-1">
-            <div  v-if="courseData.course_choices.length > 1"> Select {{courseData.number_of_courses}} </div> 
+            <div  v-if="courseData.number_of_choices > 1"> Select {{courseData.number_of_courses}} </div>
             <v-spacer></v-spacer>
             <v-icon icon class="delete-btn" x-small @click="deleteCourse()" >mdi-close</v-icon>
           </div>
-          <div v-if="courseData.course_codes.length <= 3">
-            <template v-for="(code, index) in courseData.course_codes" >
+          <div v-if="courseData.number_of_choices <= 3">
+            <template v-for="(code, index) in courseData.course_codes_raw.split(/,\s|\sor\s|,/)" >
                 <v-list-item-subtitle  :key="index" v-if="isSelected(code)">{{  code  }}</v-list-item-subtitle>
                 <v-list-item-subtitle class="select-font" :key="index" v-else>{{  code  }}</v-list-item-subtitle>
             </template>
           </div>
-          <div v-else-if="courseData.course_codes.length > 3 && courseData.group">
-            <template v-for="(code, index) in courseData.course_codes" >
+          <div v-else-if="courseData.number_of_choices > 3 && courseData.group">
+            <template v-for="(code, index) in courseData.course_codes_raw.split(/,\s|\sor\s|,/).slice(0,3)" >
                 <v-list-item-subtitle  :key="index" v-if="isSelected(code)">{{  code  }}</v-list-item-subtitle>
                 <v-list-item-subtitle  class="select-font" :key="index" v-else-if="index==0">{{  courseData.group  }}</v-list-item-subtitle>
             </template>
           </div>    
           <div v-else>
-            <template v-for="(code, index) in courseData.course_codes.slice(0,3)" >
+            <template v-for="(code, index) in courseData.course_codes_raw.split(/,\s|\sor\s|,/).slice(0,3)" >
                 <v-list-item-subtitle  :key="index" v-if="isSelected(code)">{{  code  }}</v-list-item-subtitle>
                 <v-list-item-subtitle  class="select-font" :key="index" v-else>{{  code  }}<b v-if="index==2">...</b> </v-list-item-subtitle>
             </template>

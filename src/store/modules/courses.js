@@ -1,166 +1,7 @@
 import axios from "axios";
 import { CourseRequirement, YEAR_TO_REQ_SECTION_MAP} from '../../models/courseRequirementModel'
 import { MajorRequirement, OtherRequirement } from '../../models/ProgramModel'
-import { CourseInfo } from '../../models/courseInfoModel'
 import { backend_api } from '../../backendAPI';
-
-// Fetch course information of a single course code or a course pattern (eg MATH 239 or PHYS 300-)
-// requirement is the courseRequirement object that this course code belongs to
-async function parseRequirement(courseCode) {
-    //checks if it exists in the cache and adds it to the cache if it is not currently in the cache
-    function addAndReturnCache(courseInfoParam) {
-        let courseInfo = new CourseInfo(courseInfoParam)
-        if (state.courseCache[courseInfo.course_code]) {
-            return state.courseCache[courseInfo.course_code]
-        }
-        else if (courseCode === "SCIENCE" || courseCode === "MATH" 
-        || courseCode === "LANGUAGE" || courseCode === "NON-MATH" || courseCode.includes("Elective")){
-            debugger
-            return courseInfo
-        }
-
-        state.courseCache[courseInfo.course_code] = courseInfo
-        return courseInfo
-    }
-
-    let hasNumber = /\d/;
-    let response = null
-    let parsedCourseInfos = []
-    // 1. SPECIFIC CASES THAT DOES NOT PERTAIN TO A COURSE PATTERN
-    // Engineering specific/Program Elective 
-    if (courseCode.includes("TE")){
-        parsedCourseInfos = [{
-            course_name: "Technical Elective",
-            course_code: courseCode,
-            info: "Please refer to degree requirement page for more information. (Click on program heading)",
-            credit: 0.5,
-        }]
-    }
-    else if (courseCode.includes("CSE")){
-        parsedCourseInfos = [{
-            course_name: "Complementary Studies Elective",
-            course_code: courseCode,
-            info: "Please refer to degree requirement page for more information. (Click on program heading)",
-            credit: 0.5,
-        }]
-    }
-    else if (courseCode.includes("Program Elective")){
-        parsedCourseInfos = [{
-            course_name: courseCode,
-            course_code: courseCode.replace("Program Elective", "PE"),
-            info: "Please refer to degree requirement page for more information. (Click on program heading)",
-            credit: 0.5,
-        }]
-    }
-    else if (courseCode.includes("WKRPT")){
-        //Work Term Report
-        parsedCourseInfos = [{ course_code: courseCode, 
-            course_name:'Work-term Report',
-            info: "Work-term Report. Please refer to degree requirement page for more information. (Click on program heading)",
-            credit: 0.5,
-            online: false
-        }]
-    }
-    //TODO: this should be a card if there exists more courses that are more than 1
-    //TODO: Adrian. This shouldn't called the api everytime
-    else if (courseCode === "SCIENCE" || courseCode === "MATH" || courseCode === "LANGUAGE" || courseCode === "NON-MATH") {
-        response = await axios.get(backend_api + "/api/course-info/filter", {
-            params: {
-                start: 0,
-                end: 499,
-                code: courseCode,
-            }
-        }).catch(error => { void error; return null });
-        parsedCourseInfos = response.data
-    }
-    else if (courseCode.includes("Elective")) {
-        response = await axios.get(backend_api + "/api/course-info/filter", {
-            params: {
-                start: 0,
-                end: 1000,
-                code: "none",
-            }
-        }).catch(error => { void error; return null });
-        parsedCourseInfos = response.data
-    }
-    //2. QUERYABLE CASES
-    else if (!hasNumber.test(courseCode)){
-        //Handles non numerical courses such as MATH, ACTSC
-        response = await axios.get(backend_api + "/api/course-info/filter", {
-            params: {
-                start: 0,
-                end: 499,
-                code: courseCode,
-            }
-        }).catch(error => { void error; return null });
-        parsedCourseInfos = response.data
-    }
-    else if (courseCode[courseCode.length - 1] === "-") {
-        // Handles X00's case, eg PHYS 300-
-        let split = courseCode.split(" ");   
-        if(split[1] === "LAB"){
-            response = await axios.get(backend_api + "/api/course-info/filter", {
-                params: {
-                    start: Number(split[2].slice(0, -1)),
-                    end: Number(split[2].slice(0, -1)) + 99,
-                    code: split[0] + " " + split[1],
-                }
-            }).catch(error => { console.error(error) })
-        }
-        else{
-            response = await axios.get(backend_api + "/api/course-info/filter", {
-                params: {
-                    start: Number(split[1].slice(0, -1)),
-                    end: Number(split[1].slice(0, -1)) + 99,
-                    code: split[0],
-                }
-            }).catch(error => { console.error(error)  })
-        }
-        parsedCourseInfos = response.data
-    } 
-    else if (courseCode.split("-").length === 2 && courseCode.split("-")[0].length > 0 && courseCode.split("-")[1].length > 0) {
-        // Handles range case, eg CS 440-CS 498
-        let split = courseCode.split("-");
-        response = await axios.get(backend_api + "/api/course-info/filter", {
-            params: {
-                start: Number(split[0].split(" ")[1]),
-                end: Number(split[1].split(" ")[1]),
-                code: split[0].split(" ")[0],
-            }
-        }).catch(error => { console.error(error) });
-        parsedCourseInfos = response.data
-    }
-    else if (courseCode.includes("W")){
-        //laurier course
-        parsedCourseInfos = [{
-            course_code: courseCode,
-            info: "Information about this course is unavailable. Please refer to https://loris.wlu.ca/register/ssb/registration for more details.",
-            online: false,
-            credit: 0.5,
-        }]
-    }
-    else if (courseCode.split(" ").length >= 1) {
-        // Handles normal course case, ege MATH 239
-        response = await axios.get(backend_api + "/api/course-info/get", {
-            params: {
-                pk: courseCode,
-            }
-        }).catch(error => { console.error(error) })
-        parsedCourseInfos = [ response.data ];
-    }
-    else {
-        parsedCourseInfos = [{
-            course_code: courseCode,
-            info: "Information about this course is unavailable.",
-            online: false,
-            credit: 0.5
-        }]
-    }
-
-    return parsedCourseInfos.map(element => {
-        return addAndReturnCache(element)
-    })
-}
 
 const state = {
     majorRequirements: [],
@@ -193,7 +34,6 @@ const actions = {
         });
 
         let newMajorRequirements = response.data.requirements;
-
         if (options.newMajor) {
             let newMajor = new MajorRequirement({info: options.newMajor});
             let table1needed = false;
@@ -226,38 +66,23 @@ const actions = {
             if (table2needed) {
                 newMajorRequirements = newMajorRequirements.concat(response.data.table2)
             }
-            
             for (let requirement of newMajorRequirements) {
-                let promises = []
-                let required_courses = requirement.course_codes.split(/,\s|\sor\s|,/)
-                for (let course of required_courses) {
-                    promises.push(parseRequirement(course))
-                }
                 const code = requirement.course_codes
                 const group = (code === "SCIENCE" || code === "MATH" 
-                                || code === "LANGUAGE" || code === "NON-MATH" || 
-                                (code !== "Program Elective" && code.includes("Elective"))) ? code : ""
+                    || code === "LANGUAGE" || code === "NON-MATH" || 
+                    (code !== "Program Elective" && code.includes("Elective"))) ? code : ""
 
-                Promise.all(promises).then(choices => {
-                    // additional req only needed in majors
-                    let parsed_requirement = {
-                        course_codes: required_courses,
-                        course_choices: [],
-                        number_of_courses: requirement.number_of_courses,
-                        major: [options.newMajor],
-                        additional_requirements: requirement.additional_requirements,
-                        inRequirementBar: true,
-                        group: group,
-                    }
-                    for (let choice of choices) {
-                        parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
-                    }
-                    let parsed_req_obj = new CourseRequirement(parsed_requirement);
-                    newMajor[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]].push(parsed_req_obj)
-                })
-                .catch(error => { console.error(error) })
+                let parsed_requirement = {
+                    course_codes_raw: requirement.course_codes,
+                    number_of_courses: requirement.number_of_courses,
+                    major: [options.newMajor],
+                    additional_requirements: requirement.additional_requirements,
+                    inRequirementBar: true,
+                    group: group,
+                }
+                let parsed_req_obj = new CourseRequirement(parsed_requirement);
+                newMajor[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]].push(parsed_req_obj)
             }
-
             //TODO:[Kevin] this way is used to resolve a synch bug but its fcked, will change when have time
             state.majorRequirements.push(newMajor)
 
@@ -272,28 +97,15 @@ const actions = {
             let newMinor = new OtherRequirement({ info: options.newMinor })
 
             for (let requirement of response.data.minor_requirements) {
-                let promises = [];
-                let required_courses = requirement.course_codes.split(/,\s|\sor\s/);
-                for (let course of required_courses) {
-                    promises.push(parseRequirement(course))
+                let parsed_requirement = {
+                    course_codes_raw: requirement.course_codes,
+                    number_of_courses: requirement.number_of_courses,
+                    minor: [options.newMinor],
+                    additional_requirements: requirement.additional_requirements,
+                    inRequirementBar: true,
                 }
-
-                Promise.all(promises).then(choices => {
-                    let parsed_requirement = {
-                        course_codes: requirement.course_codes,
-                        course_choices: [],
-                        number_of_courses: requirement.number_of_courses,
-                        minor: [options.newMinor],
-                        additional_requirements: requirement.additional_requirements,
-                        inRequirementBar: true,
-                    }
-                    for (let choice of choices) {
-                        parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
-                    }                    
-                    let parsed_req_obj = new CourseRequirement(parsed_requirement)
-                    newMinor[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]].push(parsed_req_obj)
-                })
-                .catch(error => { console.error(error) })
+                let parsed_req_obj = new CourseRequirement(parsed_requirement)
+                newMinor[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]].push(parsed_req_obj)
             }
             state.minorRequirements.push(newMinor)
         } 
@@ -302,28 +114,15 @@ const actions = {
             let newSpec = new OtherRequirement({ info: options.newSpecialization })
 
             for (let requirement of response.data.option_requirements) {
-                let promises = [];
-                let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
-                for (let course of required_courses) {
-                    promises.push(parseRequirement(course))
+                let parsed_requirement = {
+                    course_codes_raw: requirement.course_codes,
+                    number_of_courses: requirement.number_of_courses,
+                    specialization: [options.newSpecialization],
+                    additional_requirements: requirement.additional_requirements,
+                    inRequirementBar: true,
                 }
-
-                Promise.all(promises).then(choices => {
-                    let parsed_requirement = {
-                        course_codes: requirement.course_codes,
-                        course_choices: [],
-                        number_of_courses: requirement.number_of_courses,
-                        specialization: [options.newSpecialization],
-                        additional_requirements: requirement.additional_requirements,
-                        inRequirementBar: true,
-                    }        
-                    for (let choice of choices) {
-                        parsed_requirement.course_choices = parsed_requirement.course_choices.concat(choice)
-                    }
-                    let parsed_req_obj = new CourseRequirement(parsed_requirement)
-                    newSpec[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]].push(parsed_req_obj)                    
-                })
-                .catch(error => { console.error(error) })
+                let parsed_req_obj = new CourseRequirement(parsed_requirement)
+                newSpec[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]].push(parsed_req_obj)
             }
             state.specRequirements.push(newSpec)
         }
