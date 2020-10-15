@@ -8,6 +8,7 @@
                 <v-col class="centerpiece-container" data-aos="fade-up" data-aos-duration="1200">
                     <div class="title"><h1>UWPath</h1></div>
                     <div class="slogan"><h4> Plan your degree ahead</h4></div>
+                    <div class="slogan d-block d-sm-none" style="color:red"><h4> Please use a laptop or an Ipad for the best expereince!</h4></div>
                     <div class="autocomplete-container">
                         <v-autocomplete
                             :disabled="inConfirmation"
