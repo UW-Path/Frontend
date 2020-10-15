@@ -7,3 +7,15 @@ html, body, h1, h2, h3, h4, h5, h6 {
   #app {
     font-family: 'Montserrat';
   }
+
+.uwpath-title {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    font-weight: 500;
+    font-size: 25px;
+    color:ghostwhite;
+}
+
+.contact-page-content-container {
+  margin-bottom: 2rem;
+}
