@@ -62,12 +62,18 @@ export class CourseRequirement {
                 this.specialization[i] = new ProgramInfo({...this.specialization[i]})
             }
         }
+
+        this.satisfiesMajorReq = false;
+        this.satisfiesMinorReq = false;
+        this.satisfiesSpecializationReq = false;
+
         this.credits_of_prereqs_met = data && data.credits_of_prereqs_met ? data.credits_of_prereqs_met : 0
         this.credits_required = data ? data.credits_required : 0        
         this.overridden = data && data.overridden ? data.overridden : false;
         this.id = data && data.id ? data.id : REQUIREMENT_ID++;
         this.original_requirement_id = data && data.original_requirement_id ? data.original_requirement_id : this.id;
         this.inRequirementBar = data && !(data.inRequirementBar == null) ? data.inRequirementBar : true;
+        this.allowedInRequirementBar = data && !(data.allowedInRequirementBar == null) ? data.allowedInRequirementBar : true;
         this.prereqs_met = data && data.prereqs_met ? data.prereqs_met : false;
         this.validation_message = data && data.validation_message ? data.validation_message : ""; // Error message when prereq not met
         this.additional_requirements = data && data.additional_requirements ? data.additional_requirements : [];

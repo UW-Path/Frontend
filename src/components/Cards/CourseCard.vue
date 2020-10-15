@@ -5,7 +5,7 @@
         <v-list-item-content>
           <div class="overline mb-1">
             <div v-if="!this.courseData.inRequirementBar">
-              <v-tooltip top open-delay="300" max-width="350px" v-if="this.courseData.major.length > 0">
+              <v-tooltip top open-delay="300" max-width="350px" v-if="this.courseData.satisfiesMajorReq">
                   <template v-slot:activator="{ on, attrs }">
                     <v-chip  color="light-blue" label x-small text-color="white" class="chip" v-bind="attrs" v-on="on">
                       M
@@ -14,7 +14,7 @@
                   <span>Major</span>
               </v-tooltip>
 
-              <v-tooltip top open-delay="300" max-width="350px" v-if="this.courseData.minor.length > 0">
+              <v-tooltip top open-delay="300" max-width="350px" v-if="this.courseData.satisfiesMinorReq">
                   <template v-slot:activator="{ on, attrs }">
                     <v-chip  color="light-green" label text-color="white" class="chip" v-bind="attrs" v-on="on">
                       Mi
@@ -23,7 +23,7 @@
                   <span>Minor</span>
               </v-tooltip>
 
-              <v-tooltip top open-delay="300" max-width="350px" v-if="this.courseData.specialization.length > 0">
+              <v-tooltip top open-delay="300" max-width="350px" v-if="this.courseData.satisfiesSpecializationReq">
                   <template v-slot:activator="{ on, attrs }">
                     <v-chip  color="rgb(0,204,204)" label x-small text-color="white" class="chip" v-bind="attrs" v-on="on">
                       O
