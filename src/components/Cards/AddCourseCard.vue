@@ -108,12 +108,13 @@ export default {
         selected_course: customCourse,
         user_selected: true,
         inRequirementBar: false,
+        allowedInRequirementBar: false,
         number_of_courses: 1,
         number_of_choices: 1,
         credits_required: 0.5,
         additional_requirements: "",
         prereqs_met: true,
-      })
+      });
       this.dialog = false;
       this.addCourse({newRequirement: req, termIndex: this.termIndex});
       this.validateCourses();
@@ -125,6 +126,7 @@ export default {
           selected_course: addedCourse,
           user_selected: true,
           inRequirementBar: false,
+          allowedInRequirementBar: false,
           number_of_courses: 1,
           number_of_choices: 1,
           credits_required: 0.5,
