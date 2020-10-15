@@ -7,34 +7,38 @@
             vertical
             dark
             class="primary-tabs">
-            <v-tab class="tab-icon">
+            <!-- <v-tab class="tab-icon" v-show="false">
                 <v-icon x-large >mdi-calendar-range-outline</v-icon>
-            </v-tab>
-            <v-tab class="tab-icon">
+            </v-tab> -->
+            <!-- <v-tab class="tab-icon">
                 <v-icon  x-large >mdi-check-box-outline</v-icon>
-            </v-tab>
-            <v-btn  class="tab-icon download-button" @click="exportCSV()">
+            </v-tab> -->
+            <v-btn  class="tab-icon download-button" @click="scrollTable()">
+                <v-icon x-large >mdi-calendar-range-outline</v-icon>
+            </v-btn> 
+            <v-btn  class="tab-icon download-button" @click="scrollChecklist()">
+                <v-icon  x-large >mdi-check-box-outline</v-icon>
+            </v-btn> 
+            <v-btn  class="tab-icon download-button" @click="exportXLS()">
                 <v-icon x-large >mdi-download-outline</v-icon>
             </v-btn> 
+            <!-- this is a trick to get the v-tab-item to display, the controls are handled by buttons -->
+            <v-tab v-show="false"></v-tab>
             
             <v-tab-item class="primary-tab transparent">
-                    <v-row class="main-row">
-                        <v-col class="side-bar" lg="2" md="3" sm="3">
-                            <side-bar/>
-                        </v-col>
-                        <v-col class="main-panel" lg="10" md="9" sm="9">
-                            <course-plan/>
-                        </v-col>
-                    </v-row>
-            </v-tab-item>
-            <v-tab-item class="primary-tab ">
-                <div class="default-font primary-tab custom-grey">
-                    <v-row class="main-row ">
-                        <v-col class="main-panel">
-                            <program-checklist/>
-                        </v-col>
-                    </v-row>
-                </div>
+                <v-row class="main-row" v-if="inTable">
+                    <v-col class="side-bar" lg="2" md="3" sm="3">
+                        <side-bar/>
+                    </v-col>
+                    <v-col class="main-panel" lg="10" md="9" sm="9">
+                        <course-plan/>
+                    </v-col>
+                </v-row>
+                <v-row v-else class="main-row custom-grey default-font">
+                    <v-col class="main-panel">
+                        <program-checklist/>
+                    </v-col>
+                </v-row>
             </v-tab-item>
         </v-tabs>
     </v-container>
@@ -56,14 +60,24 @@ export default {
         ProgramChecklist,
     },
     data: () => ({
+        inTable: true
     }),
     methods: {
         ...mapActions(["export"]),
-        exportCSV() {
-            this.export()
+        exportPDF() {
+            this.export({ PDF: true, XLS: false })
+        },
+        exportXLS() {
+            this.export({ PDF: false, XLS: true })
         },
         changeTab(event) {
             console.log(event)
+        },
+        scrollTable() {
+            this.inTable = true;
+        },
+        scrollChecklist() {
+            this.inTable = false;
         }
     }
 }
@@ -112,7 +126,7 @@ export default {
 
 .main-row {   
     margin: 0;
-    width: 100% ; 
+    max-width: calc(100vw - 80px)!important ; 
     height: 100% ;
 }
 

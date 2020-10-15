@@ -15,10 +15,11 @@
                             :items="allMajors.map(e => { return e.program_name })"
                             v-on:change="changeMajor"
                             dense
+                            :allow-overflow="false"
                             prepend-inner-icon="mdi-magnify"
                             solo
                             hide-details
-                            background-color="rgb(196,196,196)"
+                            background-color="rgb(256, 256, 256)"
                             class="autocomplete"
                             label="Find your program"
                             height="3rem"
@@ -127,7 +128,6 @@ export default {
 
 
 .findprogram {
-    
     text-align: end;
     color: ghostwhite;
     margin-top: 1rem;
@@ -157,5 +157,13 @@ export default {
   background-size: cover !important;
   height: 100%;
   overflow: hidden;
+}
+</style>
+
+<style>
+/* trick to make the fonts in the dropdown smaller to prevent dropdown content overflow */
+.v-autocomplete__content{
+    width: 35% !important;
+    top: 55% !important;
 }
 </style>

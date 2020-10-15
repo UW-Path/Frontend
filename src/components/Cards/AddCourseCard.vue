@@ -4,7 +4,7 @@
         <v-list-item @click.native="enableDialog()">
           <v-list-item-content>
             <v-list-item-subtitle class="card-content">
-                <span> Add a Course  </span>
+                <span> Add a Course </span>
                 <v-icon small class="add-icon">mdi-plus-circle</v-icon>
             </v-list-item-subtitle>
           </v-list-item-content>
@@ -256,6 +256,7 @@ export default {
 .card-content {
     display: flex;
     justify-content: center;
+    width: 70% !important ;
 }
 
 .add-icon {
