@@ -127,7 +127,6 @@ export default {
 
 
 .findprogram {
-    
     text-align: end;
     color: ghostwhite;
     margin-top: 1rem;
@@ -160,10 +159,3 @@ export default {
 }
 </style>
 
-<style>
-/* trick to make the fonts in the dropdown smaller to prevent dropdown content overflow */
-.v-autocomplete__content{
-    width: 41% !important;
-    top: 48% !important;
-}
-</style>
