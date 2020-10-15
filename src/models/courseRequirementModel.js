@@ -73,6 +73,7 @@ export class CourseRequirement {
         this.id = data && data.id ? data.id : REQUIREMENT_ID++;
         this.original_requirement_id = data && data.original_requirement_id ? data.original_requirement_id : this.id;
         this.inRequirementBar = data && !(data.inRequirementBar == null) ? data.inRequirementBar : true;
+        this.allowedInRequirementBar = data && !(data.allowedInRequirementBar == null) ? data.allowedInRequirementBar : true;
         this.prereqs_met = data && data.prereqs_met ? data.prereqs_met : false;
         this.validation_message = data && data.validation_message ? data.validation_message : ""; // Error message when prereq not met
         this.additional_requirements = data && data.additional_requirements ? data.additional_requirements : [];
