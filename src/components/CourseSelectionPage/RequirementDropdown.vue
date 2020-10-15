@@ -102,6 +102,7 @@ import RequirementOptionsModal from "../Modals/RequirementOptionsModal";
 import { CourseRequirement } from "../../models/courseRequirementModel";
 import { SECTION_TO_DISPLAY_TITLE_MAP } from "../../models/ProgramModel";
 import ZingTouch from 'zingtouch';
+import { v4 as uuidv4 } from 'uuid';
 
 export default {
 	name: "RequirementDropdown",
@@ -121,16 +122,17 @@ export default {
 		...mapMutations(["sortRequirements", "updateCacheTime"]),
 		//card is not cloned if it only has one list and that
 		pullFunction: function() {
-			return this.lastClickdownReq.number_of_courses === 1 ||
-					this.lastClickdownReq.course_choices.length === 1 ? true : "clone";
+			return this.lastClickdownReq.number_of_courses === 1 || this.lastClickdownReq.number_of_choices === 1 ? true : "clone";
 		},
 		//event when card is removed
 		clone: function(event) {
-			if (event.course_choices.length === 1) {
+			if (event.number_of_choices === 1) {
 				return event;
 			}
 			//create a shallow copy of the requirement
-			return new CourseRequirement({...event});
+			var clonedRequirement = new CourseRequirement({...event});
+			clonedRequirement.id = uuidv4();
+			return clonedRequirement;
 		},
 		//event when card is added
 		change: function(event) {

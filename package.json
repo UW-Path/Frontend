@@ -14,6 +14,7 @@
     "downloadjs": "^1.4.7",
     "js-cookie": "^2.2.1",
     "trie-search": "^1.2.11",
+    "uuid": "^8.3.1",
     "vue": "^2.6.11",
     "vue-analytics": "^5.22.1",
     "vue-router": "^3.2.0",
