@@ -1,11 +1,6 @@
 import axios from "axios";
 import { ProgramInfo } from "../../models/ProgramInfoModel"
-
-// Production Kubernetes API
-const backend_api = "";
-
-// Dev API
-// const backend_api = "http://127.0.0.1:8000";
+import { backend_api } from '../../backendAPI';
 
 //need to move the routes to the configs
 const state = {
