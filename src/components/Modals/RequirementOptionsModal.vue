@@ -142,16 +142,15 @@
                     this.dialog = true;
                 } else {
                     if (!this.onSelectionBar) {
-                this.course.inRequirementBar = true;
-                this.removeRequirementFromTable(this.course);
-                if (this.course.major.length || this.course.minor.length || this.course.specialization.length) {
-                    this.addCourseRequirement(this.course);
-                }
-                this.sortRequirements();
-                }
-                else {
-                    this.course.hidden = true;
-                }
+                        this.course.inRequirementBar = true;
+                        this.removeRequirementFromTable(this.course);
+                        if (this.course.major.length || this.course.minor.length || this.course.specialization.length) {
+                            this.addCourseRequirement(this.course);
+                        }
+                        this.sortRequirements();
+                    } else {
+                        this.course.hidden = true;
+                    }
                     this.course.clickedDelete = false;
                 }
             },
