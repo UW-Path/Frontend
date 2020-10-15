@@ -2,15 +2,10 @@ import axios from "axios";
 import TrieSearch from "trie-search"
 import { CourseRequirement } from "../../models/courseRequirementModel";
 import * as download from "downloadjs";
-
-// Production Kubernetes API
-const backend_api = "";
-
-// Dev API
-// const backend_api = "http://127.0.0.1:8000";
+import { backend_api } from '../../backendAPI';
 
 const mathCourses = ["ACTSC", "AMATH", "CO", "COMM", "CS", "MATH", "MTHEL", "MATBUS", "PMATH", "SE", "STATE"];
-const nonMathCourses = ["NON-MATH", "AFM", "ASL", "ANTH", "AHS", "APPLS", "ARABIC", "AE", "ARCH", "ARTS", "ARBUS", "AVIA", "BIOL", "BME", "BASE", "BUS", "BET", "CDNST", "CHE", "CHEM", "CHINA", "CMW", "CIVE", "CLAS", "COGSCI", "CROAT", "CI", "DAC", "DUTCH", "EARTH", "EASIA", "ECON", "ECE", "ENGL", "EMLS", "ENBUS", "ERS", "ENVE", "ENVS", "FINE", "FR", "GSJ", "GENE", "GEOG", "GEOE", "GER", "GERON", "GBDA", "GRK", "HLTH", "HIST", "HRM", "HRTS", "HUMSC", "INDG", "INDEV", "INTST", "ITAL", "ITALST", "JAPAN", "JS", "KIN", "INTEG", "KOREA", "LAT", "LS", "MGMT", "MSCI", "MNS", "ME", "MTE", "MEDVL", "MENN", "MOHAWK", "MUSIC", "NE", "OPTOM", "PACS", "PHARM", "PHIL", "PHYS", "PLAN", "PSCI", "PORT", "PSYCH", "PMATH", "REC", "RS", "RUSS", "REES", "SCI", "SCBUS", "SMF", "SDS", "SVENT", "SOCWK", "SWREN", "STV", "SOC", "SPAN", "SPCOM", "SI", "SYDE", "THPERF", "VCULT"];
+const nonMathCourses = ["AFM", "ASL", "ANTH", "AHS", "APPLS", "ARABIC", "AE", "ARCH", "ARTS", "ARBUS", "AVIA", "BIOL", "BME", "BASE", "BUS", "BET", "CDNST", "CHE", "CHEM", "CHINA", "CMW", "CIVE", "CLAS", "COGSCI", "CROAT", "CI", "DAC", "DUTCH", "EARTH", "EASIA", "ECON", "ECE", "ENGL", "EMLS", "ENBUS", "ERS", "ENVE", "ENVS", "FINE", "FR", "GSJ", "GENE", "GEOG", "GEOE", "GER", "GERON", "GBDA", "GRK", "HLTH", "HIST", "HRM", "HRTS", "HUMSC", "INDG", "INDEV", "INTST", "ITAL", "ITALST", "JAPAN", "JS", "KIN", "INTEG", "KOREA", "LAT", "LS", "MGMT", "MSCI", "MNS", "ME", "MTE", "MEDVL", "MENN", "MOHAWK", "MUSIC", "NE", "OPTOM", "PACS", "PHARM", "PHIL", "PHYS", "PLAN", "PSCI", "PORT", "PSYCH", "PMATH", "REC", "RS", "RUSS", "REES", "SCI", "SCBUS", "SMF", "SDS", "SVENT", "SOCWK", "SWREN", "STV", "SOC", "SPAN", "SPCOM", "SI", "SYDE", "THPERF", "VCULT"];
 const scienceCourses = ["BIOL", "CHEM", "EARTH", "MNS", "OPTOM", "PHARM", "PHYS", "SCI", "SCBUS"]
 const electiveCourses = ["ACTSC", "AMATH", "CO", "COMM", "CS", "MATH", "MTHEL", "MATBUS", "PMATH", "SE", "STATE", "NON-MATH", "AFM", "ASL", "ANTH", "AHS", "APPLS", "ARABIC", "AE", "ARCH", "ARTS", "ARBUS", "AVIA", "BIOL", "BME", "BASE", "BUS", "BET", "CDNST", "CHE", "CHEM", "CHINA", "CMW", "CIVE", "CLAS", "COGSCI", "CROAT", "CI", "DAC", "DUTCH", "EARTH", "EASIA", "ECON", "ECE", "ENGL", "EMLS", "ENBUS", "ERS", "ENVE", "ENVS", "FINE", "FR", "GSJ", "GENE", "GEOG", "GEOE", "GER", "GERON", "GBDA", "GRK", "HLTH", "HIST", "HRM", "HRTS", "HUMSC", "INDG", "INDEV", "INTST", "ITAL", "ITALST", "JAPAN", "JS", "KIN", "INTEG", "KOREA", "LAT", "LS", "MGMT", "MSCI", "MNS", "ME", "MTE", "MEDVL", "MENN", "MOHAWK", "MUSIC", "NE", "OPTOM", "PACS", "PHARM", "PHIL", "PHYS", "PLAN", "PSCI", "PORT", "PSYCH", "PMATH", "REC", "RS", "RUSS", "REES", "SCI", "SCBUS", "SMF", "SDS", "SVENT", "SOCWK", "SWREN", "STV", "SOC", "SPAN", "SPCOM", "SI", "SYDE", "THPERF", "VCULT"];
 const languageCourses = ["ARABIC", "CHINA", "CROAT", "DUTCH", "FR", "GER", "GRK", "ITAL", "JAPAN", "KOREA", "LAT", "PORT", "RUSS", "SPAN"]
@@ -91,7 +86,7 @@ function getRequirementFullfillmentSize(requirement) {
 }
 
 function ParseRequirementsForChecklist(requirements, selectedCourses, programInfo) {
-    var usedCourses = new TrieSearch([['selected_course', 'course_code'], ['selected_course', 'course_number']], {
+    var usedCourses = new TrieSearch([['selected_course', 'course_code'], ['selected_course', 'course_number'], ['course_codes_raw']], {
         idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
     });
     // Since a single course could apply to multiple different requirements, we need to keep track of
@@ -114,7 +109,19 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
         let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
         let numMatchedCredits = 0;
         let matchedCourses = [];
+
+        // See if any unselected requirements match
+        let unselectedMatches = selectedCourses.get(requirement.course_codes);
+        let usedUnselectedMatches = usedCourses.get(requirement.course_codes);
+
+        if (unselectedMatches.length - usedUnselectedMatches.length > 0) {
+            let unselectedCreditsUsed = Math.min(0.5 * (unselectedMatches.length - usedUnselectedMatches.length), requirement.credits_required);
+            numMatchedCredits += unselectedCreditsUsed;
+            matchedCourses = matchedCourses.concat(unselectedMatches.slice(0, unselectedCreditsUsed * 2));
+        }
+
         for (let course of required_courses) {
+            if ((numMatchedCredits >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
             if (course === "Elective") {
                 let possibleMatches = selectedCourses.get(electiveCourses)
                 for (let match of possibleMatches) {
@@ -225,21 +232,33 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
         }
     }
     // Make second pass on requirements to match any remaining courses
-    for (var requirement of requirements) {
+    for (let requirement of requirements) {
         if (requirement.prereqs_met) {
             parsed_requirements.push(new CourseRequirement(requirement));
             continue;
         }
-        var required_courses = requirement.course_codes.split(/,\s|\sor\s/)
+        let required_courses = requirement.course_codes.split(/,\s|\sor\s/)
         requirement.credits_of_prereqs_met = 0;
-        var matchedCourses = [];
+        let matchedCourses = [];
+
+        // See if any unselected requirements match
+        let unselectedMatches = selectedCourses.get(requirement.course_codes);
+        let usedUnselectedMatches = usedCourses.get(requirement.course_codes);
+        if (unselectedMatches.length - usedUnselectedMatches.length > 0) {
+            let unselectedCreditsUsed = Math.min(0.5 * (unselectedMatches.length - usedUnselectedMatches.length), requirement.credits_required);
+            requirement.credits_of_prereqs_met = unselectedCreditsUsed;
+            matchedCourses = matchedCourses.concat(unselectedMatches.slice(0, unselectedCreditsUsed * 2));
+            usedCourses.addAll(matchedCourses);
+        }
+
         for (let course of required_courses) {
             if (course === "Elective") {
                 let possibleMatches = selectedCourses.get(electiveCourses)
                 for (let match of possibleMatches) {
                     if (usedCourses.get(match.selected_course.course_code).length === 0) {
                         requirement.credits_of_prereqs_met += match.selected_course.credit;
-                        matchedCourses.push(match)
+                        matchedCourses.push(match);
+                        usedCourses.add(match);
                         if ((requirement.credits_of_prereqs_met >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
                     }
                 }
@@ -248,7 +267,8 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
                 for (let match of possibleMatches) {
                     if (usedCourses.get(match.selected_course.course_code).length === 0) {
                         requirement.credits_of_prereqs_met += match.selected_course.credit;
-                        matchedCourses.push(match)
+                        matchedCourses.push(match);
+                        usedCourses.add(match);
                         if ((requirement.credits_of_prereqs_met >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
                     }
                 }
@@ -257,7 +277,8 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
                 for (let match of possibleMatches) {
                     if (usedCourses.get(match.selected_course.course_code).length === 0) {
                         requirement.credits_of_prereqs_met += match.selected_course.credit;
-                        matchedCourses.push(match)
+                        matchedCourses.push(match);
+                        usedCourses.add(match);
                         if ((requirement.credits_of_prereqs_met >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
                     }
                 }
@@ -266,7 +287,8 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
                 for (let match of possibleMatches) {
                     if (usedCourses.get(match.selected_course.course_code).length === 0) {
                         requirement.credits_of_prereqs_met += match.selected_course.credit;
-                        matchedCourses.push(match)
+                        matchedCourses.push(match);
+                        usedCourses.add(match);
                         if ((requirement.credits_of_prereqs_met >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
                     }
                 }
@@ -275,7 +297,8 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
                 for (let match of possibleMatches) {
                     if (usedCourses.get(match.selected_course.course_code).length === 0) {
                         requirement.credits_of_prereqs_met += match.selected_course.credit;
-                        matchedCourses.push(match)
+                        matchedCourses.push(match);
+                        usedCourses.add(match);
                         if ((requirement.credits_of_prereqs_met >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
                     }
                 }
@@ -297,6 +320,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
                     if (usedCourses.get(match.selected_course.course_code).length === 0) {
                         requirement.credits_of_prereqs_met += match.selected_course.credit;
                         matchedCourses.push(match)
+                        usedCourses.add(match);
                         if ((requirement.credits_of_prereqs_met >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
                     }
                 }
@@ -311,6 +335,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
                 for (let match of possibleMatches) {
                     if (match.selected_course.course_number <= course.split("-")[1].split(" ")[1] && match.selected_course.course_number >= course.split("-")[0].split(" ")[1] && usedCourses.get(match.selected_course.course_code).length === 0) {
                         matchedCourses.push(match);
+                        usedCourses.add(match);
                         requirement.credits_of_prereqs_met += match.selected_course.credit;
                         if ((requirement.credits_of_prereqs_met >= requirement.credits_required && matchedCourses.length > 0) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
                     }
@@ -320,7 +345,8 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
                 let possibleMatches = selectedCourses.get(course)
                 for (let match of possibleMatches) {
                     if (usedCourses.get(match.selected_course.course_code).length === 0) {
-                        matchedCourses.push(selectedCourses.get(course)[0])
+                        matchedCourses.push(selectedCourses.get(course)[0]);
+                        usedCourses.add(match);
                         requirement.credits_of_prereqs_met += match.selected_course.credit;
                         break;
                     }
@@ -328,7 +354,6 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
             }
             if ((requirement.credits_of_prereqs_met >= requirement.credits_required && matchedCourses.length > 0)) break;
         }
-        usedCourses.addAll(matchedCourses);
         for (let match of matchedCourses) {
             if (programInfo.plan_type === "Major") {
                 match.major = [programInfo];
@@ -349,9 +374,7 @@ function getCoursesTable(state) {
         let t = [];
         for (let j = 0; j < state.table[i].courses.length; j++) {
             let courses = [];
-            for (let k = 0; k < state.table[i].courses[j].course_choices.length; k++) {
-                courses.push(state.table[i].courses[j].course_choices[k].course_code);
-            }
+            courses.push(state.table[i].courses[j].course_codes_raw);
             if (!state.table[i].courses[j].selected_course) {
                 courses.push("WAITING");
             } else {
@@ -403,11 +426,16 @@ const actions = {
                 }
             });
 
-            var selectedCourses = new TrieSearch([['selected_course', 'course_code'], ['selected_course', 'course_number']], {
+            var selectedCourses = new TrieSearch([['selected_course', 'course_code'], ['selected_course', 'course_number'], ['course_codes_raw']], {
                 idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
             });
-            for (var term of getters.getTable) {
+            for (let term of getters.getTable) {
                 selectedCourses.addAll(term.courses)
+                for (let course of term.courses) {
+                    course.major = [];
+                    course.minor = [];
+                    course.specialization = [];
+                }
             }
 
             if (table2needed) {
@@ -524,7 +552,7 @@ const mutations = {
             });
             for (let requirement of state.table[i].courses) {
                 // If course has no prereq, then course can be taken
-                if (requirement.course_choices.length == 1 && requirement.course_choices[0].prereqs.length === 0){
+                if (requirement.selected_course.course_code !== "WAITING" && requirement.selected_course.prereqs.length === 0){
                     requirement.prereqs_met = true;
                 }
                 //there if course has not been selected yet then dont do anything
