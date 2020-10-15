@@ -62,6 +62,11 @@ export class CourseRequirement {
                 this.specialization[i] = new ProgramInfo({...this.specialization[i]})
             }
         }
+
+        this.satisfiesMajorReq = false;
+        this.satisfiesMinorReq = false;
+        this.satisfiesSpecializationReq = false;
+
         this.credits_of_prereqs_met = data && data.credits_of_prereqs_met ? data.credits_of_prereqs_met : 0
         this.credits_required = data ? data.credits_required : 0        
         this.overridden = data && data.overridden ? data.overridden : false;

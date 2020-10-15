@@ -73,9 +73,9 @@
 								:clone="clone"
 								@change="change"
 							>
-							<template v-for="(requirement, i) in section">
+							<template v-for="(requirement) in section">
 								<RequirementOptionsModal
-									:key="i"
+									:key="requirement.id"
 									:course="requirement"
 									:onSelectionBar="true"
 									@mousedown.native="setLastClicked(requirement)"
