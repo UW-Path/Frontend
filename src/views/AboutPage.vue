@@ -100,20 +100,19 @@
             </div>
             <div class="row">
                <div class="col">
-                  <v-avatar color="grey" size="200"></v-avatar>
+                  <v-avatar color="grey" size="200">
+                     <img src="../assets/adrian.jpg" alt="Adrian">
+                  </v-avatar>
                </div>
                <div class="col-12 col-lg-9" style="text-align:left">
                   <h3>Front-End Developer - Adrian Pasqualini</h3>
-                  <a href="" target="_blank">Linkedin</a> | <a href="" target="_blank">Website</a>
+                  <a href="https://www.linkedin.com/in/adrian-pasqualini-2b7071187/" target="_blank">Linkedin</a> | <a href="http://adrianpasqualini.com" target="_blank">Website</a>
                   <p>
-                     <br/>
-                     Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                     Nulla in enim ex. Proin suscipit tincidunt quam, quis convallis nulla interdum id. 
-                     In hac habitasse platea dictumst. Mauris tincidunt arcu id porttitor maximus. 
-                     Mauris sit amet metus eget tellus vestibulum facilisis ut at lectus. 
-                     Pellentesque velit nibh, aliquam sed nisi eu, feugiat porta erat. 
-                     Curabitur quis tincidunt enim. Curabitur ornare elementum lacus, sed tempus nisl consectetur scelerisque. 
-                     Sed nec condimentum nisl, vel ultrices velit. 
+                     Adrian is currently in his 3rd year at Waterloo. As a computer science student working towards several minors and options (CO minor and AI option),
+                     Adrian found it strange that there was no tool to help manage your schedule and meet all the different requirements.
+                     After experimenting with several ideas on his own, Adrian joined UWPath to help bring their plan to life.
+                     <br/><br/>
+                     Adrian has also been spotted running around campus hunting for zombies in his free time.
                   </p>
                </div>
             </div>
