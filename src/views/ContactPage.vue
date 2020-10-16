@@ -106,6 +106,7 @@ export default {
                     }
                     else{
                         this.toastMessage = 'Email has successfuly sent!'
+                        this.$refs.form.reset()
                     }
                     this.snackbar = true
                 })
