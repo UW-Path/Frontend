@@ -112,11 +112,11 @@ export default {
             return majList
         },
         getMinorList: function() { 
-            let minlist = this.allMinors.map(e => { return e.program_name }).concat([this.noProgram])
+            let minlist = [this.noProgram].concat(this.allMinors.map(e => { return e.program_name }))
             return minlist
         },
         getSpecList: function() { 
-            let specList = this.allSpecializations.map(e => { return e.program_name }).concat([this.noProgram])
+            let specList = [this.noProgram].concat(this.allSpecializations.map(e => { return e.program_name }))
             return specList
         },
         confirmSelection: function() {
