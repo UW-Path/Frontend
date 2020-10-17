@@ -210,7 +210,7 @@ export default {
 }
 
 .modal-course-list-container {
-    min-height: 330px;
+    height: 330px;
     margin: 0px;
 }
 
@@ -222,7 +222,7 @@ export default {
     margin-top: 1rem;
     /* margin-bottom: 1rem; */
     width: 90%;
-    max-height: 100%;
+    max-height: 235px;
     /* height:auto; */
     overflow-y: auto;
 }

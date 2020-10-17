@@ -16,7 +16,7 @@ export const SECTION_TO_DISPLAY_TITLE_MAP = {
     "twoA": "2A",
     "twoB": "2B",
     "threeA": "3A",
-    "threeB": "4B",
+    "threeB": "3B",
     "fourA": "4A",
     "fourB": "4B",
 };

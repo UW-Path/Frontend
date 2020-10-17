@@ -16,10 +16,10 @@
                     <v-col align="center" v-if="isChoice()">
                         <v-text-field class="modal-search" v-model="searchtext" label="Search for a Course" prepend-inner-icon="mdi-magnify" hide-details="true" single-line outlined dense></v-text-field>
                         <div class="modal-course-list">
-                        <div class="modal-course" v-bind:class="{ selectedCourseCode: course && selectedCourse && (selectedCourse.course_code === course.course_code) }" v-for="(course,index) in filteredCourses" :key="index"
-                            v-on:click="selectedCourse = course">
-                            {{course.course_name !== "" ? course.course_code + ": " + course.course_name : course.course_code }}
-                        </div>
+                            <div class="modal-course" v-bind:class="{ selectedCourseCode: course && selectedCourse && (selectedCourse.course_code === course.course_code) }" v-for="(course,index) in filteredCourses" :key="index"
+                                v-on:click="selectedCourse = course">
+                                {{course.course_name !== "" ? course.course_code + ": " + course.course_name : course.course_code }}
+                            </div>
                         </div>
                     </v-col>
                     <v-col v-if="selectedCourse" class="course-description-col" align="left">
