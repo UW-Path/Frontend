@@ -4,6 +4,8 @@
       <CourseCard
          class="list-group-item card"
          :key="courseIndex"
+         :termIndex="termIndex"
+         :courseIndex="courseIndex"
          :courseData="course"
          :onSelectionBar="onSelectionBar"
          @click.native="enableDialog()"
@@ -27,10 +29,10 @@
                         {{ selectedCourse.course_code }}
                         <v-spacer></v-spacer>
                         <template v-if="!this.course.prereqs_met">
-                            <v-btn class="select-btn" text @click="course.toggleOverride()" v-if="!this.course.overridden" large outlined>
+                            <v-btn class="select-btn" text @click="toggleOverride(courseIndex, termIndex)" v-if="!this.course.overridden" large outlined>
                                 Override
                             </v-btn>
-                            <v-btn class="select-btn" text @click="course.toggleOverride()" v-else-if="this.course.overridden" large outlined>
+                            <v-btn class="select-btn" text @click="toggleOverride(courseIndex, termIndex)" v-else-if="this.course.overridden" large outlined>
                                 de-Override
                             </v-btn>
                         </template>
@@ -144,7 +146,10 @@
        },
        methods: {
             ...mapMutations(["validateCourses", "separateRequirement",  "removeRequirementFromTable", "addCourseRequirement", "sortRequirements", "updateCacheTime"]),
-            ...mapActions(["fillOutChecklist"]),
+            ...mapActions(["fillOutChecklist", "toggleCourseOverride"]),
+            toggleOverride(courseIndex, termIndex) {
+                this.toggleCourseOverride({ courseIndex, termIndex });
+            },
             enableDialog() {
                 if (!this.course.clickedDelete) {
                     this.selectedCourse = this.course.selected_course && this.course.selected_course.course_code !== "WAITING" ? this.course.selected_course : this.allCourseChoices[0]

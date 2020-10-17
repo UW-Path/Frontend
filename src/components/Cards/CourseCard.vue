@@ -71,7 +71,7 @@
 
       <v-tooltip bottom open-delay="300" max-width="350px" v-if="this.courseData.major.length> 0">
         <template v-slot:activator="{ on, attrs }">
-          <v-icon v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met || courseData.inRequirementBar || courseData.overridden, course_card_prereqs_failed: !courseData.prereqs_met && !courseData.inRequirementBar && !courseData.overridden}" 
+          <v-icon @click.stop="toggleOverride(courseIndex, termIndex)" v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met || courseData.inRequirementBar || courseData.overridden, course_card_prereqs_failed: !courseData.prereqs_met && !courseData.inRequirementBar && !courseData.overridden}"
                   small 
                   class="alert-icon" 
                   v-bind="attrs" 
@@ -115,6 +115,7 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 export default {
   name: "CourseCard",
   order: 1,
@@ -122,16 +123,21 @@ export default {
   },
   props: {
       courseData: Object,
-      onSelectionBar: Boolean
+      onSelectionBar: Boolean,
+      termIndex: Number,
+      courseIndex: Number,
   },
   data() {
     return {
     }
   },
   methods: {
+    ...mapActions(["toggleCourseOverride"]),
     deleteCourse(){
         this.courseData.clickedDelete = true;
-        
+    },
+    toggleOverride(courseIndex, termIndex) {
+        this.toggleCourseOverride({ courseIndex, termIndex });
     },
     isSelected(courseCode) {
         if (!this.courseData.selected_course) return false

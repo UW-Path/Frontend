@@ -388,6 +388,9 @@ function getCoursesTable(state) {
 }
 
 const actions = {
+    toggleCourseOverride({ commit }, { courseIndex, termIndex }) {
+        commit('toggleCourseOverride', { courseIndex, termIndex });
+    },
     async export({ state }) {
         let course_table = getCoursesTable(state);
         axios.post(backend_api + "/api/requirements/export", {
@@ -510,6 +513,9 @@ const actions = {
 };
 
 const mutations = {
+    toggleCourseOverride: (state, { courseIndex, termIndex }) => {
+        state.table[termIndex].courses[courseIndex].overridden = !state.table[termIndex].courses[courseIndex].overridden;
+    },
     updateCacheTime: (state) => {state.cacheTime = new Date();},
     setChecklistMajorRequirements: (state, checklistMajorRequirements) => {
         state.checklistMajorRequirements = checklistMajorRequirements

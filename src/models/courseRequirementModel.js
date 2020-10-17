@@ -119,10 +119,6 @@ export class CourseRequirement {
         return this.selected_course.course_code !== "WAITING"
     }
 
-    toggleOverride() {
-        this.overridden = !this.overridden;
-    }
-
     satisfied() {
         return false
     }
