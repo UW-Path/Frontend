@@ -91,7 +91,7 @@
             <v-icon icon class="delete-btn" x-small @click="deleteCourse()" >mdi-close</v-icon>
           </div>
           <div v-if="courseData.number_of_choices <= 3">
-            <template v-for="(code, index) in courseData.course_codes_raw.split(/,\s|\sor\s|,/)" >
+            <template v-for="(code, index) in courseData.course_codes_raw.split(/,\s|\sor\s|,/).slice(0,3)" >
                 <v-list-item-subtitle  :key="index" v-if="isSelected(code)">{{  code  }}</v-list-item-subtitle>
                 <v-list-item-subtitle class="select-font" :key="index" v-else>{{  code  }}</v-list-item-subtitle>
             </template>

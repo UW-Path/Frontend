@@ -113,7 +113,7 @@
             this.loadingCourses = true;
             // Set a temporary number_of_choices while we wait for the course choices to get loaded.
             if (this.course.number_of_courses > 1 || !this.course.course_codes_raw.match(/\d/)) {
-                this.course.number_of_choices = 2;
+                this.course.number_of_choices = 4;
             }
 
             // Get all possible course choices for the requirement
@@ -128,7 +128,7 @@
 
                 // Handle cases like "BUS 300-" where only a single course code is used but many choices exist
                 if (this.allCourseChoices.length === 1 && this.allCourseChoices[0].course_code.includes('-')) {
-                    this.course.number_of_choices = 2;
+                    this.course.number_of_choices = 4;
                 } else {
                     this.course.number_of_choices = this.allCourseChoices.length;
                 }
