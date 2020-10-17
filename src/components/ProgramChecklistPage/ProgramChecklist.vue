@@ -13,6 +13,13 @@
                 <p class="checklist-title">Option Requirements</p>
                 <ProgramChecklistSection v-bind:requirements="checklistOptionRequirements"/>
             </div>
+            <p class="smallText">
+                <i>
+                    * Please refer to the undergrad calendar for the most accurate information 
+                    (click on the major/minor/option title). Note: Most plans need 20 credits to graduate. <br/>
+                    If the checklist adds up to less than 20 credits, the remaning are assumed to be general electives.
+                </i>
+            </p>
         </div>
     </div>
 </template>
@@ -60,5 +67,9 @@ export default {
 .margin-table{
     margin-bottom: 1.5em;
     text-align: start;
+}
+
+.smallText{
+    text-align: left 
 }
 </style>

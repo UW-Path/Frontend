@@ -164,7 +164,6 @@ export default {
 /* trick to make the fonts in the dropdown smaller to prevent dropdown content overflow */
 .v-autocomplete__content{
     width: 35% !important;
-    top: 56% !important;
     max-height: 40% !important;
 }
 </style>
