@@ -4,6 +4,8 @@
       <CourseCard
          class="list-group-item card"
          :key="courseIndex"
+         :termIndex="termIndex"
+         :courseIndex="courseIndex"
          :courseData="course"
          :onSelectionBar="onSelectionBar"
          @click.native="enableDialog()"
@@ -16,10 +18,10 @@
                     <v-col align="center" v-if="isChoice()">
                         <v-text-field class="modal-search" v-model="searchtext" label="Search for a Course" prepend-inner-icon="mdi-magnify" hide-details="true" single-line outlined dense></v-text-field>
                         <div class="modal-course-list">
-                        <div class="modal-course" v-bind:class="{ selectedCourseCode: course && selectedCourse && (selectedCourse.course_code === course.course_code) }" v-for="(course,index) in filteredCourses" :key="index"
-                            v-on:click="selectedCourse = course">
-                            {{course.course_code + ": " + course.course_name}}
-                        </div>
+                            <div class="modal-course" v-bind:class="{ selectedCourseCode: course && selectedCourse && (selectedCourse.course_code === course.course_code) }" v-for="(course,index) in filteredCourses" :key="index"
+                                v-on:click="selectedCourse = course">
+                                {{course.course_name !== "" ? course.course_code + ": " + course.course_name : course.course_code }}
+                            </div>
                         </div>
                     </v-col>
                     <v-col v-if="selectedCourse" class="course-description-col" align="left">
@@ -27,10 +29,10 @@
                         {{ selectedCourse.course_code }}
                         <v-spacer></v-spacer>
                         <template v-if="!this.course.prereqs_met">
-                            <v-btn class="select-btn" text @click="course.toggleOverride()" v-if="!this.course.overridden" large outlined>
+                            <v-btn class="select-btn" text @click="toggleOverride(courseIndex, termIndex)" v-if="!this.course.overridden" large outlined>
                                 Override
                             </v-btn>
-                            <v-btn class="select-btn" text @click="course.toggleOverride()" v-else-if="this.course.overridden" large outlined>
+                            <v-btn class="select-btn" text @click="toggleOverride(courseIndex, termIndex)" v-else-if="this.course.overridden" large outlined>
                                 de-Override
                             </v-btn>
                         </template>
@@ -53,7 +55,7 @@
                             Credits: {{ selectedCourse.credit }} | ID: {{ selectedCourse.course_id }} | <a style="text-decoration:none" target="_blank" :href="'https://uwflow.com/course/' + selectedCourse.course_code.replace(/\s/g, '').toLowerCase()">UWFlow link</a>
                         </v-card-subtitle>
                         </template>
-                        <v-card-text>{{ selectedCourse.info + (selectedCourse.offering == "" ? "" :  " Offered in: " + selectedCourse.offering.slice(0,-1) + ". ") + (selectedCourse.online ? "Also offered online." : "")}}</v-card-text>
+                        <v-card-text>{{ selectedCourse.info + (selectedCourse.offering.length === 0 ? "" :  " Offered in: " + selectedCourse.offering + ". ") + (selectedCourse.online ? "Also offered online." : "")}}</v-card-text>
                         <template v-if="selectedCourse.course_id != -1">
                         <v-card-text class="course-description-text">{{ "Credits: " + selectedCourse.credit }}</v-card-text>
                         <v-card-text class="course-description-text" v-if="selectedCourse.prereqs && selectedCourse.prereqs.length > 0">{{ "Prerequisites: " + selectedCourse.prereqs }}</v-card-text>
@@ -113,9 +115,10 @@
             this.loadingCourses = true;
             // Set a temporary number_of_choices while we wait for the course choices to get loaded.
             if (this.course.number_of_courses > 1 || !this.course.course_codes_raw.match(/\d/)) {
-                this.course.number_of_choices = 2;
+                this.course.number_of_choices = 4;
             }
 
+            // Get all possible course choices for the requirement
             for (let course of required_courses) {
                 promises.push(this.parseRequirement(course))
             }
@@ -124,7 +127,15 @@
                     this.allCourseChoices = this.allCourseChoices.concat(choice);
                 }
                 this.allCourseChoicesTrie.addAll(this.allCourseChoices);
-                this.course.number_of_choices = this.allCourseChoices.length;
+
+                // Handle cases like "BUS 300-" where only a single course code is used but many choices exist
+                if (this.allCourseChoices.length === 1 && this.allCourseChoices[0].course_code.includes('-')) {
+                    this.course.number_of_choices = 4;
+                } else {
+                    this.course.number_of_choices = this.allCourseChoices.length;
+                }
+
+                // Set a selected course if none exists
                 if ((this.allCourseChoices.length === 1) && (!this.course.selected_course || this.course.selected_course.course_code === "WAITING")) {
                     this.course.selected_course = this.allCourseChoices[0];
                 }
@@ -135,7 +146,10 @@
        },
        methods: {
             ...mapMutations(["validateCourses", "separateRequirement",  "removeRequirementFromTable", "addCourseRequirement", "sortRequirements", "updateCacheTime"]),
-            ...mapActions(["fillOutChecklist"]),
+            ...mapActions(["fillOutChecklist", "toggleCourseOverride"]),
+            toggleOverride(courseIndex, termIndex) {
+                this.toggleCourseOverride({ courseIndex, termIndex });
+            },
             enableDialog() {
                 if (!this.course.clickedDelete) {
                     this.selectedCourse = this.course.selected_course && this.course.selected_course.course_code !== "WAITING" ? this.course.selected_course : this.allCourseChoices[0]
@@ -265,18 +279,26 @@
                                 end: Number(split[2].slice(0, -1)) + 99,
                                 code: split[0] + " " + split[1],
                             }
-                        }).catch(error => { console.error(error) })
-                    }
-                    else{
+                        }).catch(error => { console.error(error) });
+                        parsedCourseInfos = response.data;
+                    } else if (split[0] === "BUS") {
+                        // Laurier course
+                        parsedCourseInfos = [{
+                            course_code: courseCode,
+                            info: "Information about these courses is unavailable. Please refer to https://loris.wlu.ca/register/ssb/registration for more details.",
+                            online: false,
+                            credit: 0.5,
+                        }];
+                    } else{
                         response = await axios.get(backend_api + "/api/course-info/filter", {
                             params: {
                                 start: Number(split[1].slice(0, -1)),
                                 end: Number(split[1].slice(0, -1)) + 99,
                                 code: split[0],
                             }
-                        }).catch(error => { console.error(error)  })
+                        }).catch(error => { console.error(error)  });
+                        parsedCourseInfos = response.data;
                     }
-                    parsedCourseInfos = response.data;
                 }
                 else if (courseCode.split("-").length === 2 && courseCode.split("-")[0].length > 0 && courseCode.split("-")[1].length > 0) {
                     // Handles range case, eg CS 440-CS 498

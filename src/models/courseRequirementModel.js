@@ -63,9 +63,9 @@ export class CourseRequirement {
             }
         }
 
-        this.satisfiesMajorReq = false;
-        this.satisfiesMinorReq = false;
-        this.satisfiesSpecializationReq = false;
+        this.satisfiesMajorReq = data.satisfiesMajorReq;
+        this.satisfiesMinorReq = data.satisfiesMinorReq;
+        this.satisfiesSpecializationReq = data.satisfiesSpecializationReq;
 
         this.credits_of_prereqs_met = data && data.credits_of_prereqs_met ? data.credits_of_prereqs_met : 0
         this.credits_required = data ? data.credits_required : 0        
@@ -117,10 +117,6 @@ export class CourseRequirement {
 
     isSelected() {
         return this.selected_course.course_code !== "WAITING"
-    }
-
-    toggleOverride() {
-        this.overridden = !this.overridden;
     }
 
     satisfied() {
