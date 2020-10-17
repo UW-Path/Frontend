@@ -18,7 +18,7 @@
                         <div class="modal-course-list">
                         <div class="modal-course" v-bind:class="{ selectedCourseCode: course && selectedCourse && (selectedCourse.course_code === course.course_code) }" v-for="(course,index) in filteredCourses" :key="index"
                             v-on:click="selectedCourse = course">
-                            {{course.course_code + ": " + course.course_name}}
+                            {{course.course_name !== "" ? course.course_code + ": " + course.course_name : course.course_code }}
                         </div>
                         </div>
                     </v-col>
@@ -116,6 +116,7 @@
                 this.course.number_of_choices = 2;
             }
 
+            // Get all possible course choices for the requirement
             for (let course of required_courses) {
                 promises.push(this.parseRequirement(course))
             }
@@ -124,7 +125,15 @@
                     this.allCourseChoices = this.allCourseChoices.concat(choice);
                 }
                 this.allCourseChoicesTrie.addAll(this.allCourseChoices);
-                this.course.number_of_choices = this.allCourseChoices.length;
+
+                // Handle cases like "BUS 300-" where only a single course code is used but many choices exist
+                if (this.allCourseChoices.length === 1 && this.allCourseChoices[0].course_code.includes('-')) {
+                    this.course.number_of_choices = 2;
+                } else {
+                    this.course.number_of_choices = this.allCourseChoices.length;
+                }
+
+                // Set a selected course if none exists
                 if ((this.allCourseChoices.length === 1) && (!this.course.selected_course || this.course.selected_course.course_code === "WAITING")) {
                     this.course.selected_course = this.allCourseChoices[0];
                 }
@@ -265,18 +274,26 @@
                                 end: Number(split[2].slice(0, -1)) + 99,
                                 code: split[0] + " " + split[1],
                             }
-                        }).catch(error => { console.error(error) })
-                    }
-                    else{
+                        }).catch(error => { console.error(error) });
+                        parsedCourseInfos = response.data;
+                    } else if (split[0] === "BUS") {
+                        // Laurier course
+                        parsedCourseInfos = [{
+                            course_code: courseCode,
+                            info: "Information about these courses is unavailable. Please refer to https://loris.wlu.ca/register/ssb/registration for more details.",
+                            online: false,
+                            credit: 0.5,
+                        }];
+                    } else{
                         response = await axios.get(backend_api + "/api/course-info/filter", {
                             params: {
                                 start: Number(split[1].slice(0, -1)),
                                 end: Number(split[1].slice(0, -1)) + 99,
                                 code: split[0],
                             }
-                        }).catch(error => { console.error(error)  })
+                        }).catch(error => { console.error(error)  });
+                        parsedCourseInfos = response.data;
                     }
-                    parsedCourseInfos = response.data;
                 }
                 else if (courseCode.split("-").length === 2 && courseCode.split("-")[0].length > 0 && courseCode.split("-")[1].length > 0) {
                     // Handles range case, eg CS 440-CS 498
