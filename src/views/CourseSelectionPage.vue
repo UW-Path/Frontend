@@ -7,12 +7,6 @@
             vertical
             dark
             class="primary-tabs">
-            <!-- <v-tab class="tab-icon" v-show="false">
-                <v-icon x-large >mdi-calendar-range-outline</v-icon>
-            </v-tab> -->
-            <!-- <v-tab class="tab-icon">
-                <v-icon  x-large >mdi-check-box-outline</v-icon>
-            </v-tab> -->
             <v-btn  class="tab-icon download-button" @click="scrollTable()">
                 <v-icon x-large >mdi-calendar-range-outline</v-icon>
             </v-btn> 

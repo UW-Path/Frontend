@@ -9,8 +9,8 @@
             UWPath
          </v-toolbar-title>
          <v-spacer></v-spacer>
-         <v-btn text color="white" v-on:click="goToContactPage"> Contact Us </v-btn>
          <v-btn text color="white" v-on:click="goToCourseSelectionPage"> Plan Courses </v-btn>
+         <v-btn text color="white" v-on:click="goToContactPage"> Contact</v-btn>
       </v-app-bar>
       <div class="about">
          <div class="container-background"></div>

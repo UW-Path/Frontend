@@ -1,6 +1,12 @@
 <template>  
 <div class="background">
+    <v-app-bar class="appbar" flat>
+         <v-spacer></v-spacer>
+        <v-btn text color="white" v-on:click="goToCourseSelectionPage"> Plan Courses </v-btn>
+        <v-btn text color="white" v-on:click="goToContactPage"> Contact </v-btn>
+    </v-app-bar>
     <v-container class="container">
+
         <v-row no-gutters justify="center" align="center" class="center">
                 <v-col class="hidden-md-and-down" justify="end" >
                     
@@ -71,7 +77,13 @@ export default {
         },
         cancelSelection() {
             this.inConfirmation = false
-        }    
+        },
+        goToCourseSelectionPage() {
+            this.$router.push('/CourseSelection')
+        },
+        goToContactPage() {
+            this.$router.push('/Contact')
+        },    
     },
     computed: {
         ...mapGetters(["allMajors", "findMajorByProgram", "majorRequirements"])
@@ -81,12 +93,12 @@ export default {
 
 <style scoped>
 /* TODO: REFACTOR THESE PATHS */
-#logo {
-    position: fixed;
-    font-weight: 200;
-    font-size: 2rem;
-    left: 30px;
-    top: 30px;
+.appbar {
+  position: fixed;
+  right: 0;
+  top: 0;
+background: transparent !important;
+border: none;
 }
 
 .title{

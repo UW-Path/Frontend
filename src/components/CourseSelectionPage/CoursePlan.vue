@@ -184,7 +184,6 @@ export default {
 
   .draggable-column {
     min-height: 90%;
-    width: 10.5em;
   }
   
   .default-font {
