@@ -86,7 +86,7 @@
       <v-list-item>
         <v-list-item-content>
           <div class="overline mb-1">
-            <div  v-if="courseData.number_of_choices > 1"> Select {{courseData.number_of_courses}} </div>
+            <div  v-if="courseData.number_of_choices > 1"> Select {{courseData.number_of_courses}} of</div>
             <v-spacer></v-spacer>
             <v-icon icon class="delete-btn" x-small @click="deleteCourse()" >mdi-close</v-icon>
           </div>

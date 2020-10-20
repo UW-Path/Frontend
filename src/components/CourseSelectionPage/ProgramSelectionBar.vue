@@ -15,8 +15,9 @@
         </v-toolbar-title>
         <ProgramSelectionModal/>
         <v-spacer></v-spacer>
-        <v-btn text color="white" v-on:click="goToAboutUsPage"> About Us </v-btn>
-        <v-btn text color="white" v-on:click="goToContactPage"> Contact Us </v-btn>
+        <v-btn text color="white" v-on:click="goToContactPage"> Contact </v-btn>
+        <v-btn text color="white" v-on:click="goToAboutUsPage"> About </v-btn>
+
     </v-app-bar>
 </template>
 

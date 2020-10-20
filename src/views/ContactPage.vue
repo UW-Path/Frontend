@@ -10,8 +10,9 @@
             <span class="link" @click="goToHome()"> UWPath</span>
          </v-toolbar-title>
          <v-spacer></v-spacer>
-         <v-btn text color="white" v-on:click="goToAboutUsPage"> About Us </v-btn>
          <v-btn text color="white" v-on:click="goToCourseSelectionPage"> Plan Courses </v-btn>
+         <v-btn text color="white" v-on:click="goToAboutUsPage"> About </v-btn>
+
       </v-app-bar>
       <v-container class="contact-page-content-container" data-aos="fade-up" data-aos-duration="1200">
          <h2 class="header">Help us Improve our Site!</h2>
