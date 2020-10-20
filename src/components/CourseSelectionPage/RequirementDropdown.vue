@@ -7,7 +7,7 @@
 				<v-tooltip left open-delay="300" max-width="250px">
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn icon  v-bind="attrs" v-on="on" @click="showHidden(program)">
-						<v-icon medium>mdi-refresh</v-icon>
+						<v-icon medium color="white">mdi-refresh</v-icon>
 					</v-btn>
                   </template>
                   <span>Repopulate courses deleted from requirement</span>
@@ -19,7 +19,7 @@
 				<v-tooltip left open-delay="300" max-width="250px">
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn icon  v-bind="attrs" v-on="on" @click="showHidden(program)">
-						<v-icon medium>mdi-refresh</v-icon>
+						<v-icon color="white" medium>mdi-refresh</v-icon>
 					</v-btn>
                   </template>
                   <span>Repopulate courses deleted from requirement</span>
@@ -31,7 +31,7 @@
 				<v-tooltip left open-delay="300" max-width="250px">
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn icon  v-bind="attrs" v-on="on" @click="showHidden(program)">
-						<v-icon medium>mdi-refresh</v-icon>
+						<v-icon color="white" medium>mdi-refresh</v-icon>
 					</v-btn>
                   </template>
                   <span>Repopulate courses deleted from requirement</span>
@@ -43,7 +43,7 @@
 				<v-tooltip left open-delay="300" max-width="250px">
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn icon  v-bind="attrs" v-on="on" @click="showHidden(program)">
-						<v-icon medium>mdi-refresh</v-icon>
+						<v-icon color="white" medium>mdi-refresh</v-icon>
 					</v-btn>
                   </template>
                   <span>Repopulate courses deleted from requirement</span>
@@ -55,7 +55,7 @@
 				<v-tooltip left open-delay="300" max-width="250px">
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn icon  v-bind="attrs" v-on="on" @click="showHidden(program)">
-						<v-icon medium>mdi-refresh</v-icon>
+						<v-icon color="white" medium>mdi-refresh</v-icon>
 					</v-btn>
                   </template>
                   <span>Repopulate courses deleted from requirement</span>
@@ -237,6 +237,7 @@ export default {
 .title {
 	text-align: left;
 	padding: 1em;
+	color: ghostwhite;
 	padding-top: 0.5em;
 	padding-bottom: 0.5em;
 	font-size: 0.95em !important;
@@ -247,7 +248,6 @@ export default {
 	font-family: 'Montserrat' !important;
 	display: flex;
 }
-
 
 .refresh-icon{
 	margin-left: 0.2em;

@@ -2,9 +2,10 @@
 <div class="background">
     <v-app-bar class="appbar" flat>
          <v-spacer></v-spacer>
-        <v-btn text color="white" v-on:click="goToCourseSelectionPage"> Plan Courses </v-btn>
-        <v-btn text color="white" v-on:click="goToContactPage"> Contact </v-btn>
-    </v-app-bar>
+            <v-btn text color="white" v-on:click="goToCourseSelectionPage"> Plan Courses </v-btn>
+            <v-btn text color="white" v-on:click="goToContactPage"> Contact </v-btn>
+            <v-btn text color="white" v-on:click="goToAboutPage"> About</v-btn>
+        </v-app-bar>
     <v-container class="container">
 
         <v-row no-gutters justify="center" align="center" class="center">
@@ -78,6 +79,9 @@ export default {
         cancelSelection() {
             this.inConfirmation = false
         },
+        goToAboutPage(){
+            this.$router.push('/About')
+        },
         goToCourseSelectionPage() {
             this.$router.push('/CourseSelection')
         },
@@ -97,8 +101,8 @@ export default {
   position: fixed;
   right: 0;
   top: 0;
-background: transparent !important;
-border: none;
+  background: transparent !important;
+  border: none;
 }
 
 .title{

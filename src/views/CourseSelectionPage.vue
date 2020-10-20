@@ -7,15 +7,34 @@
             vertical
             dark
             class="primary-tabs">
-            <v-btn  class="tab-icon download-button" @click="scrollTable()">
-                <v-icon x-large >mdi-calendar-range-outline</v-icon>
-            </v-btn> 
-            <v-btn  class="tab-icon download-button" @click="scrollChecklist()">
-                <v-icon  x-large >mdi-check-box-outline</v-icon>
-            </v-btn> 
-            <v-btn  class="tab-icon download-button" @click="exportXLS()">
-                <v-icon x-large >mdi-download-outline</v-icon>
-            </v-btn> 
+            <v-tooltip right open-delay="300" max-width="250px">
+                <template v-slot:activator="{ on, attrs }">
+                <v-btn  class="tab-icon download-button" v-bind="attrs" v-on="on" @click="scrollTable()">
+                    <v-icon x-large >mdi-calendar-range-outline</v-icon>
+                </v-btn> 
+                </template>
+                <span>Plan Course</span>
+            </v-tooltip>
+
+            <v-tooltip right open-delay="300" max-width="250px">
+                <template v-slot:activator="{ on, attrs }">
+                <v-btn  class="tab-icon download-button" v-bind="attrs" v-on="on" @click="scrollChecklist()">
+                    <v-icon  x-large >mdi-check-box-outline</v-icon>
+                </v-btn> 
+                </template>
+                <span>Degree Checklist</span>
+            </v-tooltip>
+
+            <v-tooltip right open-delay="300" max-width="250px">
+                <template v-slot:activator="{ on, attrs }">
+                <v-btn  class="tab-icon download-button" v-bind="attrs" v-on="on" @click="exportXLS()">
+                    <v-icon x-large >mdi-download-outline</v-icon>
+                </v-btn> 
+                </template>
+                <span>Download plan to CSV</span>
+            </v-tooltip>
+            
+            
             <!-- this is a trick to get the v-tab-item to display, the controls are handled by buttons -->
             <v-tab v-show="false"></v-tab>
             
