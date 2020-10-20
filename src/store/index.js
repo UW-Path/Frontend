@@ -44,6 +44,7 @@ export default new Vuex.Store({
                         let hours = Math.abs(today - obj["courseSelection"]["cacheTime"]) / 36e5;
                         obj["courseSelection"]["cacheTime"] = today;
 
+                        hours = 0;  // Makes cache infinite, but leaves code in place if we do want a timeout for caching later on
                         if (hours <= 24) {
                             for (var i in obj["courseSelection"]["table"]) {
                                 for (var j in obj["courseSelection"]["table"][i]["courses"]) {
