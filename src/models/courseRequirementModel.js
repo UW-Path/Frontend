@@ -67,8 +67,8 @@ export class CourseRequirement {
         this.satisfiesMinorReq = data.satisfiesMinorReq;
         this.satisfiesSpecializationReq = data.satisfiesSpecializationReq;
 
-        this.credits_of_prereqs_met = data && data.credits_of_prereqs_met ? data.credits_of_prereqs_met : 0
-        this.credits_required = data ? data.credits_required : 0        
+        this.credits_of_prereqs_met = data && parseFloat(data.credits_of_prereqs_met) ? data.credits_of_prereqs_met : 0;
+        this.credits_required = data ? parseFloat(data.credits_required) : 0;
         this.overridden = data && data.overridden ? data.overridden : false;
         this.id = data && data.id ? data.id : REQUIREMENT_ID++;
         this.original_requirement_id = data && data.original_requirement_id ? data.original_requirement_id : this.id;

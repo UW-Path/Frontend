@@ -107,7 +107,7 @@ function getRequirementFulfillmentSize(requirement) {
 }
 
 function ParseRequirementsForChecklist(requirements, selectedCourses, programInfo) {
-    var usedCourses = new TrieSearch([['selected_course', 'course_code'],
+    let usedCourses = new TrieSearch([['selected_course', 'course_code'],
                                       ['selected_course', 'course_number'],
                                       ['course_codes_raw']], {
         idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
@@ -118,13 +118,9 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
     requirements.sort((req1, req2) => {
         let req1Score = getRequirementFulfillmentSize(req1);
         let req2Score = getRequirementFulfillmentSize(req2);
-        if (req1Score < req2Score) {
-            return -1;
-        } else if (req1Score > req2Score) {
-            return 1;
-        } else {
-            return 0;
-        }
+        if (req1Score < req2Score) return -1;
+        else if (req1Score > req2Score) return 1;
+        return 0;
     });
     let parsed_requirements = [];
     // Make first pass on requirements to see if any are fulfilled
@@ -214,7 +210,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
                     if (usedCourses.get(match.selected_course.course_code).length === 0) {
                         numMatchedCredits += match.selected_course.credit;
                         matchedCourses.push(match);
-                        if ((numMatchedCredits >= requirement.credits_required && matchedCourses.length > 0) || 
+                        if ((numMatchedCredits >= requirement.credits_required && matchedCourses.length > 0) ||
                             (required_courses.length === 1 && 
                              required_courses[0][required_courses[0].length - 1] === 'L')) 
                             break;
@@ -416,8 +412,8 @@ const actions = {
             });
 
             let selectedCourses = new TrieSearch([['selected_course', 'course_code'],
-                ['selected_course', 'course_number'],
-                ['course_codes_raw']], {
+                                                  ['selected_course', 'course_number'],
+                                                  ['course_codes_raw']], {
                 idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
             });
             for (let term of getters.getTable) {
