@@ -18,17 +18,17 @@ const getters = {
     //finds the major that matches to a give program name
     findMajorByProgram: (state) => {
         return (program) => {
-            return state.majors.find(obj => { return program == obj.program_name})
+            return state.majors.find(obj => { return program === obj.program_name})
         } 
     },
     findMinorByProgram: (state) => {
         return (program) => {
-            return state.minors.find(obj => { return program == obj.program_name})
+            return state.minors.find(obj => { return program === obj.program_name})
         } 
     },
     findOptionByProgram: (state) => {
         return (program) => {
-            return state.specialization.find(obj => { return program == obj.program_name})
+            return state.specialization.find(obj => { return program === obj.program_name})
         } 
     }
 
@@ -42,7 +42,6 @@ const actions = {
         })
         .catch(err => {
             console.error(err);
-            return;
         })
     },
 };
