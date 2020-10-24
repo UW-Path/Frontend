@@ -6,30 +6,30 @@ import { backend_api } from '../../backendAPI';
 
 const mathCourses = ["ACTSC", "AMATH", "CO", "COMM", "CS", "MATH", "MTHEL", "MATBUS", "PMATH", "SE", "STATE"];
 const nonMathCourses = ["AFM", "ASL", "ANTH", "AHS", "APPLS", "ARABIC", "AE", "ARCH", "ARTS", "ARBUS", "AVIA", "BIOL",
-                        "BME", "BASE", "BUS", "BET", "CDNST", "CHE", "CHEM", "CHINA", "CMW", "CIVE", "CLAS", "COGSCI",
-                        "CROAT", "CI", "DAC", "DUTCH", "EARTH", "EASIA", "ECON", "ECE", "ENGL", "EMLS", "ENBUS", "ERS",
-                        "ENVE", "ENVS", "FINE", "FR", "GSJ", "GENE", "GEOG", "GEOE", "GER", "GERON", "GBDA", "GRK",
-                        "HLTH", "HIST", "HRM", "HRTS", "HUMSC", "INDG", "INDEV", "INTST", "ITAL", "ITALST", "JAPAN",
-                        "JS", "KIN", "INTEG", "KOREA", "LAT", "LS", "MGMT", "MSCI", "MNS", "ME", "MTE", "MEDVL", "MENN",
-                        "MOHAWK", "MUSIC", "NE", "OPTOM", "PACS", "PHARM", "PHIL", "PHYS", "PLAN", "PSCI", "PORT",
-                        "PSYCH", "PMATH", "REC", "RS", "RUSS", "REES", "SCI", "SCBUS", "SMF", "SDS", "SVENT", "SOCWK",
-                        "SWREN", "STV", "SOC", "SPAN", "SPCOM", "SI", "SYDE", "THPERF", "VCULT"];
+    "BME", "BASE", "BUS", "BET", "CDNST", "CHE", "CHEM", "CHINA", "CMW", "CIVE", "CLAS", "COGSCI",
+    "CROAT", "CI", "DAC", "DUTCH", "EARTH", "EASIA", "ECON", "ECE", "ENGL", "EMLS", "ENBUS", "ERS",
+    "ENVE", "ENVS", "FINE", "FR", "GSJ", "GENE", "GEOG", "GEOE", "GER", "GERON", "GBDA", "GRK",
+    "HLTH", "HIST", "HRM", "HRTS", "HUMSC", "INDG", "INDEV", "INTST", "ITAL", "ITALST", "JAPAN",
+    "JS", "KIN", "INTEG", "KOREA", "LAT", "LS", "MGMT", "MSCI", "MNS", "ME", "MTE", "MEDVL", "MENN",
+    "MOHAWK", "MUSIC", "NE", "OPTOM", "PACS", "PHARM", "PHIL", "PHYS", "PLAN", "PSCI", "PORT",
+    "PSYCH", "PMATH", "REC", "RS", "RUSS", "REES", "SCI", "SCBUS", "SMF", "SDS", "SVENT", "SOCWK",
+    "SWREN", "STV", "SOC", "SPAN", "SPCOM", "SI", "SYDE", "THPERF", "VCULT"];
 const scienceCourses = ["BIOL", "CHEM", "EARTH", "MNS", "OPTOM", "PHARM", "PHYS", "SCI", "SCBUS"];
 const electiveCourses = ["ACTSC", "AMATH", "CO", "COMM", "CS", "MATH", "MTHEL", "MATBUS", "PMATH", "SE", "STATE",
-                         "NON-MATH", "AFM", "ASL", "ANTH", "AHS", "APPLS", "ARABIC", "AE", "ARCH", "ARTS", "ARBUS",
-                         "AVIA", "BIOL", "BME", "BASE", "BUS", "BET", "CDNST", "CHE", "CHEM", "CHINA", "CMW", "CIVE",
-                         "CLAS", "COGSCI", "CROAT", "CI", "DAC", "DUTCH", "EARTH", "EASIA", "ECON", "ECE", "ENGL",
-                         "EMLS", "ENBUS", "ERS", "ENVE", "ENVS", "FINE", "FR", "GSJ", "GENE", "GEOG", "GEOE", "GER", 
-                         "GERON", "GBDA", "GRK", "HLTH", "HIST", "HRM", "HRTS", "HUMSC", "INDG", "INDEV", "INTST",
-                         "ITAL", "ITALST", "JAPAN", "JS", "KIN", "INTEG", "KOREA", "LAT", "LS", "MGMT", "MSCI", "MNS",
-                         "ME", "MTE", "MEDVL", "MENN", "MOHAWK", "MUSIC", "NE", "OPTOM", "PACS", "PHARM", "PHIL", 
-                         "PHYS", "PLAN", "PSCI", "PORT", "PSYCH", "PMATH", "REC", "RS", "RUSS", "REES", "SCI", "SCBUS",
-                         "SMF", "SDS", "SVENT", "SOCWK", "SWREN", "STV", "SOC", "SPAN", "SPCOM", "SI", "SYDE", "THPERF",
-                         "VCULT"];
-const languageCourses = ["ARABIC", "CHINA", "CROAT", "DUTCH", "FR", "GER", "GRK", "ITAL", "JAPAN", "KOREA", "LAT", 
-                         "PORT", "RUSS", "SPAN"];
+    "NON-MATH", "AFM", "ASL", "ANTH", "AHS", "APPLS", "ARABIC", "AE", "ARCH", "ARTS", "ARBUS",
+    "AVIA", "BIOL", "BME", "BASE", "BUS", "BET", "CDNST", "CHE", "CHEM", "CHINA", "CMW", "CIVE",
+    "CLAS", "COGSCI", "CROAT", "CI", "DAC", "DUTCH", "EARTH", "EASIA", "ECON", "ECE", "ENGL",
+    "EMLS", "ENBUS", "ERS", "ENVE", "ENVS", "FINE", "FR", "GSJ", "GENE", "GEOG", "GEOE", "GER",
+    "GERON", "GBDA", "GRK", "HLTH", "HIST", "HRM", "HRTS", "HUMSC", "INDG", "INDEV", "INTST",
+    "ITAL", "ITALST", "JAPAN", "JS", "KIN", "INTEG", "KOREA", "LAT", "LS", "MGMT", "MSCI", "MNS",
+    "ME", "MTE", "MEDVL", "MENN", "MOHAWK", "MUSIC", "NE", "OPTOM", "PACS", "PHARM", "PHIL",
+    "PHYS", "PLAN", "PSCI", "PORT", "PSYCH", "PMATH", "REC", "RS", "RUSS", "REES", "SCI", "SCBUS",
+    "SMF", "SDS", "SVENT", "SOCWK", "SWREN", "STV", "SOC", "SPAN", "SPCOM", "SI", "SYDE", "THPERF",
+    "VCULT"];
+const languageCourses = ["ARABIC", "CHINA", "CROAT", "DUTCH", "FR", "GER", "GRK", "ITAL", "JAPAN", "KOREA", "LAT",
+    "PORT", "RUSS", "SPAN"];
 
-const defaultTable = [ 
+const defaultTable = [
     {
         courses: []
     },
@@ -53,8 +53,8 @@ const defaultTable = [
     },
     {
         courses: []
-    }       
- ];
+    }
+];
 
 const state = {
     table: JSON.parse(JSON.stringify(defaultTable)),
@@ -89,9 +89,9 @@ function getRequirementFulfillmentSize(requirement) {
     for (let course of required_courses) {
         if (course[course.length - 1] === "-") {
             sizeScore += 50;
-        } else if (course.split("-").length === 2 && 
-                   course.split("-")[0].length > 0 &&
-                   course.split("-")[1].length > 0) {
+        } else if (course.split("-").length === 2 &&
+            course.split("-")[0].length > 0 &&
+            course.split("-")[1].length > 0) {
             sizeScore += 30;
         } else {
             if (course === "NON-MATH" || course === "SCIENCE") {
@@ -108,8 +108,8 @@ function getRequirementFulfillmentSize(requirement) {
 
 function ParseRequirementsForChecklist(requirements, selectedCourses, programInfo) {
     let usedCourses = new TrieSearch([['selected_course', 'course_code'],
-                                      ['selected_course', 'course_number'],
-                                      ['course_codes_raw']], {
+    ['selected_course', 'course_number'],
+    ['course_codes_raw']], {
         idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
     });
     // Since a single course could apply to multiple different requirements, we need to keep track of
@@ -170,12 +170,12 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
                     possibleMatches = possibleMatches.concat(selectedCourses.get([searchParam,
                         course.split(" ")[1][0]], TrieSearch.UNION_REDUCER))
                 }
-            } else if (course.split("-").length === 2 && 
-                       course.split("-")[0].length > 0 && 
-                       course.split("-")[1].length > 0) {
+            } else if (course.split("-").length === 2 &&
+                course.split("-")[0].length > 0 &&
+                course.split("-")[1].length > 0) {
                 // Handles range case, eg CS 440-CS 498 (NOTE: Does not handle SCIENCE 440-SCIENCE 498 etc)
-                let start = Math.floor(course.split("-")[0].split(" ")[1]/100);
-                let end = Math.floor(course.split("-")[1].split(" ")[1]/100);
+                let start = Math.floor(course.split("-")[0].split(" ")[1] / 100);
+                let end = Math.floor(course.split("-")[1].split(" ")[1] / 100);
                 for (let i = start; i <= end; i++) {
                     possibleMatches = possibleMatches.concat(selectedCourses.get([course.split("-")[0]
                         .split(" ")[0], i.toString()], TrieSearch.UNION_REDUCER))
@@ -188,7 +188,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
                         matchedCourses.push(match);
                         if ((numMatchedCredits >= requirement.credits_required && matchedCourses.length > 0) ||
                             (required_courses.length === 1 &&
-                             required_courses[0][required_courses[0].length - 1] === 'L')) break;
+                                required_courses[0][required_courses[0].length - 1] === 'L')) break;
                     }
                 }
                 a = false;
@@ -211,8 +211,8 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
                         numMatchedCredits += match.selected_course.credit;
                         matchedCourses.push(match);
                         if ((numMatchedCredits >= requirement.credits_required && matchedCourses.length > 0) ||
-                            (required_courses.length === 1 && 
-                             required_courses[0][required_courses[0].length - 1] === 'L')) 
+                            (required_courses.length === 1 &&
+                                required_courses[0][required_courses[0].length - 1] === 'L'))
                             break;
                     }
                 }
@@ -222,7 +222,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
         }
         if ((numMatchedCredits >= requirement.credits_required && matchedCourses.length > 0) ||
             (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L' &&
-             matchedCourses.length >= 1)) {
+                matchedCourses.length >= 1)) {
             requirement.prereqs_met = true;
             requirement.credits_of_prereqs_met = requirement.credits_required;
             usedCourses.addAll(matchedCourses);
@@ -286,10 +286,10 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
                         course.split(" ")[1][0]], TrieSearch.UNION_REDUCER))
                 }
             } else if (course.split("-").length === 2 && course.split("-")[0].length > 0 &&
-                       course.split("-")[1].length > 0) {
+                course.split("-")[1].length > 0) {
                 // Handles range case, eg CS 440-CS 498
-                let start = Math.floor(course.split("-")[0].split(" ")[1]/100);
-                let end = Math.floor(course.split("-")[1].split(" ")[1]/100);
+                let start = Math.floor(course.split("-")[0].split(" ")[1] / 100);
+                let end = Math.floor(course.split("-")[1].split(" ")[1] / 100);
                 for (let i = start; i <= end; i++) {
                     possibleMatches = possibleMatches.concat(selectedCourses.get([course.split("-")[0]
                         .split(" ")[0], i.toString()], TrieSearch.UNION_REDUCER))
@@ -303,7 +303,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
                         usedCourses.add(match);
                         if ((requirement.credits_of_prereqs_met >= requirement.credits_required &&
                             matchedCourses.length > 0) || (required_courses.length === 1 &&
-                            required_courses[0][required_courses[0].length - 1] === 'L')) break;
+                                required_courses[0][required_courses[0].length - 1] === 'L')) break;
                     }
                 }
                 a = false;
@@ -327,9 +327,9 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
                         matchedCourses.push(match);
                         usedCourses.add(match);
                         if ((requirement.credits_of_prereqs_met >= requirement.credits_required &&
-                             matchedCourses.length > 0) ||
+                            matchedCourses.length > 0) ||
                             (required_courses.length === 1 &&
-                             required_courses[0][required_courses[0].length - 1] === 'L')) break;
+                                required_courses[0][required_courses[0].length - 1] === 'L')) break;
                     }
                 }
             }
@@ -397,106 +397,106 @@ const actions = {
                 option: getters.specRequirements.length !== 0 ? getters.specRequirements[0].info.program_name : ""
             }
         })
-        .then(response => {
-            //parse table 1 and table 2 data 
-            let table1needed = false;
-            let table2needed = false;
-            let newMajorRequirements = response.data.requirements;
-            newMajorRequirements.forEach(req => {
-                let additionalReqs = req.additional_requirements ? req.additional_requirements.toLowerCase()
-                    .split(", ") : [];
-                for (let additionalReq of additionalReqs) {
-                    if (additionalReq === "table ii") table2needed = true;     
-                    if (additionalReq === "table i") table1needed = true;
-                }
-            });
-
-            let selectedCourses = new TrieSearch([['selected_course', 'course_code'],
-                                                  ['selected_course', 'course_number'],
-                                                  ['course_codes_raw']], {
-                idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
-            });
-            for (let term of getters.getTable) {
-                selectedCourses.addAll(term.courses);
-                for (let course of term.courses) {
-                    course.satisfiesMajorReq = false;
-                    course.satisfiesMinorReq = false;
-                    course.satisfiesSpecializationReq = false;
-                }
-            }
-
-            if (table2needed) {
-                newMajorRequirements = newMajorRequirements.concat(response.data.table2)
-            }
-
-            if (response.data.requirements) {
-                let parsedMajorRequirements = ParseRequirementsForChecklist(newMajorRequirements, selectedCourses,
-                                                                            getters.majorRequirements[0].info);
-                if (table1needed) {
-                    let list1_courses = response.data.table1.filter( course => {return course.list_number === 1})
-                        .map(course => { return course.course_code }).join(",");
-                    let list2_courses = response.data.table1.filter( course => {return course.list_number === 2})
-                        .map(course => { return course.course_code }).join(",");
-
-                    let list1 = {
-                        course_codes: list1_courses,
-                        number_of_courses: 1,
-                        credits_required: 0.5,
-                        credits_of_prereqs_met: 0,
-                    };
-                    let list2 = {
-                        course_codes: list2_courses,
-                        number_of_courses: 1,
-                        credits_required: 0.5,
-                        credits_of_prereqs_met: 0,
-                    };
-
-                    let list1_courses_split = list1_courses.split(/,|\sor\s/);
-                    for (let course of list1_courses_split) {
-                        let possibleMatches = selectedCourses.get(course);
-                        if (possibleMatches.length > 0) {
-                            list1.credits_of_prereqs_met = 0.5;
-                            list1.prereqs_met = true;
-                            break;
-                        }
+            .then(response => {
+                //parse table 1 and table 2 data 
+                let table1needed = false;
+                let table2needed = false;
+                let newMajorRequirements = response.data.requirements;
+                newMajorRequirements.forEach(req => {
+                    let additionalReqs = req.additional_requirements ? req.additional_requirements.toLowerCase()
+                        .split(", ") : [];
+                    for (let additionalReq of additionalReqs) {
+                        if (additionalReq === "table ii") table2needed = true;
+                        if (additionalReq === "table i") table1needed = true;
                     }
+                });
 
-                    let list2_courses_split = list2_courses.split(/,|\sor\s/);
-                    for (let course of list2_courses_split) {
-                        let possibleMatches = selectedCourses.get(course);
-                        if (possibleMatches.length > 0) {
-                            list2.credits_of_prereqs_met = 0.5;
-                            list2.prereqs_met = true;
-                            break;
-                        }
+                let selectedCourses = new TrieSearch([['selected_course', 'course_code'],
+                ['selected_course', 'course_number'],
+                ['course_codes_raw']], {
+                    idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
+                });
+                for (let term of getters.getTable) {
+                    selectedCourses.addAll(term.courses);
+                    for (let course of term.courses) {
+                        course.satisfiesMajorReq = false;
+                        course.satisfiesMinorReq = false;
+                        course.satisfiesSpecializationReq = false;
                     }
-                    parsedMajorRequirements.push(new CourseRequirement(list1));
-                    parsedMajorRequirements.push(new CourseRequirement(list2));
                 }
-                commit('setChecklistMajorRequirements', parsedMajorRequirements);
-            }
-            else {
-                commit('setChecklistMajorRequirements', []);
-            }
-            if (response.data.minor_requirements) {
-                commit('setChecklistMinorRequirements', ParseRequirementsForChecklist(response.data.minor_requirements,
-                    selectedCourses, getters.minorRequirements[0].info));
-            }
-            else {
-                commit('setChecklistMinorRequirements', []); 
-            }
-            if (response.data.option_requirements) {
-                commit('setChecklistOptionRequirements', ParseRequirementsForChecklist(response.data.option_requirements,
-                    selectedCourses, getters.specRequirements[0].info));
-            }
-            else {
-                commit('setChecklistOptionRequirements', []);
-            }
-        })
-        .catch(err => {
-            // eslint-disable-next-line no-console
-            console.error(err);
-        })
+
+                if (table2needed) {
+                    newMajorRequirements = newMajorRequirements.concat(response.data.table2)
+                }
+
+                if (response.data.requirements) {
+                    let parsedMajorRequirements = ParseRequirementsForChecklist(newMajorRequirements, selectedCourses,
+                        getters.majorRequirements[0].info);
+                    if (table1needed) {
+                        let list1_courses = response.data.table1.filter(course => { return course.list_number === 1 })
+                            .map(course => { return course.course_code }).join(",");
+                        let list2_courses = response.data.table1.filter(course => { return course.list_number === 2 })
+                            .map(course => { return course.course_code }).join(",");
+
+                        let list1 = {
+                            course_codes: list1_courses,
+                            number_of_courses: 1,
+                            credits_required: 0.5,
+                            credits_of_prereqs_met: 0,
+                        };
+                        let list2 = {
+                            course_codes: list2_courses,
+                            number_of_courses: 1,
+                            credits_required: 0.5,
+                            credits_of_prereqs_met: 0,
+                        };
+
+                        let list1_courses_split = list1_courses.split(/,|\sor\s/);
+                        for (let course of list1_courses_split) {
+                            let possibleMatches = selectedCourses.get(course);
+                            if (possibleMatches.length > 0) {
+                                list1.credits_of_prereqs_met = 0.5;
+                                list1.prereqs_met = true;
+                                break;
+                            }
+                        }
+
+                        let list2_courses_split = list2_courses.split(/,|\sor\s/);
+                        for (let course of list2_courses_split) {
+                            let possibleMatches = selectedCourses.get(course);
+                            if (possibleMatches.length > 0) {
+                                list2.credits_of_prereqs_met = 0.5;
+                                list2.prereqs_met = true;
+                                break;
+                            }
+                        }
+                        parsedMajorRequirements.push(new CourseRequirement(list1));
+                        parsedMajorRequirements.push(new CourseRequirement(list2));
+                    }
+                    commit('setChecklistMajorRequirements', parsedMajorRequirements);
+                }
+                else {
+                    commit('setChecklistMajorRequirements', []);
+                }
+                if (response.data.minor_requirements) {
+                    commit('setChecklistMinorRequirements', ParseRequirementsForChecklist(response.data.minor_requirements,
+                        selectedCourses, getters.minorRequirements[0].info));
+                }
+                else {
+                    commit('setChecklistMinorRequirements', []);
+                }
+                if (response.data.option_requirements) {
+                    commit('setChecklistOptionRequirements', ParseRequirementsForChecklist(response.data.option_requirements,
+                        selectedCourses, getters.specRequirements[0].info));
+                }
+                else {
+                    commit('setChecklistOptionRequirements', []);
+                }
+            })
+            .catch(err => {
+                // eslint-disable-next-line no-console
+                console.error(err);
+            })
     },
 };
 
@@ -504,7 +504,7 @@ const mutations = {
     toggleCourseOverride: (state, { courseIndex, termIndex }) => {
         state.table[termIndex].courses[courseIndex].overridden = !state.table[termIndex].courses[courseIndex].overridden;
     },
-    updateCacheTime: (state) => {state.cacheTime = new Date();},
+    updateCacheTime: (state) => { state.cacheTime = new Date(); },
     setChecklistMajorRequirements: (state, checklistMajorRequirements) => {
         state.checklistMajorRequirements = checklistMajorRequirements
     },
@@ -533,10 +533,10 @@ const mutations = {
             }
         }
     },
-    addCourse: (state, { newRequirement, termIndex} ) => {
+    addCourse: (state, { newRequirement, termIndex }) => {
         state.table[termIndex].courses.push(newRequirement)
     },
-    validateCourses : (state) => {
+    validateCourses: (state) => {
         let listOfCoursesTaken = [];
         for (let i = 0; i < state.table.length; i++) {
             let currentTermCourses = state.table[i].courses.filter(course => {
@@ -553,27 +553,36 @@ const mutations = {
                 //there if course has not been selected yet then dont do anything
                 else if (!requirement.selected_course) continue;
                 else if (requirement.isSelected()) {
-                    if (requirement.selected_course.prereqs.length === 0){
+                    if (requirement.selected_course.prereqs.length === 0) {
                         requirement.prereqs_met = true;
                     }
-                    else{
-                        axios.get(backend_api + "/api/meets_prereqs/get", {
-                            params: {
-                                list_of_courses_taken: listOfCoursesTaken,
-                                current_term_courses: currentTermCourses,
-                                pk: requirement.selected_course.course_code,
-                            }
-                        })
-                        .then(response => {
-                            requirement.prereqs_met = response.data.can_take;
-                            if (!requirement.prereqs_met){
-                                requirement.validation_message = response.data.msg
-                            }
-                        })
-                        .catch(err => {
-                            // eslint-disable-next-line no-console
-                            console.error(err);
-                        })
+                    else {
+                        // if an error has appeared previously we don't call the backend again 
+                        // We also don't call backend if the course has been overriden 
+                        
+                        if (!requirement.isBackendError && !requirement.overridden) {
+                            axios.get(backend_api + "/api/meets_prereqs/get", {
+                                params: {
+                                    list_of_courses_taken: listOfCoursesTaken,
+                                    current_term_courses: currentTermCourses,
+                                    pk: requirement.selected_course.course_code,
+                                }
+                            })
+                                .then(response => {
+                                    requirement.prereqs_met = response.data.can_take;
+                                    if (!requirement.prereqs_met) {
+                                        requirement.validation_message = response.data.msg
+                                    }
+                                })
+                                .catch(err => {
+                                    // eslint-disable-next-line no-console
+                                    // we set a flag so we don't get 1000 emails in the backend
+                                    // every time a new course is dragged and this course has prob in 
+                                    // the backend
+                                    requirement.isBackendError = true
+                                    console.error(err);
+                                })
+                        }
                     }
                 }
             }
