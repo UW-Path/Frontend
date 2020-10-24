@@ -37,19 +37,24 @@ body {
   height: 100vh;
 }
 
-::-webkit-scrollbar {
-  height: 6px;
-  width: 6px;
-  background-color: #FFD646;
+/* The emerging W3C standard
+   that is currently Firefox-only */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #FFD646 #FFFFFF;
 }
 
-::-webkit-scrollbar-track {
-  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-  background-color: #F5F5F5;
+/* Works on Chrome/Edge/Safari */
+*::-webkit-scrollbar {
+  width: 15px;
 }
-
-::-webkit-scrollbar-thumb {
+*::-webkit-scrollbar-track {
+  background: #FFFFFF;
+}
+*::-webkit-scrollbar-thumb {
   background-color: #FFD646;
+  border-radius: 20px;
+  border: 4px solid #FFFFFF;
 }
 
 .v-application {

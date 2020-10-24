@@ -221,10 +221,12 @@ export default {
 
 .v-expansion-panel-content {
 	background-color: ghostwhite;
+	border-radius: 0.5em;
 }
 
 .v-expansion-panel-header {
 	background-color: ghostwhite;
+	border-radius: 0.5em;
 }
 
 .hidden {
@@ -243,6 +245,7 @@ export default {
 	font-size: 0.95em !important;
 	font-weight: 400;
 	background-color: #4a75ad59; 
+	border-radius: 0.5em;
 	margin-top: 0;
 	margin-bottom: 0.5em;
 	font-family: 'Montserrat' !important;

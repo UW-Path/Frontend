@@ -165,6 +165,7 @@ export default {
 }
 
 .side-bar {
+    border-radius: 2em;
     display: flex;
     max-height: 100%;
     overflow-y: auto;

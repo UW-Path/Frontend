@@ -2,30 +2,30 @@
   <div class="course-plan-container">
     <v-row class="main-course-selection-panel main-drag">
       <div class= "main-drag">
-      <template v-for="(term, termIndex) in getTable">  
-        <v-card class="col-sm-3 col-md-2 term-column" :key="termIndex" @mouseenter="termMouseOver(termIndex)" @mouseleave="termMouseExit()">
-        <div class="default-font term-title">{{ getTermList[termIndex] }}
-          <v-btn icon class="delete-btn" x-small @click="deleteTerm(term)">
-            <v-icon medium class="delete-term-btn" v-if="termHovered == termIndex || checkMobile()">mdi-trash-can</v-icon>
-          </v-btn>
-        </div>
-        <draggable class="list-group draggable-column" :disabled="editingEnabled" :list="term.courses" group="course" @change="change"> 
-          <template v-for="(requirement, courseIndex) in term.courses">
-            <RequirementOptionsModal
-              class="list-group-item card"
-              :key="requirement.id"
-              :course="requirement"
-              :courseIndex="courseIndex"
-              :termIndex="termIndex"
-              :onSelectionBar="false"
-            />
-          </template>
-          <AddCourseCard :termIndex="termIndex" :allCourses="allCourses" v-show="termHovered === termIndex || checkMobile()"/>
+        <template v-for="(term, termIndex) in getTable">
+          <v-card class="col-sm-3 col-md-2 term-column" :key="termIndex" @mouseenter="termMouseOver(termIndex)" @mouseleave="termMouseExit()">
+            <div class="default-font term-title">{{ getTermList[termIndex] }}
+              <v-btn icon class="delete-btn" x-small @click="deleteTerm(term)">
+                <v-icon medium class="delete-term-btn" v-if="termHovered == termIndex || checkMobile()">mdi-trash-can</v-icon>
+              </v-btn>
+            </div>
+            <draggable class="list-group draggable-column" :disabled="editingEnabled" :list="term.courses" group="course" @change="change">
+              <template v-for="(requirement, courseIndex) in term.courses">
+                <RequirementOptionsModal
+                  class="list-group-item card"
+                  :key="requirement.id"
+                  :course="requirement"
+                  :courseIndex="courseIndex"
+                  :termIndex="termIndex"
+                  :onSelectionBar="false"
+                />
+              </template>
+              <AddCourseCard :termIndex="termIndex" :allCourses="allCourses" v-show="termHovered === termIndex || checkMobile()"/>
 
-        </draggable>
-      </v-card >
-      </template>
-          <v-card class="col-2 term-column add-term-btn"  @click="addTermToTable">
+            </draggable>
+          </v-card >
+        </template>
+        <v-card class="col-2 term-column add-term-btn"  @click="addTermToTable">
           <div class="text-h7">
             Add a Term
           </div>
@@ -130,9 +130,19 @@ export default {
 
 <style scoped>
   .main-course-selection-panel {
-    overflow-x: auto;
-    overflow-y: auto;
     max-width: 100%;
+    scrollbar-width: thin;
+    scrollbar-color: #FFD646 #FFFFFF;
+  }
+
+  .main-drag::-webkit-scrollbar-thumb {
+    background-color: #FFD646;
+    border-radius: 20px;
+    border: 4px solid #FFFFFF;
+  }
+
+  .main-drag::-webkit-scrollbar-track {
+    background: #FFFFFF;
   }
 
   .course-plan-container{
@@ -149,13 +159,20 @@ export default {
 
   .term-column {
     background-color: white;
-    border: transparent;
+    border: none;
+    box-shadow: none !important;
     padding-top: 0;
+    margin-right: 4%;
   }
 
   .main-drag {
     display: flex;
     width: 100%;
+    background-color: white;
+    border-radius: 2em;
+    padding: 2%;
+    overflow-x: auto;
+    overflow-y: auto;
   }
 
   .term-title {
@@ -172,6 +189,7 @@ export default {
     justify-content: center;
     flex-direction:column;
     opacity: 0.5;
+    background-color: whitesmoke;
   }
 
   .add-term-btn:hover{
