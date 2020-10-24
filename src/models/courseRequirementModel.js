@@ -22,6 +22,8 @@ export const YEAR_TO_REQ_SECTION_MAP = {
     "16": "fourB",
 };
 
+var default_selected_course = {course_code: "WAITING", course_number: 42, credit: 0.5};
+
 /**
  * One course requirement, may contain information of multiple courses
  */
@@ -39,7 +41,7 @@ export class CourseRequirement {
         this.group = data && data.group ? data.group: "";
         this.number_of_choices = data && data.course_codes_raw ? data.course_codes_raw.split(/,\s|\sor\s|,/).length : 0;
         if (data && data.selected_course) this.selected_course = data.selected_course;
-        else this.selected_course = {course_code: "WAITING", course_number: 42};
+        else this.selected_course = default_selected_course;
 
         this.major = data && data.major ? data.major : [];
         for (let i in this.major) {
@@ -112,7 +114,7 @@ export class CourseRequirement {
 
     deselect() {
         if (this.number_of_choices === 1) return;
-        this.selected_course = {course_code: "WAITING", course_number: 42}
+        this.selected_course = default_selected_course;
     }
 
     isSelected() {

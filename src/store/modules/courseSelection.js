@@ -121,17 +121,6 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
         let numMatchedCredits = 0;
         let matchedCourses = [];
 
-        // See if any unselected requirements match
-        let unselectedMatches = selectedCourses.get(requirement.course_codes);
-        let usedUnselectedMatches = usedCourses.get(requirement.course_codes);
-
-        if (unselectedMatches.length - usedUnselectedMatches.length > 0) {
-            let unselectedCreditsUsed = Math.min(0.5 * (unselectedMatches.length - usedUnselectedMatches.length),
-                requirement.credits_required);
-            numMatchedCredits += unselectedCreditsUsed;
-            matchedCourses = matchedCourses.concat(unselectedMatches.slice(0, unselectedCreditsUsed * 2));
-        }
-
         for (let course of required_courses) {
             if ((numMatchedCredits >= requirement.credits_required && matchedCourses.length > 0) ||
                 (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L')) break;
@@ -212,6 +201,19 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
             if ((numMatchedCredits >= requirement.credits_required && matchedCourses.length > 0) ||
                 (required_courses.length === 1 && matchedCourses.length >= 1)) break;
         }
+
+        if (!((numMatchedCredits >= requirement.credits_required && matchedCourses.length > 0) ||
+                (required_courses.length === 1 && matchedCourses.length >= 1))) {
+            // See if any unselected requirements match
+            let unselectedMatches = selectedCourses.get(requirement.course_codes);
+            let usedUnselectedMatches = usedCourses.get(requirement.course_codes);
+            if (unselectedMatches.length - usedUnselectedMatches.length > 0) {
+                let unselectedCreditsUsed = Math.min(0.5 * (unselectedMatches.length - usedUnselectedMatches.length), requirement.credits_required);
+                numMatchedCredits += unselectedCreditsUsed;
+                matchedCourses = matchedCourses.concat(unselectedMatches.slice(0, unselectedCreditsUsed * 2));
+            }
+        }
+
         if ((numMatchedCredits >= requirement.credits_required && matchedCourses.length > 0) ||
             (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L' &&
                 matchedCourses.length >= 1)) {
@@ -238,17 +240,6 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
         let required_courses = requirement.course_codes.split(/,\s|\sor\s/);
         requirement.credits_of_prereqs_met = 0;
         let matchedCourses = [];
-
-        // See if any unselected requirements match
-        let unselectedMatches = selectedCourses.get(requirement.course_codes);
-        let usedUnselectedMatches = usedCourses.get(requirement.course_codes);
-        if (unselectedMatches.length - usedUnselectedMatches.length > 0) {
-            let unselectedCreditsUsed = Math.min(0.5 * (unselectedMatches.length - usedUnselectedMatches.length),
-                requirement.credits_required);
-            requirement.credits_of_prereqs_met = unselectedCreditsUsed;
-            matchedCourses = matchedCourses.concat(unselectedMatches.slice(0, unselectedCreditsUsed * 2));
-            usedCourses.addAll(matchedCourses);
-        }
 
         for (let course of required_courses) {
             let possibleMatches = [];
@@ -303,7 +294,8 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
                 // Handles normal course case, ege MATH 239
                 let possibleMatches = selectedCourses.get(course);
                 for (let match of possibleMatches) {
-                    if (usedCourses.get(match.selected_course.course_code).length === 0) {
+                    if (usedCourses.get(match.selected_course.course_code).length === 0 &&
+                        (match.selected_course && match.selected_course.course_code === course)) {
                         matchedCourses.push(selectedCourses.get(course)[0]);
                         usedCourses.add(match);
                         requirement.credits_of_prereqs_met += match.selected_course.credit;
@@ -314,7 +306,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
             }
             if (a) {
                 for (let match of possibleMatches) {
-                    if (usedCourses.get(match.selected_course.course_code).length === 0) {
+                    if (usedCourses.get(match.selected_course.course_code).length === 0 || usedCourses.get(match.course_codes_raw).length === 0 ) {
                         requirement.credits_of_prereqs_met += match.selected_course.credit;
                         matchedCourses.push(match);
                         usedCourses.add(match);
@@ -326,6 +318,19 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
                 }
             }
             if ((requirement.credits_of_prereqs_met >= requirement.credits_required && matchedCourses.length > 0)) break;
+        }
+
+        if (!(requirement.credits_of_prereqs_met >= requirement.credits_required && matchedCourses.length > 0)) {
+            // See if any unselected requirements match
+            let unselectedMatches = selectedCourses.get(requirement.course_codes);
+            let usedUnselectedMatches = usedCourses.get(requirement.course_codes);
+            if (unselectedMatches.length - usedUnselectedMatches.length > 0) {
+                let unselectedCreditsUsed = Math.min(0.5 * (unselectedMatches.length - usedUnselectedMatches.length),
+                    requirement.credits_required);
+                requirement.credits_of_prereqs_met = unselectedCreditsUsed;
+                matchedCourses = matchedCourses.concat(unselectedMatches.slice(0, unselectedCreditsUsed * 2));
+                usedCourses.addAll(matchedCourses);
+            }
         }
         for (let match of matchedCourses) {
             if (programInfo.plan_type === "Major") {
@@ -532,7 +537,7 @@ const mutations = {
         let listOfCoursesTaken = [];
         for (let i = 0; i < state.table.length; i++) {
             let currentTermCourses = state.table[i].courses.filter(course => {
-                return course.selected_course.course_code !== "WAITING";
+                return course.selected_course.course_code !== "WAITING" && !course.clickedDelete;
             }).map(course => {
                 return course.selected_course.course_code;
             });
