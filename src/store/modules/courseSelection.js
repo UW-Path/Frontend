@@ -58,8 +58,6 @@ const defaultTable = [
 
 const state = {
     table: JSON.parse(JSON.stringify(defaultTable)),
-    //TODO: need to figure out naming later
-    termList: ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B", "5A", "5B"],
     checklistMajorRequirements: [],
     checklistMinorRequirements: [],
     checklistOptionRequirements: [],
@@ -71,16 +69,10 @@ const getters = {
     checklistMinorRequirements: (state) => state.checklistMinorRequirements,
     checklistOptionRequirements: (state) => state.checklistOptionRequirements,
     getTable: (state) => state.table,
-    isFull: (state) => {
-        return state.table.length >= state.termList.length
-    },
-    getTermList: (state) => {
-        return state.termList
-    },
     getCourse: (state) => (termIndex, courseIndex) => {
         return state.table[termIndex].courses[courseIndex]
     },
-    cacheTime: (state) => state.cacheTime
+    cacheTime: (state) => state.cacheTime,
 };
 
 function getRequirementFulfillmentSize(requirement) {
@@ -376,7 +368,6 @@ const actions = {
         let course_table = getCoursesTable(state);
         axios.post(backend_api + "/api/requirements/export", {
             table: course_table,
-            termList: state.termList,
             responseType: 'blob',
         }).then((response) => {
             download(

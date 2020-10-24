@@ -5,9 +5,9 @@
             <template v-for="(term, termIndex) in getTable">
                <v-card class="col-sm-3 col-md-2 term-column" :key="termIndex" @mouseenter="termMouseOver(termIndex)" @mouseleave="termMouseExit()">
                   <div class="default-font term-title">
-                     {{ getTermList[termIndex] }}
+                     {{ getTermName(termIndex) }}
                      <v-btn icon class="delete-btn" x-small @click="deleteTerm(term)">
-                        <v-icon medium class="delete-term-btn" v-if="termHovered == termIndex || checkMobile()">mdi-trash-can</v-icon>
+                        <v-icon medium class="delete-term-btn" v-if="termHovered === termIndex || checkMobile()">mdi-trash-can</v-icon>
                      </v-btn>
                   </div>
                   <draggable class="list-group draggable-column" :disabled="isDisabled" :move="canDrag" :list="term.courses" group="course" @change="change">
@@ -126,12 +126,14 @@
        },
        canDrag(e){
          //check if this is add a course card (element is undefined), if it is, disable drag
-         if (typeof(e.draggedContext.element)!=="undefined") return true
-         else return false
-       }
+         return typeof (e.draggedContext.element) !== "undefined";
+       },
+       getTermName: (termIndex) => {
+           return (Math.floor(termIndex/2) + 1).toString() + String.fromCharCode(termIndex % 2 + 65);
+        }
      },
      computed: {
-       ...mapGetters(["getTable", "isFull", "getTermList"]),
+       ...mapGetters(["getTable"]),
      }
    };
 </script>
