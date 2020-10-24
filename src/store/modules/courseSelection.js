@@ -522,7 +522,13 @@ const mutations = {
     },
     deleteTermFromTable: (state, deletedTerm) => {
         let index = state.table.indexOf(deletedTerm);
-        state.table.splice(index, 1);
+        if (deletedTerm.courses.length) {
+            for (let i = deletedTerm.courses.length - 1; i >= 0; i--) {
+                deletedTerm.courses.splice(i, 1);
+            }
+        } else {
+            state.table.splice(index, 1);
+        }
     },
     removeRequirementFromTable: (state, deletedReq) => {
         for (let term of state.table) {

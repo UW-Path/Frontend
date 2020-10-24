@@ -89,7 +89,7 @@
      methods: {
        
        ...mapMutations(["addTermToTable", "deleteTermFromTable", "addCourseRequirement",
-         "validateCourses", "decrementRequirementID", "updateCacheTime"]),
+         "validateCourses", "decrementRequirementID", "updateCacheTime", "sortRequirements"]),
        ...mapActions(["fillOutChecklist"]),
        termMouseOver(termIndex) {
          this.termHovered = termIndex;
@@ -103,7 +103,10 @@
            if (req.major.length || req.minor.length || req.specialization.length) 
              this.addCourseRequirement(req)
          }
-         this.deleteTermFromTable(term)
+         this.deleteTermFromTable(term);
+         this.validateCourses();
+         this.fillOutChecklist();
+         this.sortRequirements();
        },
        change(event) {
          this.updateCacheTime();
