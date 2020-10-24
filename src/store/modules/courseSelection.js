@@ -302,7 +302,8 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
                 // Handles normal course case, ege MATH 239
                 let possibleMatches = selectedCourses.get(course);
                 for (let match of possibleMatches) {
-                    if (usedCourses.get(match.selected_course.course_code).length === 0) {
+                    if (usedCourses.get(match.selected_course.course_code).length === 0 &&
+                        (match.selected_course && match.selected_course.course_code === course)) {
                         matchedCourses.push(selectedCourses.get(course)[0]);
                         usedCourses.add(match);
                         requirement.credits_of_prereqs_met += match.selected_course.credit;
@@ -313,7 +314,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
             }
             if (a) {
                 for (let match of possibleMatches) {
-                    if (usedCourses.get(match.selected_course.course_code).length === 0) {
+                    if (usedCourses.get(match.selected_course.course_code).length === 0 || usedCourses.get(match.course_codes_raw).length === 0 ) {
                         requirement.credits_of_prereqs_met += match.selected_course.credit;
                         matchedCourses.push(match);
                         usedCourses.add(match);
