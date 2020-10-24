@@ -22,7 +22,6 @@
                            />
                      </template>
                     <AddCourseCard :termIndex="termIndex" :allCourses="allCourses" v-show="termHovered === termIndex || checkMobile()"/>
-
                   </draggable>
                </v-card >
             </template>
