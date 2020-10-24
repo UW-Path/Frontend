@@ -162,6 +162,8 @@
                         if (this.course.major.length || this.course.minor.length || this.course.specialization.length) {
                             this.addCourseRequirement(this.course);
                         }
+                        this.validateCourses();
+                        this.fillOutChecklist();
                         this.sortRequirements();
                     } else {
                         this.course.hidden = true;
