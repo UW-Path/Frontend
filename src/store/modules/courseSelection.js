@@ -545,7 +545,7 @@ const mutations = {
         let listOfCoursesTaken = [];
         for (let i = 0; i < state.table.length; i++) {
             let currentTermCourses = state.table[i].courses.filter(course => {
-                return course.selected_course.course_code !== "WAITING";
+                return course.selected_course.course_code !== "WAITING" && !course.clickedDelete;
             }).map(course => {
                 return course.selected_course.course_code;
             });

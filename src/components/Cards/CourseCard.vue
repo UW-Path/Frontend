@@ -115,7 +115,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapMutations } from 'vuex';
 export default {
   name: "CourseCard",
   order: 1,
@@ -132,9 +132,12 @@ export default {
     }
   },
   methods: {
-    ...mapActions(["toggleCourseOverride"]),
+    ...mapMutations(["validateCourses"]),
+    ...mapActions(["toggleCourseOverride", "fillOutChecklist"]),
     deleteCourse(){
         this.courseData.clickedDelete = true;
+        this.validateCourses();
+        this.fillOutChecklist();
     },
     toggleOverride(courseIndex, termIndex) {
         this.toggleCourseOverride({ courseIndex, termIndex });
