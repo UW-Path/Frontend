@@ -99,11 +99,15 @@
        },
        deleteTerm(term) {
          this.updateCacheTime();
-         for (let req of term.courses) {
-           if (req.major.length || req.minor.length || req.specialization.length) 
-             this.addCourseRequirement(req)
-         }
          this.deleteTermFromTable(term);
+         for (let i = term.courses.length - 1; i >= 0; i--) {
+           let req = term.courses[i];
+           if (req.major.length || req.minor.length || req.specialization.length) {
+              this.addCourseRequirement(req);
+              req.inRequirementBar = true;
+           }
+           term.courses.splice(i, 1);
+         }
          this.validateCourses();
          this.fillOutChecklist();
          this.sortRequirements();
