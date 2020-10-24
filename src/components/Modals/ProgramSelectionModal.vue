@@ -146,8 +146,8 @@ export default {
                 newSpecialization: changeOption
             }).then(e => {
                 void e;
-                this.fillOutChecklist()
-            })
+                this.fillOutChecklist();
+            });
 
             this.newMajor = ""
             this.newMinor = ""
