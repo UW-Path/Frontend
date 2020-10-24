@@ -179,6 +179,8 @@
             deselectCourse() {
                 this.updateCacheTime();
                 this.course.deselect();
+                this.validateCourses();
+                this.fillOutChecklist();
                 this.dialog = false;
             },
             isSelected: function(courseCode) {
