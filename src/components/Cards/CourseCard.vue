@@ -79,7 +79,7 @@
                   mdi-alert
           </v-icon>
         </template>
-        <span>Requirement for this course is not met</span>
+        <span>{{ courseData.validation_message }} <br/> Click on warning sign to override!</span>
       </v-tooltip>
     </template>
     <template v-else>
