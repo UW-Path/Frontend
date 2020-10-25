@@ -147,6 +147,7 @@
     max-width: 100%;
     scrollbar-width: thin;
     scrollbar-color: #FFD646 #FFFFFF;
+    margin: 0;
   }
 
   .main-drag::-webkit-scrollbar-thumb {
@@ -188,8 +189,7 @@
     width: 100%;
     background-color: white;
     border-radius: 0 1em 1em 0;
-    padding: 12px;
-    padding-bottom: 0;
+    padding: 1% 1% 0% 0.5%;
     overflow-x: auto;
     overflow-y: auto;
   }
@@ -220,7 +220,6 @@
   }
 
   .draggable-column {
-    /* width: 10.5em; */
     min-height: 90%;
   }
   
