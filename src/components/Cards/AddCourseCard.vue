@@ -18,8 +18,11 @@
               <v-col align="center">
                 <v-text-field class="modal-search" v-on:input="onSearchChange" label="Search for a Course" prepend-inner-icon="mdi-magnify" hide-details="true" single-line outlined dense></v-text-field>
                 <div v-if="filteredCourseList.length > 0" class="modal-course-list">
-                  <div class="modal-course" v-bind:class="{ 'modal-selected-course': course.course_code === selectedCourse.course_code }" v-for="course in filteredCourseList.slice(0,50)" :key="course.course_id + course.course_code" v-on:click="onCourseSelection(course)">
-                    {{course.course_code + ": " + course.course_name}}
+                  <div class="modal-course" v-bind:class="{ 'modal-selected-course': course.course_code === selectedCourse.course_code }" v-for="course in filteredCourseList.slice(0,50)" :key="course.course_id + course.course_code" >
+                    <v-icon class="quick-add-icon" @click="quickSelectAddedCourse(course)">mdi-plus</v-icon> 
+                    <div class="modal-course-list-display" @click="onCourseSelection(course)">
+                      {{course.course_code + ": " + course.course_name}}
+                    </div>
                   </div>
                 </div>
                 <div v-else class="modal-course-list">
@@ -138,6 +141,26 @@ export default {
       this.addCourse({newRequirement: newRequirement, termIndex: this.termIndex});
       this.validateCourses();
       this.fillOutChecklist();
+    },
+    quickSelectAddedCourse(course) {
+      this.selectedCourse = course
+      var addedCourse = this.selectedCourse;
+      let req = {
+          selected_course: addedCourse,
+          user_selected: true,
+          inRequirementBar: false,
+          allowedInRequirementBar: false,
+          number_of_courses: 1,
+          number_of_choices: 1,
+          credits_required: 0.5,
+          additional_requirements: "",
+          prereqs_met: true,
+      }
+      var newRequirement = new CourseRequirement(req);
+      this.dialog = false;
+      this.addCourse({newRequirement: newRequirement, termIndex: this.termIndex});
+      this.validateCourses();
+      this.fillOutChecklist();
     }
   },
   async mounted() {
@@ -199,6 +222,12 @@ export default {
     padding-bottom: 5px;
 }
 
+.quick-add-icon {
+    display: inline-block !important;
+    vertical-align: top !important;
+    margin-right: 0.5em;
+}
+
 .modal-actions {
     position: absolute;
     right: 0px;
@@ -214,21 +243,26 @@ export default {
     margin: 0px;
 }
 
+.modal-course-list-display {
+    margin-top: 1px; /* the way it is displayed does not align event if the height is aligned */
+    display: inline-block;
+    width: 90% !important;
+    vertical-align: bottom !important;
+}
+
 .modal-search {
     width: 90%;
 }
 
 .modal-course-list {
     margin-top: 1rem;
-    /* margin-bottom: 1rem; */
     width: 90%;
     max-height: 235px;
-    /* height:auto; */
     overflow-y: auto;
 }
 
 .modal-course {
-    margin-top: 5%;
+    margin-top: 1em;
     text-align: left;
 }
 
@@ -262,5 +296,9 @@ export default {
 .add-icon {
     margin-left: 0.25rem;
     margin-right: 0.25rem;
+}
+
+.v-icon.v-icon::after {
+    background-color: transparent !important;
 }
 </style>

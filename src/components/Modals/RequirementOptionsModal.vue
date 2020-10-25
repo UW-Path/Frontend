@@ -12,15 +12,18 @@
          />
       <!-- Course Popup Modal -->
       <v-dialog v-model="dialog" :max-width="isChoice() ? 1200 : 700">
-        <v-card v-if="!loadingCourses">
+        <v-card v-if="!loadingCourses" class="modal">
             <v-container fluid class="modal-course-list-container">
                 <v-row class="modal-course-list-row">
                     <v-col align="center" v-if="isChoice()">
                         <v-text-field class="modal-search" v-model="searchtext" label="Search for a Course" prepend-inner-icon="mdi-magnify" hide-details="true" single-line outlined dense></v-text-field>
                         <div class="modal-course-list">
                             <div class="modal-course" v-bind:class="{ selectedCourseCode: course && selectedCourse && (selectedCourse.course_code === course.course_code) }" v-for="(course,index) in filteredCourses" :key="index"
-                                v-on:click="selectedCourse = course">
-                                {{course.course_name !== "" ? course.course_code + ": " + course.course_name : course.course_code }}
+                                >
+                                <v-icon class="quick-add-icon" @click="quickSelectCourse(course)">mdi-plus</v-icon> 
+                                <div class="modal-course-list-display" v-on:click="selectedCourse = course">
+                                    {{course.course_name !== "" ? course.course_code + ": " + course.course_name : course.course_code }}
+                                </div>
                             </div>
                         </div>
                     </v-col>
@@ -174,6 +177,15 @@
             selectCourse: function () {
                 this.updateCacheTime();
                 this.course.selected_course = this.selectedCourse;
+                this.separateRequirement(this.course);
+                this.validateCourses();
+                this.fillOutChecklist();
+                this.dialog = false;
+            },
+            quickSelectCourse: function (course) {
+                this.selectedCourse = course;
+                this.updateCacheTime();
+                this.course.selected_course = course;
                 this.separateRequirement(this.course);
                 this.validateCourses();
                 this.fillOutChecklist();
@@ -398,6 +410,13 @@
     padding-top: 5px;
     padding-bottom: 5px;
 }
+
+.modal {
+    /* height: min(500px, 90%) !important;
+    max-height: min(500px, 90%) !important; */
+
+}
+
 .modal-actions {
     position: absolute;
     right: 0px;
@@ -414,26 +433,45 @@
 }
 .modal-course-list {
     margin-top: 1rem;
-    /* margin-bottom: 1rem; */
     width: 90%;
-    max-height: 500px;
-    /* height:auto; */
+    max-height: 50vh;
     overflow-y: auto;
 }
 .modal-course {
-    margin-top: 5%;
+    margin-top: 1em;
     text-align: left;
 }
+
 .modal-course:hover {
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 600;    
 }
+
+.v-icon.v-icon::after {
+    background-color: transparent !important;
+}
+
+
+.quick-add-icon {
+    display: inline-block !important;
+    vertical-align: top !important;
+    margin-right: 0.5em;
+}
+
+.modal-course-list-display {
+    margin-top: 1px; /* the way it is displayed does not align event if the height is aligned */
+    display: inline-block;
+    width: 90% !important;
+    vertical-align: bottom !important;
+}
+
 .selectedCourseCode {
     font-weight: 600;
 }
 .course-title {
     padding-top: 0px;
 }
+
 .loading-card {
     padding: 50px;
     display: flex;
