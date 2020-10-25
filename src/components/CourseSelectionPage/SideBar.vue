@@ -3,7 +3,6 @@
     <v-list-item v-if="!majorRequirements.length && !minorRequirements.length && !specRequirements.length" id="no-program-message">
         Select a program above to get a list of requirements
     </v-list-item>
-    <p v-else class="sidebar-header">Requirements</p>
     <div class="sidebar-req-container">
         <RequirementDropdown v-bind:programArray="majorRequirements" />
         <RequirementDropdown v-bind:programArray="minorRequirements" />
@@ -46,6 +45,7 @@ export default {
     overflow-y: scroll;
     overflow-x: hidden;
     padding-left: 7.5%;
+    margin-top: 7.5%;
     scrollbar-width: thin;
     scrollbar-color: #FFD646 #A0BDD6;
 }
@@ -93,11 +93,5 @@ export default {
     padding-bottom: 0.75rem;
     font-weight: 400;
     background-color: white;
-}
-
-.sidebar-header {
-    padding-top: 10%;
-    font-size: 1.25em;
-    color: #333333;
 }
 </style>
