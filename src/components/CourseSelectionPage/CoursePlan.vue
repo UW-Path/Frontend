@@ -220,6 +220,7 @@
   }
 
   .draggable-column {
+    width: 100%;
     min-height: 90%;
   }
   
