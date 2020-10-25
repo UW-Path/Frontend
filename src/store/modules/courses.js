@@ -28,7 +28,7 @@ const actions = {
         const response = await axios.get(backend_api + "/api/requirements/requirements", {
             params: {
                 major: options.newMajor ? options.newMajor.program_name : getters.majorRequirements[0].info.program_name,
-                minors: options.newMinor ? options.newMinor.program_name : getters.minorRequirements.map(minor => minor.info.program_name).join(),
+                minors: options.newMinor ? options.newMinor : getters.minorRequirements.map(minor => minor.info.program_name).join(),
                 option: options.newSpecialization ? options.newSpecialization.program_name : ""
             }
         });
@@ -95,15 +95,14 @@ const actions = {
             commit('setSpecialization', response.data["option_list"]);
         }
         // Minor requirements
-        if (response.data.minor_requirements !== undefined && options.newMinor) {
-            let newMinor = new OtherRequirement({ info: options.newMinor });
-
+        if (response.data.minor_requirements !== undefined && options.newMinor && options.newMinor.length) {
             for (let minor in response.data.minor_requirements) {
+                let newMinor = new OtherRequirement({ info: getters.findMinorByProgram(minor) });
                 for (let requirement of response.data.minor_requirements[minor]) {
                     let parsed_requirement = {
                         course_codes_raw: requirement.course_codes,
                         number_of_courses: requirement.number_of_courses,
-                        minor: [options.newMinor],
+                        minor: [minor],
                         additional_requirements: requirement.additional_requirements,
                         inRequirementBar: true,
                     };
@@ -112,7 +111,6 @@ const actions = {
                 }
                 state.minorRequirements.push(newMinor);
             }
-
         } 
         // Option requirements
         if (response.data.option_requirements !== undefined && options.newSpecialization) {
@@ -159,7 +157,9 @@ const mutations = {
     addMinor: (state, minorRequirement) => { state.minorRequirements.push(minorRequirement) },
     addSpec: (state, specRequirement) => { state.specRequirements.push(specRequirement) },
     removeMajor: (state) => { state.majorRequirements = [] },
-    removeMinor: (state) => { state.minorRequirements = [] },
+    removeMinor: (state, minors) => { state.minorRequirements = state.minorRequirements.filter(req => {
+        return !minors.length || minors[0] !== "ALL" && !minors.includes(req.info.program_name);
+    })},
     removeOption: (state) => { state.specRequirements = [] },
     separateRequirement: (state, requirement) => {
         let program = undefined;

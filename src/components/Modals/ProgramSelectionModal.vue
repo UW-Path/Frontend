@@ -28,11 +28,11 @@
             </v-row>
             <v-row class="modal-course-list-row">
                 <v-col align="center flex-centerise">
-                <div class="auto-complete-title"> Minor</div> 
+                <div class="auto-complete-title"> Minor</div>
                     <v-autocomplete
                         :disabled="inConfirmation"
                         :items="getMinorList()"
-                        v-on:change="selectMinor"
+                        v-model="selectedMinors"
                         dense
                         prepend-inner-icon="mdi-magnify"
                         solo
@@ -42,12 +42,13 @@
                         :label="minorRequirements.length ? minorRequirements[0].info.program_name : noProgram"
                         height="3rem"
                         color="black"
+                        multiple
                     ></v-autocomplete>
                 </v-col>
             </v-row>
             <v-row class="modal-course-list-row">
                 <v-col align="center flex-centerise">
-                    <div class="auto-complete-title"> Joint/Option</div> 
+                    <div class="auto-complete-title"> Joint/Option</div>
                     <v-autocomplete
                         :disabled="inConfirmation"
                         :items="getSpecList()"
@@ -82,16 +83,15 @@
 
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
+
 export default {
-    components: {
-    },
     data () {
         return {
             dialog: false,
             inConfirmation: false,
             noProgram: "None",
             newMajor: "",
-            newMinor: "",
+            selectedMinors: [],
             newSpec: "",
         }
     },
@@ -105,7 +105,6 @@ export default {
         },
         select: function() { this.inConfirmation = true; },
         selectMajor: function (major) { this.newMajor = major; this.updateCacheTime(); },
-        selectMinor: function (minor) { this.newMinor = minor; this.updateCacheTime(); },
         selectSpec: function (spec) { this.newSpec = spec; this.updateCacheTime(); },
         getMajorList: function() {
             return this.allMajors.map(e => { return e.program_name });
@@ -118,36 +117,54 @@ export default {
         },
         confirmSelection: function() {
             let changeMajor = this.newMajor !== this.noProgram && (!this.majorRequirements.length || this.newMajor !== this.majorRequirements[0].info.program_name) ? this.findMajorByProgram(this.newMajor) : undefined
-            let changeMinor = this.newMinor !== this.noProgram && (!this.minorRequirements.length || this.newMinor !== this.minorRequirements[0].info.program_name) ? this.findMinorByProgram(this.newMinor) : undefined
+
+            let addedMinors = [];
+            for (let minor of this.selectedMinors) {
+                let inPrev = false;
+                for (let prev of this.minorRequirements) {
+                    if (minor === prev.info.program_name) inPrev = true;
+                }
+                if (!inPrev) {
+                    addedMinors.push(minor)
+                }
+            }
+            let removedMinors = [];
+            let prevMinors = [];
+            for (let prev of this.minorRequirements) {
+                let isHere = false;
+                for (let minor of this.selectedMinors) {
+                    if (minor === prev.info.program_name) isHere = true;
+                }
+                if (!isHere) {
+                    removedMinors.push(prev.info.program_name)
+                }
+                prevMinors.push(prev.info.program_name)
+            }
             let changeOption = this.newSpec !== this.noProgram && (!this.specRequirements.length || this.newSpec !== this.specRequirements[0].info.program_name) ? this.findOptionByProgram(this.newSpec) : undefined
 
             //remove current major/minor/options if none is chosen or if it needs to be changed
             if (changeMajor || this.newMajor === this.noProgram) {
                 this.removeMajor();
-                this.removeMinor();
+                this.removeMinor(prevMinors);
                 this.removeOption();
                 this.clearTable();
             }
-            /*if (changeMinor || this.newMinor === this.noProgram) {
-                this.removeMinor();
-                this.clearMinorFromTable();
-            }*/
+            if (removedMinors.length) {
+                this.removeMinor(removedMinors);
+                this.clearMinorFromTable(removedMinors);
+            }
             if (changeOption || this.newSpec === this.noProgram) {
                 this.removeOption();
                 this.clearOptionTable();
             }
-
             this.fetchRequirements({
                 newMajor: changeMajor,
-                newMinor: changeMinor,
+                newMinor: addedMinors.join(),
                 newSpecialization: changeOption
-            }).then(e => {
-                void e;
-                this.fillOutChecklist();
             });
 
+            this.fillOutChecklist();
             this.newMajor = "";
-            this.newMinor = "";
             this.newSpec = "";
             this.dialog = false;
             this.inConfirmation = false;

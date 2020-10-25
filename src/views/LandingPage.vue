@@ -68,12 +68,12 @@ export default {
             this.$router.push('/Contact')   
         },
         confirmSelection() {
-            this.inConfirmation = false
-            this.removeMajor()
-            this.removeMinor()
-            this.removeOption()
-            this.clearTable()
-            this.fetchRequirements({ newMajor: this.findMajorByProgram(this.selectedMajor) })
+            this.inConfirmation = false;
+            this.removeMajor();
+            this.removeMinor(["ALL"]);
+            this.removeOption();
+            this.clearTable();
+            this.fetchRequirements({ newMajor: this.findMajorByProgram(this.selectedMajor) });
             this.$router.push('/CourseSelection')   
         },
         cancelSelection() {

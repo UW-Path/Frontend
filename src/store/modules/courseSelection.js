@@ -595,8 +595,13 @@ const mutations = {
             listOfCoursesTaken = listOfCoursesTaken.concat(currentTermCourses);
         }
     },
-    clearMinorFromTable: (state) => {
+    clearMinorFromTable: (state, minors) => {
         for (let term of state.table) {
+            for (let course of term.courses) {
+                course.minor = course.minor.filter(c => {
+                    return !minors.includes(c)
+                })
+            }
             term.courses = term.courses.filter(req => {
                 return req.minor.length === 0;
             })
