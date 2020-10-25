@@ -23,8 +23,8 @@
               <AddCourseCard :termIndex="termIndex" :allCourses="allCourses" v-show="termHovered === termIndex || checkMobile()"/>
 
             </draggable>
-          </v-card >
-          <div class="term-divider" :key="termIndex"></div>
+          </v-card>
+          <div class="term-divider" :key="(termIndex+1)*500"></div>
         </template>
         <v-card class="col-2 term-column add-term-btn"  @click="addTermToTable">
           <div class="text-h7">

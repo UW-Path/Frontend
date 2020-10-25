@@ -1,9 +1,9 @@
 <template>
 <v-card id="selection-sidebar"> 
     <v-list-item v-if="!majorRequirements.length && !minorRequirements.length && !specRequirements.length" id="no-program-message">
-        select a program to get a list of requirements
+        Select a program above to get a list of requirements
     </v-list-item>
-    <p class="sidebar-header">Requirements</p>
+    <p v-else class="sidebar-header">Requirements</p>
     <div class="sidebar-req-container">
         <RequirementDropdown v-bind:programArray="majorRequirements" />
         <RequirementDropdown v-bind:programArray="minorRequirements" />
