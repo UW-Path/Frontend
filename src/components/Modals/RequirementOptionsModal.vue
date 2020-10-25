@@ -12,7 +12,7 @@
          />
       <!-- Course Popup Modal -->
       <v-dialog v-model="dialog" :max-width="isChoice() ? 1200 : 700">
-        <v-card v-if="!loadingCourses">
+        <v-card v-if="!loadingCourses" class="modal">
             <v-container fluid class="modal-course-list-container">
                 <v-row class="modal-course-list-row">
                     <v-col align="center" v-if="isChoice()">
@@ -410,6 +410,11 @@
     padding-top: 5px;
     padding-bottom: 5px;
 }
+
+.modal {
+    min-height: 300px;
+}
+
 .modal-actions {
     position: absolute;
     right: 0px;
@@ -427,6 +432,7 @@
 .modal-course-list {
     margin-top: 1rem;
     width: 90%;
+    min-height: 300px;
     max-height: 500px;
     overflow-y: auto;
 }
