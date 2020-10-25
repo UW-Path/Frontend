@@ -423,10 +423,8 @@
 }
 .modal-course-list {
     margin-top: 1rem;
-    /* margin-bottom: 1rem; */
     width: 90%;
     max-height: 500px;
-    /* height:auto; */
     overflow-y: auto;
 }
 .modal-course {
@@ -434,9 +432,9 @@
     text-align: left;
 }
 
-.modal-course-list-display:hover {
+.modal-course:hover {
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 600;    
 }
 
 .v-icon.v-icon::after {
