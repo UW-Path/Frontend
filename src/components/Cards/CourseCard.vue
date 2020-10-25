@@ -192,8 +192,10 @@ export default {
   visibility: visible;
 }
 
-.course-card{
+.course-card {
   height: 5.2em;
+  padding: 1%;
+  border-radius: 0.5em !important;
 }
 
 .course-title{

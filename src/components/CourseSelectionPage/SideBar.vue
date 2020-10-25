@@ -1,11 +1,14 @@
 <template>
 <v-card id="selection-sidebar"> 
     <v-list-item v-if="!majorRequirements.length && !minorRequirements.length && !specRequirements.length" id="no-program-message">
-        select a program to get a list of requirements
+        Select a program above to get a list of requirements
     </v-list-item>
-    <RequirementDropdown v-bind:programArray="majorRequirements" />
-    <RequirementDropdown v-bind:programArray="minorRequirements" />
-    <RequirementDropdown v-bind:programArray="specRequirements" />
+    <div class="sidebar-req-container">
+        <RequirementDropdown v-bind:programArray="majorRequirements" />
+        <RequirementDropdown v-bind:programArray="minorRequirements" />
+        <RequirementDropdown v-bind:programArray="specRequirements" />
+    </div>
+    <p></p>
 </v-card> 
 </template>
 
@@ -34,8 +37,28 @@ export default {
     flex-direction: column;
     width: 100%;
     background-color: #A0BDD6;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}
+
+.sidebar-req-container {
     overflow-y: scroll;
     overflow-x: hidden;
+    padding-left: 7.5%;
+    margin-top: 7.5%;
+    scrollbar-width: thin;
+    scrollbar-color: #FFD646 #A0BDD6;
+}
+
+.sidebar-req-container::-webkit-scrollbar-thumb {
+    background-color: #FFD646;
+    border-radius: 20px;
+    border: 4px solid #A0BDD6;
+
+}
+
+.sidebar-req-container::-webkit-scrollbar-track {
+    background: #A0BDD6;
 }
 
 .required-course {

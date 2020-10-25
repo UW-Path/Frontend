@@ -47,7 +47,7 @@
                         <course-plan/>
                     </v-col>
                 </v-row>
-                <v-row v-else class="main-row custom-grey default-font">
+                <v-row v-else class="main-row" id="checklist-row">
                     <v-col class="main-panel">
                         <program-checklist/>
                     </v-col>
@@ -139,12 +139,19 @@ export default {
 
 .main-row {   
     margin: 0;
-    max-width: calc(100vw - 80px)!important ; 
-    height: 100% ;
+    max-width: calc(100vw - 90px)!important;
+    height: 100%;
+    border-radius: 1em;
+    overflow-y: hidden;
+    background: white;
+}
+
+#checklist-row {
+    font-size: .9em !important;
+    background: white;
 }
 
 .main-panel {
-    margin-left: -0.16em;
     padding: 0;
     height: 100%;
 }
@@ -165,20 +172,12 @@ export default {
 }
 
 .side-bar {
+    border-radius: 1em;
     display: flex;
     max-height: 100%;
     overflow-y: auto;
     padding: 0;
 }
-
-.default-font{
-    font-size: .9em !important;
-}
-
-.custom-grey{
-    background:#efefef;
-}
-
 </style>
 
 <style>

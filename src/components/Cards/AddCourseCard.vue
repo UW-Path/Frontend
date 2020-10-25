@@ -181,6 +181,7 @@ export default {
     opacity: 0.75;
     outline-color: black;
     background-color: white;
+    border-radius: 0.5em !important;
 }
 
 .course-list-block {
@@ -192,6 +193,11 @@ export default {
     overflow-y: hidden;
     overflow-x: hidden;
     margin-top: 5%;
+}
+
+.course-description-col {
+  max-height: 310px;
+  overflow-y: auto;
 }
 
 .course-name {
@@ -290,12 +296,10 @@ export default {
 .card-content {
     display: flex;
     justify-content: center;
-    width: 70% !important ;
 }
 
 .add-icon {
-    margin-left: 0.25rem;
-    margin-right: 0.25rem;
+    padding-left: 0.25rem;
 }
 
 .v-icon.v-icon::after {
