@@ -69,9 +69,11 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-tooltip bottom open-delay="300" max-width="350px" v-if="this.courseData.major.length> 0">
+      <v-tooltip bottom open-delay="300" max-width="350px" v-if="courseData.major.length || courseData.minor.length || courseData.specialization.length">
         <template v-slot:activator="{ on, attrs }">
-          <v-icon @click.stop="toggleOverride(courseIndex, termIndex)" v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met || courseData.inRequirementBar || courseData.overridden, course_card_prereqs_failed: !courseData.prereqs_met && !courseData.inRequirementBar && !courseData.overridden}"
+          <v-icon @click.stop="toggleOverride(courseIndex, termIndex)"
+                  v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met || courseData.inRequirementBar || courseData.overridden,
+                                  course_card_prereqs_failed: !courseData.prereqs_met && !courseData.inRequirementBar && !courseData.overridden}"
                   small 
                   class="alert-icon" 
                   v-bind="attrs" 

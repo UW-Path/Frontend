@@ -68,9 +68,9 @@ export default new Vuex.Store({
                         } else {
                             obj["courseSelection"]["cacheTime"] = today;
                             obj["courseSelection"]["table"] = JSON.parse(JSON.stringify(courseSelection.defaultTable));
-                            obj["courseSelection"]["checklistMajorRequirements"] = [];
-                            obj["courseSelection"]["checklistMinorRequirements"] = [];
-                            obj["courseSelection"]["checklistOptionRequirements"] = [];
+                            obj["courseSelection"]["checklistMajorRequirements"] = {};
+                            obj["courseSelection"]["checklistMinorRequirements"] = {};
+                            obj["courseSelection"]["checklistOptionRequirements"] = {};
 
                             obj["courses"]["majorRequirements"] = [];
                             obj["courses"]["minorRequirements"] = [];
