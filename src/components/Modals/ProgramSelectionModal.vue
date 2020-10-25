@@ -110,7 +110,7 @@ export default {
             return this.allMajors.map(e => { return e.program_name });
         },
         getMinorList: function() {
-            return [this.noProgram].concat(this.allMinors.map(e => { return e.program_name }));
+            return this.allMinors.map(e => { return e.program_name });
         },
         getSpecList: function() {
             return [this.noProgram].concat(this.allSpecializations.map(e => { return e.program_name }));
