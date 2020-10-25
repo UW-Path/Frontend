@@ -599,11 +599,11 @@ const mutations = {
         for (let term of state.table) {
             for (let course of term.courses) {
                 course.minor = course.minor.filter(c => {
-                    return !minors.includes(c)
+                    return !minors.includes(c.program_name)
                 })
             }
             term.courses = term.courses.filter(req => {
-                return req.minor.length === 0;
+                return req.minor.length;
             })
         }
     },
