@@ -222,6 +222,7 @@
   .draggable-column {
     width: 100%;
     min-height: 90%;
+    min-width:10.5em;
   }
   
   .default-font {
