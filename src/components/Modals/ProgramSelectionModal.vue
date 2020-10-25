@@ -18,7 +18,7 @@
                     prepend-inner-icon="mdi-magnify"
                     solo
                     hide-details
-                    background-color="rgb(196,196,196)"
+                    background-color="#f2f2f2"
                     class="autocomplete"
                     :label="majorRequirements.length ? majorRequirements[0].info.program_name : noProgram"
                     height="3rem"
@@ -37,7 +37,7 @@
                         prepend-inner-icon="mdi-magnify"
                         solo
                         hide-details
-                        background-color="rgb(196,196,196)"
+                        background-color="#f2f2f2"
                         class="autocomplete"
                         :label="minorRequirements.length ? minorRequirements[0].info.program_name : noProgram"
                         height="3rem"
@@ -56,7 +56,7 @@
                         prepend-inner-icon="mdi-magnify"
                         solo
                         hide-details
-                        background-color="rgb(196,196,196)"
+                        background-color="#f2f2f2"
                         class="autocomplete"
                         :label="specRequirements.length ? specRequirements[0].info.program_name : noProgram"
                         height="3rem"
@@ -177,16 +177,12 @@ export default {
 <style scoped>
 
 .modal-course-list-row {
-    margin-left: 5%;
-    margin-right: 5%;
+    margin-left: 1%;
+    margin-right: 1%;
 }
 
 .course-title {
     padding-top: 0px;
-}
-
-.selected-course-code {
-    font-weight: bold;
 }
 
 .flex-centerise {
@@ -212,7 +208,7 @@ export default {
 }
 
 .confirm-text {
-    color: grey;
+    color: black;
     margin-right: 0.5rem;
 }
 
@@ -222,7 +218,7 @@ export default {
 
 .auto-complete-title {
     text-align: left;
-    color: rgb(140, 140, 140)
+    color: black;
 }
 
 .add-major-btn{

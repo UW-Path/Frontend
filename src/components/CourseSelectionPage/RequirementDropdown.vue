@@ -273,8 +273,6 @@ export default {
 	margin-bottom: -0.9em !important;
 }
 .v-expansion-panels {
-	width: 95% !important;
 	margin-bottom: 1em;
-	left: 2.5%
 }
 </style>

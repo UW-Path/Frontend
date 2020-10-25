@@ -140,11 +140,12 @@ export default {
 .main-row {   
     margin: 0;
     max-width: calc(100vw - 80px)!important ; 
-    height: 100% ;
+    height: 100%;
+    border-radius: 1em;
+    overflow-y: hidden;
 }
 
 .main-panel {
-    margin-left: -0.16em;
     padding: 0;
     height: 100%;
 }
@@ -165,7 +166,7 @@ export default {
 }
 
 .side-bar {
-    border-radius: 2em;
+    border-radius: 1em;
     display: flex;
     max-height: 100%;
     overflow-y: auto;
@@ -177,7 +178,7 @@ export default {
 }
 
 .custom-grey{
-    background:#efefef;
+    background: white;
 }
 
 </style>

@@ -158,6 +158,7 @@ export default {
     opacity: 0.75;
     outline-color: black;
     background-color: white;
+    border-radius: 0.5em !important;
 }
 
 .course-list-block {

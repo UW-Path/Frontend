@@ -37,7 +37,6 @@ export default {
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: 3%;
     background-color: #A0BDD6;
     overflow-x: hidden;
     overflow-y: hidden;
@@ -45,7 +44,8 @@ export default {
 
 .sidebar-req-container {
     overflow-y: scroll;
-    padding-left: 15px;
+    overflow-x: hidden;
+    padding-left: 7.5%;
     scrollbar-width: thin;
     scrollbar-color: #FFD646 #A0BDD6;
 }
@@ -97,8 +97,7 @@ export default {
 
 .sidebar-header {
     padding-top: 10%;
-    padding-bottom: 5%;
-    font-size: 1.65em;
+    font-size: 1.25em;
     color: #333333;
 }
 </style>

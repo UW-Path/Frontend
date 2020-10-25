@@ -1,7 +1,7 @@
 <template>
   <div class="course-plan-container">
     <v-row class="main-course-selection-panel main-drag">
-      <div class= "main-drag">
+      <div class="main-drag">
         <template v-for="(term, termIndex) in getTable">
           <v-card class="col-sm-3 col-md-2 term-column" :key="termIndex" @mouseenter="termMouseOver(termIndex)" @mouseleave="termMouseExit()">
             <div class="default-font term-title">{{ getTermList[termIndex] }}
@@ -24,6 +24,7 @@
 
             </draggable>
           </v-card >
+          <div class="term-divider" :key="termIndex"></div>
         </template>
         <v-card class="col-2 term-column add-term-btn"  @click="addTermToTable">
           <div class="text-h7">
@@ -146,7 +147,6 @@ export default {
   }
 
   .course-plan-container{
-    margin-left: 1em;
     display: flex;
     flex-flow: column;
     height: 100%;
@@ -162,15 +162,21 @@ export default {
     border: none;
     box-shadow: none !important;
     padding-top: 0;
-    margin-right: 4%;
+  }
+
+  .term-divider {
+    border: 1px #f2f2f2 solid;
+    margin-left: 0.5%;
+    margin-right: 0.5%;
   }
 
   .main-drag {
     display: flex;
     width: 100%;
     background-color: white;
-    border-radius: 2em;
-    padding: 2%;
+    border-radius: 0 1em 1em 0;
+    padding: 12px;
+    padding-bottom: 0;
     overflow-x: auto;
     overflow-y: auto;
   }

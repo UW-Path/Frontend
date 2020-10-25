@@ -57,11 +57,13 @@ export default {
     flex-direction: column;
     align-items: flex-start;
     padding: 2.5%;
+    padding-bottom: 0;
     background-color: transparent;
     width: 100%;
     height: 100%;
     max-height: 99.1%;
     overflow-y: auto;
+    border-radius: 1em;
 }
 
 .margin-table{
