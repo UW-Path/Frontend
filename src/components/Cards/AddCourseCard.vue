@@ -172,6 +172,11 @@ export default {
     margin-top: 5%;
 }
 
+.course-description-col {
+  max-height: 310px;
+  overflow-y: auto;
+}
+
 .course-name {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
