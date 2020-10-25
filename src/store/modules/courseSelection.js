@@ -602,9 +602,9 @@ const mutations = {
                     return !minors.includes(c.program_name)
                 })
             }
-            term.courses = term.courses.filter(req => {
+            /*term.courses = term.courses.filter(req => {
                 return req.minor.length;
-            })
+            })*/
         }
     },
     clearOptionTable: (state) => {
