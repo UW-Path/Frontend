@@ -102,7 +102,7 @@ const actions = {
                     let parsed_requirement = {
                         course_codes_raw: requirement.course_codes,
                         number_of_courses: requirement.number_of_courses,
-                        minor: [minor],
+                        minor: [getters.findMinorByProgram(minor)],
                         additional_requirements: requirement.additional_requirements,
                         inRequirementBar: true,
                     };
