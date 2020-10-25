@@ -20,7 +20,10 @@
                         <div class="modal-course-list">
                             <div class="modal-course" v-bind:class="{ selectedCourseCode: course && selectedCourse && (selectedCourse.course_code === course.course_code) }" v-for="(course,index) in filteredCourses" :key="index"
                                 v-on:click="selectedCourse = course">
-                                {{course.course_name !== "" ? course.course_code + ": " + course.course_name : course.course_code }}
+                                <v-icon class="quick-add-icon">mdi-plus</v-icon> 
+                                <div class="modal-course-list-display">
+                                    {{course.course_name !== "" ? course.course_code + ": " + course.course_name : course.course_code }}
+                                </div>
                             </div>
                         </div>
                     </v-col>
@@ -418,19 +421,35 @@
     overflow-y: auto;
 }
 .modal-course {
-    margin-top: 5%;
+    margin-top: 1em;
     text-align: left;
 }
 .modal-course:hover {
     cursor: pointer;
     font-weight: 600;
 }
+
+.quick-add-icon {
+    display: inline-block !important;
+    vertical-align: top !important;
+    margin-right: 0.5em;
+    height: 23px !important;
+}
+
+.modal-course-list-display {
+    margin-top: 1px; /* the way it is displayed does not align event if the height is aligned */
+    display: inline-block;
+    width: 90% !important;
+    vertical-align: bottom !important;
+}
+
 .selectedCourseCode {
     font-weight: 600;
 }
 .course-title {
     padding-top: 0px;
 }
+
 .loading-card {
     padding: 50px;
     display: flex;

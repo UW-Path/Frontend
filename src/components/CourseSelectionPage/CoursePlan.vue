@@ -178,8 +178,9 @@
    margin-bottom: 1rem;
    }
    .draggable-column {
-   width: 10.5em;
+   min-width: 10.5em;
    min-height: 90%;
+   width: 100%;
    }
    .default-font {
    font-size: 1.25em !important; 
