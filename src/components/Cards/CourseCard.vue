@@ -52,7 +52,7 @@
 
               <v-tooltip top open-delay="300" max-width="350px" v-if="this.courseData.overridden">
                   <template v-slot:activator="{ on, attrs }">
-                    <v-chip  color="red" label x-small text-color="white" class="chip" v-bind="attrs" v-on="on">
+                    <v-chip label x-small text-color="white" class="chip" v-bind="attrs" v-on="on">
                       OR
                     </v-chip>
                   </template>
