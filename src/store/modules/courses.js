@@ -27,8 +27,8 @@ const actions = {
         if (!options.newMajor && !getters.majorRequirements.length) return;
         const response = await axios.get(backend_api + "/api/requirements/requirements", {
             params: {
-                major: options.newMajor ? options.newMajor.program_name : getters.majorRequirements[0].info.program_name ,
-                minor: options.newMinor ?  options.newMinor.program_name : "",
+                major: options.newMajor ? options.newMajor.program_name : getters.majorRequirements[0].info.program_name,
+                minors: options.newMinor ? options.newMinor.program_name : getters.minorRequirements.map(minor => minor.info.program_name).join(),
                 option: options.newSpecialization ? options.newSpecialization.program_name : ""
             }
         });
@@ -84,9 +84,8 @@ const actions = {
                     group: group,
                 };
                 let parsed_req_obj = new CourseRequirement(parsed_requirement);
-                newMajor[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]].push(parsed_req_obj)
+                newMajor[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]].push(parsed_req_obj);
             }
-            //TODO:[Kevin] this way is used to resolve a synch bug but its fcked, will change when have time
             state.majorRequirements.push(newMajor);
 
             let compiledReqs = [];
@@ -99,18 +98,21 @@ const actions = {
         if (response.data.minor_requirements !== undefined && options.newMinor) {
             let newMinor = new OtherRequirement({ info: options.newMinor });
 
-            for (let requirement of response.data.minor_requirements) {
-                let parsed_requirement = {
-                    course_codes_raw: requirement.course_codes,
-                    number_of_courses: requirement.number_of_courses,
-                    minor: [options.newMinor],
-                    additional_requirements: requirement.additional_requirements,
-                    inRequirementBar: true,
-                };
-                let parsed_req_obj = new CourseRequirement(parsed_requirement);
-                newMinor[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]].push(parsed_req_obj)
+            for (let minor in response.data.minor_requirements) {
+                for (let requirement of response.data.minor_requirements[minor]) {
+                    let parsed_requirement = {
+                        course_codes_raw: requirement.course_codes,
+                        number_of_courses: requirement.number_of_courses,
+                        minor: [options.newMinor],
+                        additional_requirements: requirement.additional_requirements,
+                        inRequirementBar: true,
+                    };
+                    let parsed_req_obj = new CourseRequirement(parsed_requirement);
+                    newMinor[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]].push(parsed_req_obj);
+                }
+                state.minorRequirements.push(newMinor);
             }
-            state.minorRequirements.push(newMinor)
+
         } 
         // Option requirements
         if (response.data.option_requirements !== undefined && options.newSpecialization) {
@@ -127,7 +129,7 @@ const actions = {
                 let parsed_req_obj = new CourseRequirement(parsed_requirement);
                 newSpec[YEAR_TO_REQ_SECTION_MAP[parsed_req_obj.year]].push(parsed_req_obj)
             }
-            state.specRequirements.push(newSpec)
+            state.specRequirements.push(newSpec);
         }
     }
 };

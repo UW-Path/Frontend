@@ -107,37 +107,34 @@ export default {
         selectMajor: function (major) { this.newMajor = major; this.updateCacheTime(); },
         selectMinor: function (minor) { this.newMinor = minor; this.updateCacheTime(); },
         selectSpec: function (spec) { this.newSpec = spec; this.updateCacheTime(); },
-        getMajorList: function() { 
-            let majList = this.allMajors.map(e => { return e.program_name })
-            return majList
+        getMajorList: function() {
+            return this.allMajors.map(e => { return e.program_name });
         },
-        getMinorList: function() { 
-            let minlist = [this.noProgram].concat(this.allMinors.map(e => { return e.program_name }))
-            return minlist
+        getMinorList: function() {
+            return [this.noProgram].concat(this.allMinors.map(e => { return e.program_name }));
         },
-        getSpecList: function() { 
-            let specList = [this.noProgram].concat(this.allSpecializations.map(e => { return e.program_name }))
-            return specList
+        getSpecList: function() {
+            return [this.noProgram].concat(this.allSpecializations.map(e => { return e.program_name }));
         },
         confirmSelection: function() {
-            let changeMajor = this.newMajor != this.noProgram && (!this.majorRequirements.length || this.newMajor != this.majorRequirements[0].info.program_name) ? this.findMajorByProgram(this.newMajor) : undefined
-            let changeMinor = this.newMinor != this.noProgram && (!this.minorRequirements.length || this.newMinor != this.minorRequirements[0].info.program_name) ? this.findMinorByProgram(this.newMinor) : undefined
-            let changeOption = this.newSpec != this.noProgram && (!this.specRequirements.length || this.newSpec != this.specRequirements[0].info.program_name) ? this.findOptionByProgram(this.newSpec) : undefined
+            let changeMajor = this.newMajor !== this.noProgram && (!this.majorRequirements.length || this.newMajor !== this.majorRequirements[0].info.program_name) ? this.findMajorByProgram(this.newMajor) : undefined
+            let changeMinor = this.newMinor !== this.noProgram && (!this.minorRequirements.length || this.newMinor !== this.minorRequirements[0].info.program_name) ? this.findMinorByProgram(this.newMinor) : undefined
+            let changeOption = this.newSpec !== this.noProgram && (!this.specRequirements.length || this.newSpec !== this.specRequirements[0].info.program_name) ? this.findOptionByProgram(this.newSpec) : undefined
 
             //remove current major/minor/options if none is chosen or if it needs to be changed
-            if (changeMajor || this.newMajor == this.noProgram) {
-                this.removeMajor()
-                this.removeMinor()
-                this.removeOption()
-                this.clearTable()
+            if (changeMajor || this.newMajor === this.noProgram) {
+                this.removeMajor();
+                this.removeMinor();
+                this.removeOption();
+                this.clearTable();
             }
-            if (changeMinor || this.newMinor == this.noProgram) {
-                this.removeMinor()
-                this.clearMinorFromTable()
-            }
-            if (changeOption || this.newSpec == this.noProgram) {
-                this.removeOption()
-                this.clearOptionTable()
+            /*if (changeMinor || this.newMinor === this.noProgram) {
+                this.removeMinor();
+                this.clearMinorFromTable();
+            }*/
+            if (changeOption || this.newSpec === this.noProgram) {
+                this.removeOption();
+                this.clearOptionTable();
             }
 
             this.fetchRequirements({
@@ -149,10 +146,10 @@ export default {
                 this.fillOutChecklist();
             });
 
-            this.newMajor = ""
-            this.newMinor = ""
-            this.newSpec = ""
-            this.dialog = false
+            this.newMajor = "";
+            this.newMinor = "";
+            this.newSpec = "";
+            this.dialog = false;
             this.inConfirmation = false;
 
             this.updateCacheTime();
@@ -161,10 +158,10 @@ export default {
             this.inConfirmation = false;
         },
         close() {
-            this.newMajor = ""
-            this.newMinor = ""
-            this.newSpec = ""
-            this.dialog = false
+            this.newMajor = "";
+            this.newMinor = "";
+            this.newSpec = "";
+            this.dialog = false;
             this.inConfirmation = false
         }
     },
