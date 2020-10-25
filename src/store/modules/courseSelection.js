@@ -58,9 +58,9 @@ const defaultTable = [
 
 const state = {
     table: JSON.parse(JSON.stringify(defaultTable)),
-    checklistMajorRequirements: [],
-    checklistMinorRequirements: [],
-    checklistOptionRequirements: [],
+    checklistMajorRequirements: {},
+    checklistMinorRequirements: {},
+    checklistOptionRequirements: {},
     cacheTime: 0
 };
 
@@ -389,7 +389,7 @@ const actions = {
         axios.get(backend_api + "/api/requirements/requirements", {
             params: {
                 major: getters.majorRequirements[0].info.program_name,
-                minor: getters.minorRequirements.length !== 0 ? getters.minorRequirements[0].info.program_name : "",
+                minors: getters.minorRequirements.map(minor => minor.info.program_name).join(),
                 option: getters.specRequirements.length !== 0 ? getters.specRequirements[0].info.program_name : ""
             }
         })
@@ -408,8 +408,8 @@ const actions = {
                 });
 
                 let selectedCourses = new TrieSearch([['selected_course', 'course_code'],
-                ['selected_course', 'course_number'],
-                ['course_codes_raw']], {
+                                                      ['selected_course', 'course_number'],
+                                                      ['course_codes_raw']], {
                     idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
                 });
                 for (let term of getters.getTable) {
@@ -427,7 +427,7 @@ const actions = {
 
                 if (response.data.requirements) {
                     let parsedMajorRequirements = ParseRequirementsForChecklist(newMajorRequirements, selectedCourses,
-                        getters.majorRequirements[0].info);
+                                                                                getters.majorRequirements[0].info);
                     if (table1needed) {
                         let list1_courses = response.data.table1.filter(course => { return course.list_number === 1 })
                             .map(course => { return course.course_code }).join(",");
@@ -469,24 +469,33 @@ const actions = {
                         parsedMajorRequirements.push(new CourseRequirement(list1));
                         parsedMajorRequirements.push(new CourseRequirement(list2));
                     }
-                    commit('setChecklistMajorRequirements', parsedMajorRequirements);
+                    let majorChecklist = {};
+                    majorChecklist[getters.majorRequirements[0].info.program_name] = parsedMajorRequirements;
+                    commit('setChecklistMajorRequirements', majorChecklist);
                 }
                 else {
-                    commit('setChecklistMajorRequirements', []);
+                    commit('setChecklistMajorRequirements', {});
                 }
                 if (response.data.minor_requirements) {
-                    commit('setChecklistMinorRequirements', ParseRequirementsForChecklist(response.data.minor_requirements,
-                        selectedCourses, getters.minorRequirements[0].info));
+                    let parsedMinorRequirements = {};
+                    for (let i = 0; i < getters.minorRequirements.length; i++) {
+                        parsedMinorRequirements[getters.minorRequirements[i].info.program_name] = ParseRequirementsForChecklist(
+                            response.data.minor_requirements[getters.minorRequirements[i].info.program_name],
+                            selectedCourses, getters.minorRequirements[i].info);
+                    }
+                    commit('setChecklistMinorRequirements', parsedMinorRequirements);
                 }
                 else {
-                    commit('setChecklistMinorRequirements', []);
+                    commit('setChecklistMinorRequirements', {});
                 }
                 if (response.data.option_requirements) {
-                    commit('setChecklistOptionRequirements', ParseRequirementsForChecklist(response.data.option_requirements,
-                        selectedCourses, getters.specRequirements[0].info));
+                    let parsedOptionRequirements = {};
+                    parsedOptionRequirements[getters.specRequirements[0].info.program_name] = ParseRequirementsForChecklist(
+                        response.data.option_requirements, selectedCourses, getters.specRequirements[0].info);
+                    commit('setChecklistOptionRequirements', parsedOptionRequirements);
                 }
                 else {
-                    commit('setChecklistOptionRequirements', []);
+                    commit('setChecklistOptionRequirements', {});
                 }
             })
             .catch(err => {
@@ -586,11 +595,16 @@ const mutations = {
             listOfCoursesTaken = listOfCoursesTaken.concat(currentTermCourses);
         }
     },
-    clearMinorFromTable: (state) => {
+    clearMinorFromTable: (state, minors) => {
         for (let term of state.table) {
-            term.courses = term.courses.filter(req => {
-                return req.minor.length === 0;
-            })
+            for (let course of term.courses) {
+                course.minor = course.minor.filter(c => {
+                    return !minors.includes(c.program_name)
+                })
+            }
+            /*term.courses = term.courses.filter(req => {
+                return req.minor.length;
+            })*/
         }
     },
     clearOptionTable: (state) => {

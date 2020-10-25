@@ -9,9 +9,15 @@
                                 color="primary"
                                 :input-value="requirement.prereqs_met">
                         </v-checkbox>
-                        <p v-if="requirement.credits_required > 0.5">{{requirement.credits_required + ' of ' + requirement.course_codes_raw.slice(0, max_checklist_length) + (requirement.course_codes_raw.length > max_checklist_length ? '...' : '') + " (" + requirement.credits_of_prereqs_met + "/" + requirement.credits_required + ")"}}</p>
-                        <p v-else-if="requirement.course_codes_raw.split(',').length > 1">{{requirement.credits_required + ' of ' + requirement.course_codes_raw.slice(0, max_checklist_length) + (requirement.course_codes_raw.length > max_checklist_length ? '...' : '')}}</p>
-                        <p v-else>{{requirement.course_codes_raw.slice(0, max_checklist_length) + (requirement.course_codes_raw.length > max_checklist_length ? '...' : '')}}</p>
+                        <p v-if="requirement.credits_required > 0.5">
+                            {{requirement.credits_required + ' of ' + requirement.course_codes_raw.slice(0, max_checklist_length) + (requirement.course_codes_raw.length > max_checklist_length ? '...' : '') + " (" + requirement.credits_of_prereqs_met + "/" + requirement.credits_required + ")"}}
+                        </p>
+                        <p v-else-if="requirement.course_codes_raw.split(',').length > 1">
+                            {{requirement.credits_required + ' of ' + requirement.course_codes_raw.slice(0, max_checklist_length) + (requirement.course_codes_raw.length > max_checklist_length ? '...' : '')}}
+                        </p>
+                        <p v-else>
+                            {{requirement.course_codes_raw.slice(0, max_checklist_length) + (requirement.course_codes_raw.length > max_checklist_length ? '...' : '')}}
+                        </p>
                     </div>
                 </template>
                 <span>{{requirement.course_codes_raw}}</span>
