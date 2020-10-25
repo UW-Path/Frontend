@@ -412,7 +412,9 @@
 }
 
 .modal {
-    min-height: 300px;
+    /* height: min(500px, 90%) !important;
+    max-height: min(500px, 90%) !important; */
+
 }
 
 .modal-actions {
@@ -432,8 +434,7 @@
 .modal-course-list {
     margin-top: 1rem;
     width: 90%;
-    min-height: 300px;
-    max-height: 500px;
+    max-height: 50vh;
     overflow-y: auto;
 }
 .modal-course {
