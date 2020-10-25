@@ -28,7 +28,7 @@
                         <v-card-title class="course-title">
                         {{ selectedCourse.course_code }}
                         <v-spacer></v-spacer>
-                        <template v-if="!this.course.prereqs_met">
+                        <template v-if="!this.course.prereqs_met && !this.course.inRequirementBar">
                             <v-btn class="select-btn" text @click="toggleOverride(courseIndex, termIndex)" v-if="!this.course.overridden" large outlined>
                                 Override
                             </v-btn>
@@ -157,6 +157,7 @@
                 } else {
                     if (!this.onSelectionBar) {
                         this.course.inRequirementBar = true;
+                        this.course.overridden = false;
                         this.removeRequirementFromTable(this.course);
                         if (this.course.major.length || this.course.minor.length || this.course.specialization.length) {
                             this.addCourseRequirement(this.course);
