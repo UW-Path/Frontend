@@ -122,14 +122,14 @@
             <div class="row">
                <div class="col-12" style="text-align:left">
                   <p>
-                     We take our user's privacy seriously. We do not store any data regarding the user's course plan.
-                     In order to enhance your experience, we use persistent cache (stored on your local computer)
-                     to remember your course plan so that you won't lose your course plan when you revisit UWPath.
-                     If you would like to remove cache, simply go to 
+                     UWPath takes user privacy seriously. We do not store any personal data regarding course plans nor
+                     any other sensitive information about our users. In order to enhance the user experience,
+                     we store a small amount data on your local machine. This helps your computer remember your course
+                     plan every time you revisit UWPath. If you would like to remove cache, simply go to
                      <i> Chrome Settings -> Advanced -> Clear Browsing Data</i>. We also use Google Analytics to track the
                      traffic of the website anonymously in order to improve our website. 
                      <br/><br/>
-                     Please do not hesitate to <a href="/Contact">contact us</a> with any of your concerns. 
+                     Please do not hesitate to <a href="/Contact">contact us</a> with any concerns.
                   </p>
                </div>
             </div>
