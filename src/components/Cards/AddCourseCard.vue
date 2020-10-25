@@ -256,11 +256,9 @@ export default {
 .card-content {
     display: flex;
     justify-content: center;
-    width: 70% !important ;
 }
 
 .add-icon {
-    margin-left: 0.25rem;
-    margin-right: 0.25rem;
+    padding-left: 0.25rem;
 }
 </style>
