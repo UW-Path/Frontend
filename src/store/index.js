@@ -24,7 +24,7 @@ export default new Vuex.Store({
     plugins: [
         createPersistedState({
             paths: [
-                "courseSelection.table", "courseSelection.termList", "courseSelection.cacheTime",
+                "courseSelection.table", "courseSelection.cacheTime",
                 "courses.majorRequirements", "courses.minorRequirements", "courses.specRequirements",
                 "programInfo"
             ],
@@ -68,10 +68,9 @@ export default new Vuex.Store({
                         } else {
                             obj["courseSelection"]["cacheTime"] = today;
                             obj["courseSelection"]["table"] = JSON.parse(JSON.stringify(courseSelection.defaultTable));
-                            obj["courseSelection"]["termList"] = ["1A", "1B", "2A", "2B", "3A", "3B", "4A", "4B", "5A", "5B"];
-                            obj["courseSelection"]["checklistMajorRequirements"] = [];
-                            obj["courseSelection"]["checklistMinorRequirements"] = [];
-                            obj["courseSelection"]["checklistOptionRequirements"] = [];
+                            obj["courseSelection"]["checklistMajorRequirements"] = {};
+                            obj["courseSelection"]["checklistMinorRequirements"] = {};
+                            obj["courseSelection"]["checklistOptionRequirements"] = {};
 
                             obj["courses"]["majorRequirements"] = [];
                             obj["courses"]["minorRequirements"] = [];

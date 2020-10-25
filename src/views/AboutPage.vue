@@ -116,6 +116,24 @@
                   </p>
                </div>
             </div>
+
+             <br/>
+            <h1 style="text-align:left">Privacy</h1>
+            <div class="row">
+               <div class="col-12" style="text-align:left">
+                  <p>
+                     UWPath takes user privacy seriously. We do not store any personal data regarding course plans nor
+                     any other sensitive information about our users. In order to enhance the user experience,
+                     we store a small amount data on your local machine. This helps your computer remember your course
+                     plan every time you revisit UWPath. If you would like to remove cache, simply go to
+                     <i> Chrome Settings -> Advanced -> Clear Browsing Data</i>. We also use Google Analytics to track the
+                     traffic of the website anonymously in order to improve our website. 
+                     <br/><br/>
+                     Please do not hesitate to <a href="/Contact">contact us</a> with any concerns.
+                  </p>
+               </div>
+            </div>
+            <br/>
          </div>
       </div>
    </div>

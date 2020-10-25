@@ -1,17 +1,17 @@
 <template>
     <div class="program-checklist">
         <div class="checklist-section">
-            <div v-if="checklistMajorRequirements.length > 0" class="margin-table">
-                <p class="checklist-title">Major Requirements</p>
-                <ProgramChecklistSection v-bind:requirements="checklistMajorRequirements"/>
+            <div v-for="(checklist, major) in checklistMajorRequirements" class="margin-table" :key="major">
+                <p class="checklist-title">{{ major }}</p>
+                <ProgramChecklistSection v-bind:requirements="checklist"/>
             </div>
-            <div v-if="checklistMinorRequirements.length > 0" class="margin-table">
-                <p class="checklist-title">Minor Requirements</p>
-                <ProgramChecklistSection v-bind:requirements="checklistMinorRequirements"/>
+            <div v-for="(checklist, minor) in checklistMinorRequirements" class="margin-table" :key="minor">
+                <p class="checklist-title">{{ minor }}</p>
+                <ProgramChecklistSection v-bind:requirements="checklist"/>
             </div>
-            <div v-if="checklistOptionRequirements.length > 0" class="margin-table">
-                <p class="checklist-title">Option Requirements</p>
-                <ProgramChecklistSection v-bind:requirements="checklistOptionRequirements"/>
+            <div v-for="(checklist, option) in checklistOptionRequirements" class="margin-table" :key="option">
+                <p class="checklist-title">{{ option }}</p>
+                <ProgramChecklistSection v-bind:requirements="checklist"/>
             </div>
             <p class="smallText">
                 <i>

@@ -52,7 +52,7 @@
 
               <v-tooltip top open-delay="300" max-width="350px" v-if="this.courseData.overridden">
                   <template v-slot:activator="{ on, attrs }">
-                    <v-chip  color="red" label x-small text-color="white" class="chip" v-bind="attrs" v-on="on">
+                    <v-chip label x-small text-color="white" class="chip" v-bind="attrs" v-on="on">
                       OR
                     </v-chip>
                   </template>
@@ -69,9 +69,11 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-tooltip bottom open-delay="300" max-width="350px" v-if="this.courseData.major.length> 0">
+      <v-tooltip bottom open-delay="300" max-width="350px" v-if="courseData.major.length || courseData.minor.length || courseData.specialization.length">
         <template v-slot:activator="{ on, attrs }">
-          <v-icon @click.stop="toggleOverride(courseIndex, termIndex)" v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met || courseData.inRequirementBar || courseData.overridden, course_card_prereqs_failed: !courseData.prereqs_met && !courseData.inRequirementBar && !courseData.overridden}"
+          <v-icon @click.stop="toggleOverride(courseIndex, termIndex)"
+                  v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met || courseData.inRequirementBar || courseData.overridden,
+                                  course_card_prereqs_failed: !courseData.prereqs_met && !courseData.inRequirementBar && !courseData.overridden}"
                   small 
                   class="alert-icon" 
                   v-bind="attrs" 
@@ -79,7 +81,7 @@
                   mdi-alert
           </v-icon>
         </template>
-        <span>Requirement for this course is not met</span>
+        <span>{{ courseData.validation_message }} <br/> Click on warning sign to override!</span>
       </v-tooltip>
     </template>
     <template v-else>

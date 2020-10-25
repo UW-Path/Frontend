@@ -4,12 +4,13 @@
       <div class="main-drag">
         <template v-for="(term, termIndex) in getTable">
           <v-card class="col-sm-3 col-md-2 term-column" :key="termIndex" @mouseenter="termMouseOver(termIndex)" @mouseleave="termMouseExit()">
-            <div class="default-font term-title">{{ getTermList[termIndex] }}
+            <div class="default-font term-title">
+              {{ getTermName(termIndex) }}
               <v-btn icon class="delete-btn" x-small @click="deleteTerm(term)">
-                <v-icon medium class="delete-term-btn" v-if="termHovered == termIndex || checkMobile()">mdi-trash-can</v-icon>
+                <v-icon medium class="delete-term-btn" v-if="termHovered === termIndex || checkMobile()">mdi-trash-can</v-icon>
               </v-btn>
             </div>
-            <draggable class="list-group draggable-column" :disabled="editingEnabled" :list="term.courses" group="course" @change="change">
+            <draggable class="list-group draggable-column" :disabled="isDisabled" :move="canDrag" :list="term.courses" group="course" @change="change">
               <template v-for="(requirement, courseIndex) in term.courses">
                 <RequirementOptionsModal
                   class="list-group-item card"
@@ -37,98 +38,110 @@
   </div>
 </template>
 <script>
-import draggable from 'vuedraggable'
-import { mapGetters, mapMutations, mapActions } from "vuex";
-import RequirementOptionsModal from '../Modals/RequirementOptionsModal'
-import AddCourseCard from "../Cards/AddCourseCard"
-import TrieSearch from 'trie-search';
-import axios from 'axios';
-import { CourseInfo } from '../../models/courseInfoModel';
-import isMobile from 'ismobilejs';
-import { backend_api } from '../../backendAPI';
-
-export default {
-  name: "CoursePlan",
-  order: 1,
-  components: {
-    draggable,
-    RequirementOptionsModal,
-    AddCourseCard
-  },
-  data() {
-    return {
-      editingEnabled: false,
-      termHovered: -1,
-      allCourses: new TrieSearch(['course_code', 'course_number'], {
-        idFieldOrFunction: function(course) {
-          return course.course_id + course.course_code;
+   import draggable from 'vuedraggable'
+   import { mapGetters, mapMutations, mapActions } from "vuex";
+   import RequirementOptionsModal from '../Modals/RequirementOptionsModal'
+   import AddCourseCard from "../Cards/AddCourseCard"
+   import TrieSearch from 'trie-search';
+   import axios from 'axios';
+   import { CourseInfo } from '../../models/courseInfoModel';
+   import isMobile from 'ismobilejs';
+   import { backend_api } from '../../backendAPI';
+   
+   export default {
+     name: "CoursePlan",
+     order: 1,
+     components: {
+       draggable,
+       RequirementOptionsModal,
+       AddCourseCard
+     },
+     data() {
+       return {
+         isDisabled: false,
+         termHovered: -1,
+         allCourses: new TrieSearch(['course_code', 'course_number'], {
+           idFieldOrFunction: function(course) {
+             return course.course_id + course.course_code;
+           }
+         }),
+       };
+     },
+     mounted() {
+       axios.get(backend_api + "/api/course-info/filter", {
+         params: {
+           start: 0,
+           end: 1000,
+           code: "none",
+         }
+       })
+       .then(response => {
+         response.data.sort((course1, course2) => {
+           if (course1.course_code < course2.course_code) return -1;
+           else if (course1.course_code > course2.course_code) 1;
+           else return 0;
+         });
+         this.allCourses.addAll(response.data.map(course => {
+           return new CourseInfo(course)
+         }));
+       })
+       .catch(error => { console.error(error) })
+     },
+     methods: {
+       
+       ...mapMutations(["addTermToTable", "deleteTermFromTable", "addCourseRequirement",
+         "validateCourses", "decrementRequirementID", "updateCacheTime", "sortRequirements"]),
+       ...mapActions(["fillOutChecklist"]),
+       termMouseOver(termIndex) {
+         this.termHovered = termIndex;
+       },
+       termMouseExit() {
+         this.termHovered = -1;
+       },
+       deleteTerm(term) {
+         this.updateCacheTime();
+         this.deleteTermFromTable(term);
+         for (let i = term.courses.length - 1; i >= 0; i--) {
+           let req = term.courses[i];
+           if (req.major.length || req.minor.length || req.specialization.length) {
+              this.addCourseRequirement(req);
+              req.inRequirementBar = true;
+           }
+           term.courses.splice(i, 1);
+         }
+         this.validateCourses();
+         this.fillOutChecklist();
+         this.sortRequirements();
+       },
+       change(event) {
+         this.updateCacheTime();
+         this.validateCourses();
+         this.fillOutChecklist();
+         //we only check add events
+         if (!event.added) return;
+         let changedReq = event.added.element;
+         if (changedReq.number_of_courses > 1 && changedReq.inRequirementBar) {
+           changedReq.number_of_courses = 1;
+           this.decrementRequirementID(changedReq.original_requirement_id)
+         }
+         changedReq.inRequirementBar = false;
+       },
+       checkMobile() {
+         return isMobile(window.navigator).any
+       },
+       canDrag(e){
+         //check if this is add a course card (element is undefined), if it is, disable drag
+         return typeof (e.draggedContext.element) !== "undefined";
+       },
+       getTermName: (termIndex) => {
+           return (Math.floor(termIndex/2) + 1).toString() + String.fromCharCode(termIndex % 2 + 65);
         }
-      }),
-    };
-  },
-  mounted() {
-    axios.get(backend_api + "/api/course-info/filter", {
-      params: {
-        start: 0,
-        end: 1000,
-        code: "none",
-      }
-    })
-    .then(response => {
-      response.data.sort((course1, course2) => {
-        if (course1.course_code < course2.course_code) return -1;
-        else if (course1.course_code > course2.course_code) 1;
-        else return 0;
-      });
-      this.allCourses.addAll(response.data.map(course => {
-        return new CourseInfo(course)
-      }));
-    })
-    .catch(error => { console.error(error) })
-  },
-  methods: {
-    
-    ...mapMutations(["addTermToTable", "deleteTermFromTable", "addCourseRequirement",
-      "validateCourses", "decrementRequirementID", "updateCacheTime"]),
-    ...mapActions(["fillOutChecklist"]),
-    termMouseOver(termIndex) {
-      this.termHovered = termIndex;
-    },
-    termMouseExit() {
-      this.termHovered = -1;
-    },
-    deleteTerm(term) {
-      this.updateCacheTime();
-      for (let req of term.courses) {
-        if (req.major.length || req.minor.length || req.specialization.length) 
-          this.addCourseRequirement(req)
-      }
-      this.deleteTermFromTable(term)
-    },
-    change(event) {
-      this.updateCacheTime();
-      this.validateCourses();
-      this.fillOutChecklist();
-      //we only check add events
-      if (!event.added) return;
-      let changedReq = event.added.element;
-      if (changedReq.number_of_courses > 1 && changedReq.inRequirementBar) {
-        changedReq.number_of_courses = 1;
-        this.decrementRequirementID(changedReq.original_requirement_id)
-      }
-      changedReq.inRequirementBar = false;
-    },
-    checkMobile() {
-      return isMobile(window.navigator).any
-    }
-  },
-  computed: {
-    ...mapGetters(["getTable", "isFull", "getTermList"]),
-  }
-};
+     },
+     computed: {
+       ...mapGetters(["getTable"]),
+     }
+   };
 </script>
-
-
 <style scoped>
   .main-course-selection-panel {
     max-width: 100%;
@@ -207,6 +220,7 @@ export default {
   }
 
   .draggable-column {
+    /* width: 10.5em; */
     min-height: 90%;
   }
   

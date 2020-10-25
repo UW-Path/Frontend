@@ -140,6 +140,7 @@ export default {
 			if (!event.added) return;
 			let changedReq = event.added.element;
 			changedReq.inRequirementBar = true;
+			changedReq.overridden = false;
 			this.sortRequirements();
 		},
 		setLastClicked(requirement) {
