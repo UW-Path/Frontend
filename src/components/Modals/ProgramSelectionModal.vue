@@ -39,7 +39,7 @@
                         hide-details
                         background-color="rgb(196,196,196)"
                         class="autocomplete"
-                        :label="minorRequirements.length ? minorRequirements[0].info.program_name : noProgram"
+                        :label="noProgram"
                         height="3rem"
                         color="black"
                         multiple
@@ -91,7 +91,7 @@ export default {
             inConfirmation: false,
             noProgram: "None",
             newMajor: "",
-            selectedMinors: [],
+            selectedMinors: this.minorRequirements ? this.minorRequirements.map(x => x.info.program_name) : [],
             newSpec: "",
         }
     },
@@ -176,7 +176,7 @@ export default {
         },
         close() {
             this.newMajor = "";
-            this.newMinor = "";
+            this.newMinor = this.minorRequirements ? this.minorRequirements.map(x => x.info.program_name) : [];
             this.newSpec = "";
             this.dialog = false;
             this.inConfirmation = false
