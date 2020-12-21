@@ -125,9 +125,8 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
 
         // See if any unselected requirements match
         let unselectedMatches = unselectedCourses.get(requirement.course_codes).filter(match => match.course_codes_raw === requirement.course_codes);
-        let usedUnselectedMatches = usedUnselectedCourses.get(requirement.course_codes);
+        let usedUnselectedMatches = usedUnselectedCourses.get(requirement.course_codes).filter(match => match.course_codes_raw === requirement.course_codes);
         if (unselectedMatches.length - usedUnselectedMatches.length > 0) {
-            usedUnselectedMatches.filter(match => match.course_codes_raw === requirement.course_codes);
             let unselectedCreditsUsed = Math.min(0.5 * (unselectedMatches.length - usedUnselectedMatches.length), requirement.credits_required);
             numMatchedCredits += unselectedCreditsUsed;
             matchedUnselectedCourses = matchedUnselectedCourses.concat(unselectedMatches.slice(0, unselectedCreditsUsed * 2));
@@ -242,7 +241,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
 
         // See if any unselected requirements match
         let unselectedMatches = unselectedCourses.get(requirement.course_codes).filter(match => match.course_codes_raw === requirement.course_codes);
-        let usedUnselectedMatches = usedUnselectedCourses.get(requirement.course_codes);
+        let usedUnselectedMatches = usedUnselectedCourses.get(requirement.course_codes).filter(match => match.course_codes_raw === requirement.course_codes);
         if (unselectedMatches.length - usedUnselectedMatches.length > 0) {
             let unselectedCreditsUsed = Math.min(0.5 * (unselectedMatches.length - usedUnselectedMatches.length), requirement.credits_required);
             requirement.credits_of_prereqs_met += unselectedCreditsUsed;
