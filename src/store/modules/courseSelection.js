@@ -339,6 +339,52 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
         }
         parsed_requirements.push(new CourseRequirement(requirement));
     }
+    parsed_requirements.sort((req1, req2) => {
+        var req1DateScore = 0;
+        var req2DateScore = 0;
+        if (req1.year == 1 || req1.year == 5) {
+            req1DateScore = 2;
+        } else if (req1.year == 2 || req1.year == 6) {
+            req1DateScore = 5;
+        } else if (req1.year == 3 || req1.year == 7) {
+            req1DateScore = 8;
+        } else if (req1.year == 4 || req1.year == 8) {
+            req1DateScore = 11;
+        } else if (req1.year == 9) req1DateScore = 5;
+        else if (req1.year == 9) req1DateScore = 1;
+        else if (req1.year == 10) req1DateScore = 3;
+        else if (req1.year == 11) req1DateScore = 4;
+        else if (req1.year == 12) req1DateScore = 6;
+        else if (req1.year == 13) req1DateScore = 7;
+        else if (req1.year == 14) req1DateScore = 9;
+        else if (req1.year == 15) req1DateScore = 10;
+        else if (req1.year == 16) req1DateScore = 12;
+        else if (req1.year == -1) req1DateScore = 13;
+
+        if (req2.year == 1 || req2.year == 5) {
+            req2DateScore = 2;
+        } else if (req2.year == 2 || req2.year == 6) {
+            req2DateScore = 5;
+        } else if (req2.year == 3 || req2.year == 7) {
+            req2DateScore = 8;
+        } else if (req2.year == 4 || req2.year == 8) {
+            req2DateScore = 11;
+        }
+        else if (req2.year == 9) req2DateScore = 1;
+        else if (req2.year == 10) req2DateScore = 3;
+        else if (req2.year == 11) req2DateScore = 4;
+        else if (req2.year == 12) req2DateScore = 6;
+        else if (req2.year == 13) req2DateScore = 7;
+        else if (req2.year == 14) req2DateScore = 9;
+        else if (req2.year == 15) req2DateScore = 10;
+        else if (req2.year == 16) req2DateScore = 12;
+        else if (req2.year == -1) req2DateScore = 13;
+
+        if (req1DateScore < req2DateScore) return -1;
+        else if (req1DateScore > req2DateScore) return 1;
+        return 0;
+    });
+
     return parsed_requirements;
 }
 
