@@ -96,7 +96,13 @@ export default {
         this.filteredCourseList = this.allCourses.get("1").slice(0,50)
       } else {
         this.searchtext = event;
-        var filterArray = event.match(/[\d.]+|\D+/g)
+        var digitSplit = event.replace(/\s/g, "").match(/[\d.]+|\D+/g);
+        var filterArray = [];
+        if (digitSplit.length > 1) {
+          filterArray = [digitSplit[0],digitSplit.splice(1).join("")];
+        } else {
+          filterArray = digitSplit;
+        }
         this.filteredCourseList = this.allCourses.get(filterArray, TrieSearch.UNION_REDUCER).slice(0,50)
       }
     },
