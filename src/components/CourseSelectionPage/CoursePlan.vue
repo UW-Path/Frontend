@@ -1,7 +1,7 @@
 <template>
   <div class="course-plan-container">
-    <v-row class="main-course-selection-panel main-drag">
-      <div class="main-drag">
+    <v-row class="main-course-selection-panel main-drag overflow">
+      <div class="main-drag disable-overflow-y">
         <template v-for="(term, termIndex) in getTable">
           <v-card class="col-sm-3 col-md-2 term-column" :key="termIndex" @mouseenter="termMouseOver(termIndex)" @mouseleave="termMouseExit()">
             <div class="default-font term-title">
@@ -190,8 +190,16 @@
     background-color: white;
     border-radius: 0 1em 1em 0;
     padding: 1% 1% 0% 0.5%;
+  }
+
+  .overflow {
     overflow-x: auto;
     overflow-y: auto;
+  }
+
+  .disable-overflow-y {
+    overflow-x: auto;
+    overflow-y: hidden;
   }
 
   .term-title {
