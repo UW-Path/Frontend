@@ -113,6 +113,8 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
     requirements.sort((req1, req2) => {
         let req1Score = getRequirementFulfillmentSize(req1);
         let req2Score = getRequirementFulfillmentSize(req2);
+        req1.sizeScore = req1Score;
+        req2.sizeScore = req2Score;
         if (req1Score < req2Score) return -1;
         else if (req1Score > req2Score) return 1;
         return 0;
@@ -228,6 +230,21 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
                     match.satisfiesSpecializationReq = true;
                 }
             }
+        } else if (matchedSelectedCourses.length + matchedUnselectedCourses.length > 0 && numMatchedCredits > 0 && requirement.sizeScore <= 15) {
+            requirement.credits_of_prereqs_met = numMatchedCredits;
+            usedSelectedCourses.addAll(matchedSelectedCourses);
+            usedUnselectedCourses.addAll(matchedUnselectedCourses);
+            for (let match of matchedSelectedCourses) {
+                if (programInfo.plan_type === "Major") {
+                    match.satisfiesMajorReq = true;
+                } else if (programInfo.plan_type === "Minor") {
+                    match.satisfiesMinorReq = true;
+                } else if (programInfo.plan_type === "Specialization") {
+                    match.satisfiesSpecializationReq = true;
+                }
+            }
+        } else {
+            requirement.credits_of_prereqs_met = 0;
         }
     }
     // Make second pass on requirements to match any remaining courses
@@ -237,7 +254,6 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
             continue;
         }
         let required_courses = requirement.course_codes.split(/,\s|\sor\s/);
-        requirement.credits_of_prereqs_met = 0;
         let matchedSelectedCourses = [];
         let matchedUnselectedCourses = [];
 
