@@ -86,8 +86,10 @@ function getRequirementFulfillmentSize(requirement) {
             course.split("-")[1].length > 0) {
             sizeScore += 30;
         } else {
-            if (course === "NON-MATH" || course === "SCIENCE") {
-                sizeScore += 100;
+            if (course === "SCIENCE" || course === "LANGUAGE" || course === "MATH") {
+                sizeScore += 200;
+            } else if (course === "NON-MATH") {
+                sizeScore += 500;
             } else if (course === "Elective") {
                 sizeScore += 1000;
             } else {
@@ -314,7 +316,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
             }
             if (a) {
                 for (let match of possibleMatches) {
-                    if (usedSelectedCourses.get(match.selected_course.course_code).length === 0 || usedSelectedCourses.get(match.course_codes_raw).length === 0 ) {
+                    if (usedSelectedCourses.get(match.selected_course.course_code).length === 0) {
                         requirement.credits_of_prereqs_met += match.selected_course.credit;
                         matchedSelectedCourses.push(match);
                         usedSelectedCourses.add(match);
