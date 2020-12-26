@@ -26,7 +26,8 @@ export default new Vuex.Store({
             paths: [
                 "courseSelection.table", "courseSelection.cacheTime",
                 "courses.majorRequirements", "courses.minorRequirements", "courses.specRequirements",
-                "programInfo"
+                "programInfo", "courseSelection.checklistMajorRequirements", "courseSelection.checklistMinorRequirements",
+                "courseSelection.checklistOptionRequirements"
             ],
             getState: (key) => {
                 const value = window.localStorage.getItem(key);
@@ -64,6 +65,18 @@ export default new Vuex.Store({
                             for (i in obj["courses"]["specRequirements"]) {
                                 obj["courses"]["specRequirements"][i] = new OtherRequirement(obj["courses"]["specRequirements"][i])
                             }
+
+                            // Persist Checklist Data
+                            for (i in obj["courseSelection"]["checklistMajorRequirements"]) {
+                                obj["courseSelection"]["checklistMajorRequirements"][i] = obj["courseSelection"]["checklistMajorRequirements"][i].map(req => new CourseRequirement(req));
+                            }
+                            for (i in obj["courseSelection"]["checklistMinorRequirements"]) {
+                                obj["courseSelection"]["checklistMinorRequirements"][i] = obj["courseSelection"]["checklistMinorRequirements"][i].map(req => new CourseRequirement(req));
+                            }
+                            for (i in obj["courseSelection"]["checklistOptionRequirements"]) {
+                                obj["courseSelection"]["checklistOptionRequirements"][i] = obj["courseSelection"]["checklistOptionRequirements"][i].map(req => new CourseRequirement(req));
+                            }
+
                             obj["courseSelection"]["cacheTime"] = new Date(obj["courseSelection"]["cacheTime"]);
                         } else {
                             obj["courseSelection"]["cacheTime"] = today;

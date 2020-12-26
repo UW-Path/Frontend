@@ -363,8 +363,17 @@
        },
        computed: {
            filteredCourses: function () {
-               if (this.searchtext === "") return this.allCourseChoices.slice(0,100);
-               else return this.allCourseChoicesTrie.get(this.searchtext).slice(0,100);
+                if (this.searchtext === "") return this.allCourseChoices.slice(0,100);
+                else  {
+                    var digitSplit = this.searchtext.replace(/\s/g, "").match(/[\d.]+|\D+/g);
+                    var filterArray = [];
+                    if (digitSplit.length > 1) {
+                        filterArray = [digitSplit[0],digitSplit.splice(1).join("")];
+                    } else {
+                        filterArray = digitSplit;
+                    }
+                    return this.allCourseChoicesTrie.get(filterArray, TrieSearch.UNION_REDUCER).slice(0,50);
+               }
            },
            courseCodes: function () {
                return this.allCourseChoices.map(choice => {

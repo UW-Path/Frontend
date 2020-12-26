@@ -161,9 +161,11 @@ export default {
                 newMajor: changeMajor,
                 newMinor: addedMinors.join(),
                 newSpecialization: changeOption
+            })
+            .then(() => {
+                this.fillOutChecklist();
             });
 
-            this.fillOutChecklist();
             this.newMajor = "";
             this.newSpec = "";
             this.dialog = false;
