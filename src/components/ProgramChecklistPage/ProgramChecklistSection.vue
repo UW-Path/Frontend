@@ -7,7 +7,8 @@
                         <v-checkbox
                                 class="requirement-checkbox"
                                 color="primary"
-                                :input-value="requirement.prereqs_met">
+                                v-model="requirement.prereqs_met"
+                                v-on:change="checkboxToggled(requirement)">
                         </v-checkbox>
                         <p v-if="requirement.credits_required > 0.5">
                             {{requirement.credits_required + ' of ' + requirement.course_codes_raw.slice(0, max_checklist_length) + (requirement.course_codes_raw.length > max_checklist_length ? '...' : '') + " (" + requirement.credits_of_prereqs_met + "/" + requirement.credits_required + ")"}}
@@ -26,7 +27,8 @@
                 <v-checkbox
                         class="requirement-checkbox"
                         color="primary"
-                        :input-value="requirement.prereqs_met">
+                        v-model="requirement.prereqs_met"
+                        v-on:change="checkboxToggled(requirement)">
                 </v-checkbox>
                 <p v-if="requirement.credits_required > 0.5">{{requirement.credits_required + ' of ' + requirement.course_codes_raw.slice(0, max_checklist_length) + (requirement.course_codes_raw.length > max_checklist_length ? '...' : '') + " (" + requirement.credits_of_prereqs_met + "/" + requirement.credits_required + ")"}}</p>
                 <p v-else-if="requirement.course_codes_raw.split(',').length > 1">{{requirement.credits_required + ' of ' + requirement.course_codes_raw.slice(0, max_checklist_length) + (requirement.course_codes_raw.length > max_checklist_length ? '...' : '')}}</p>
@@ -37,6 +39,7 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 export default {
     name: "ProgramChecklistSection",
     data() {
@@ -44,7 +47,14 @@ export default {
             max_checklist_length: 30,
         }
     },
-    props: ["requirements"],
+    methods: {
+        ...mapMutations(["updateSingleRequirement"]),
+        checkboxToggled(requirement) {
+            requirement.checklistOverride = true;
+            this.updateSingleRequirement(this.program, requirement, this.programType)
+        }
+    },
+    props: ["requirements", "program", "programType"],
 }
 </script>
 

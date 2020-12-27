@@ -75,8 +75,8 @@ const getters = {
     cacheTime: (state) => state.cacheTime,
 };
 
-function getRequirementFulfillmentSize(requirement) {
-    let required_courses = requirement.course_codes.split(/,\s|\sor\s/);
+function getRequirementFulfillmentSize(req_course_codes) {
+    let required_courses = req_course_codes.split(/,\s|\sor\s/);
     let sizeScore = 0;
     for (let course of required_courses) {
         if (course[course.length - 1] === "-") {
@@ -107,12 +107,13 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
     let usedUnselectedCourses = new TrieSearch(['course_codes_raw'], {
         idFieldOrFunction: function getID(req) { return req.id }
     });
+    requirements = requirements.map(req => new CourseRequirement(req));
     // Since a single course could apply to multiple different requirements, we need to keep track of
     // courses that we have already "used up" to fulfill another requirement. This way we dont double count any courses.
     // We should prioritize requirements that have smaller subsets of possible courses to fill them.
     requirements.sort((req1, req2) => {
-        let req1Score = getRequirementFulfillmentSize(req1);
-        let req2Score = getRequirementFulfillmentSize(req2);
+        let req1Score = getRequirementFulfillmentSize(req1.course_codes_raw);
+        let req2Score = getRequirementFulfillmentSize(req2.course_codes_raw);
         req1.sizeScore = req1Score;
         req2.sizeScore = req2Score;
         if (req1Score < req2Score) return -1;
@@ -122,14 +123,15 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
     let parsed_requirements = [];
     // Make first pass on requirements to see if any are fulfilled
     for (let requirement of requirements) {
-        let required_courses = requirement.course_codes.split(/,\s|\sor\s/);
+        if (requirement.checklistOverride) continue;
+        let required_courses = requirement.course_codes_raw.split(/,\s|\sor\s/);
         let numMatchedCredits = 0;
         let matchedSelectedCourses = [];
         let matchedUnselectedCourses = [];
 
         // See if any unselected requirements match
-        let unselectedMatches = unselectedCourses.get(requirement.course_codes).filter(match => match.course_codes_raw === requirement.course_codes);
-        let usedUnselectedMatches = usedUnselectedCourses.get(requirement.course_codes).filter(match => match.course_codes_raw === requirement.course_codes);
+        let unselectedMatches = unselectedCourses.get(requirement.course_codes_raw).filter(match => match.course_codes_raw === requirement.course_codes_raw);
+        let usedUnselectedMatches = usedUnselectedCourses.get(requirement.course_codes_raw).filter(match => match.course_codes_raw === requirement.course_codes_raw);
         if (unselectedMatches.length - usedUnselectedMatches.length > 0) {
             let unselectedCreditsUsed = Math.min(0.5 * (unselectedMatches.length - usedUnselectedMatches.length), requirement.credits_required);
             numMatchedCredits += unselectedCreditsUsed;
@@ -249,17 +251,17 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
     }
     // Make second pass on requirements to match any remaining courses
     for (let requirement of requirements) {
-        if (requirement.prereqs_met) {
-            parsed_requirements.push(new CourseRequirement(requirement));
+        if (requirement.prereqs_met || requirement.checklistOverride) {
+            parsed_requirements.push(requirement);
             continue;
         }
-        let required_courses = requirement.course_codes.split(/,\s|\sor\s/);
+        let required_courses = requirement.course_codes_raw.split(/,\s|\sor\s/);
         let matchedSelectedCourses = [];
         let matchedUnselectedCourses = [];
 
         // See if any unselected requirements match
-        let unselectedMatches = unselectedCourses.get(requirement.course_codes).filter(match => match.course_codes_raw === requirement.course_codes);
-        let usedUnselectedMatches = usedUnselectedCourses.get(requirement.course_codes).filter(match => match.course_codes_raw === requirement.course_codes);
+        let unselectedMatches = unselectedCourses.get(requirement.course_codes_raw).filter(match => match.course_codes_raw === requirement.course_codes_raw);
+        let usedUnselectedMatches = usedUnselectedCourses.get(requirement.course_codes_raw).filter(match => match.course_codes_raw === requirement.course_codes_raw);
         if (unselectedMatches.length - usedUnselectedMatches.length > 0) {
             let unselectedCreditsUsed = Math.min(0.5 * (unselectedMatches.length - usedUnselectedMatches.length), requirement.credits_required);
             requirement.credits_of_prereqs_met += unselectedCreditsUsed;
@@ -354,7 +356,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
                 match.satisfiesSpecializationReq = true;
             }
         }
-        parsed_requirements.push(new CourseRequirement(requirement));
+        parsed_requirements.push(requirement);
     }
     parsed_requirements.sort((req1, req2) => {
         var req1DateScore = 0;
@@ -578,11 +580,84 @@ const actions = {
                 console.error(err);
             })
     },
+    updateChecklist({commit, getters}) {
+        if (!getters.majorRequirements.length) return;
+        let selectedCourses = new TrieSearch([['selected_course', 'course_code'],['selected_course', 'course_number']], {
+            idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
+        });
+        let unselectedCourses = new TrieSearch(['course_codes_raw'], {
+            idFieldOrFunction: function getID(req) { return req.id}
+        });
+        for (let term of getters.getTable) {
+            for (let course of term.courses) {
+                course.satisfiesMajorReq = false;
+                course.satisfiesMinorReq = false;
+                course.satisfiesSpecializationReq = false;
+                if (!course.selected_course || course.selected_course.course_code === "WAITING") {
+                    unselectedCourses.add(course);
+                } else {
+                    selectedCourses.add(course);
+                }
+            }
+        }
+        if (getters.majorRequirements.length > 0) {
+            let parsedMajorRequirements = {};
+            parsedMajorRequirements[getters.majorRequirements[0].info.program_name] = ParseRequirementsForChecklist(
+                getters.checklistMajorRequirements[getters.majorRequirements[0].info.program_name],
+                selectedCourses, getters.majorRequirements[0].info, unselectedCourses);    
+            commit('setChecklistMajorRequirements', parsedMajorRequirements);
+        }
+        else {
+            commit('setChecklistMajorRequirements', {});
+        }
+        if (getters.minorRequirements.length > 0) {
+            let parsedMinorRequirements = {};
+            for (let i = 0; i < getters.minorRequirements.length; i++) {
+                parsedMinorRequirements[getters.minorRequirements[i].info.program_name] = ParseRequirementsForChecklist(
+                    getters.checklistMinorRequirements[getters.minorRequirements[i].info.program_name],
+                    selectedCourses, getters.minorRequirements[i].info, unselectedCourses);
+            }
+            commit('setChecklistMinorRequirements', parsedMinorRequirements);
+        }
+        else {
+            commit('setChecklistMinorRequirements', {});
+        }
+        if (getters.specRequirements.length > 0) {
+            let parsedOptionRequirements = {};
+            parsedOptionRequirements[getters.specRequirements[0].info.program_name] = ParseRequirementsForChecklist(
+                getters.checklistOptionRequirements[getters.specRequirements[0].info.program_name], selectedCourses, getters.specRequirements[0].info, unselectedCourses);
+            commit('setChecklistOptionRequirements', parsedOptionRequirements);
+        }
+        else {
+            commit('setChecklistOptionRequirements', {});
+        }
+    },
 };
 
 const mutations = {
     toggleCourseOverride: (state, { courseIndex, termIndex }) => {
         state.table[termIndex].courses[courseIndex].overridden = !state.table[termIndex].courses[courseIndex].overridden;
+    },
+    updateSingleRequirement: (state, { program, requirement, programType }) => {
+        if (programType === "major") {
+            state.checklistMajorRequirements[program] = state.checklistMajorRequirements[program].map(req => {
+                if (req.id === requirement.id) {
+                    req = requirement;
+                }
+            });
+        } else if (programType === "minor") {
+            state.checklistMinorRequirements[program] = state.checklistMinorRequirements[program].map(req => {
+                if (req.id === requirement.id) {
+                    req = requirement;
+                }
+            });
+        } else if (programType === "option") {
+            state.checklistOptionRequirements[program] = state.checklistOptionRequirements[program].map(req => {
+                if (req.id === requirement.id) {
+                    req = requirement;
+                }
+            });
+        }
     },
     updateCacheTime: (state) => { state.cacheTime = new Date(); },
     setChecklistMajorRequirements: (state, checklistMajorRequirements) => {

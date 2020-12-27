@@ -84,7 +84,7 @@ export default {
   },
   methods: {
     ...mapMutations(["addCourse", "validateCourses"]),
-    ...mapActions(["fillOutChecklist"]),
+    ...mapActions(["updateChecklist"]),
     enableDialog() {
       this.dialog = true;
     },
@@ -127,7 +127,7 @@ export default {
       this.dialog = false;
       this.addCourse({newRequirement: req, termIndex: this.termIndex});
       this.validateCourses();
-      this.fillOutChecklist();
+      this.updateChecklist();
     },
     selectAddedCourse() {
       var addedCourse = this.selectedCourse;
@@ -146,7 +146,7 @@ export default {
       this.dialog = false;
       this.addCourse({newRequirement: newRequirement, termIndex: this.termIndex});
       this.validateCourses();
-      this.fillOutChecklist();
+      this.updateChecklist();
     },
     quickSelectAddedCourse(course) {
       this.selectedCourse = course
@@ -166,7 +166,7 @@ export default {
       this.dialog = false;
       this.addCourse({newRequirement: newRequirement, termIndex: this.termIndex});
       this.validateCourses();
-      this.fillOutChecklist();
+      this.updateChecklist();
     }
   },
   async mounted() {

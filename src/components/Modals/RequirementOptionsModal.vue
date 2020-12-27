@@ -149,7 +149,7 @@
        },
        methods: {
             ...mapMutations(["validateCourses", "separateRequirement",  "removeRequirementFromTable", "addCourseRequirement", "sortRequirements", "updateCacheTime"]),
-            ...mapActions(["fillOutChecklist", "toggleCourseOverride"]),
+            ...mapActions(["updateChecklist", "toggleCourseOverride"]),
             toggleOverride(courseIndex, termIndex) {
                 this.toggleCourseOverride({ courseIndex, termIndex });
             },
@@ -166,7 +166,7 @@
                             this.addCourseRequirement(this.course);
                         }
                         this.validateCourses();
-                        this.fillOutChecklist();
+                        this.updateChecklist();
                         this.sortRequirements();
                     } else {
                         this.course.hidden = true;
@@ -179,7 +179,7 @@
                 this.course.selected_course = this.selectedCourse;
                 this.separateRequirement(this.course);
                 this.validateCourses();
-                this.fillOutChecklist();
+                this.updateChecklist();
                 this.dialog = false;
             },
             quickSelectCourse: function (course) {
@@ -188,14 +188,14 @@
                 this.course.selected_course = course;
                 this.separateRequirement(this.course);
                 this.validateCourses();
-                this.fillOutChecklist();
+                this.updateChecklist();
                 this.dialog = false;
             },
             deselectCourse() {
                 this.updateCacheTime();
                 this.course.deselect();
                 this.validateCourses();
-                this.fillOutChecklist();
+                this.updateChecklist();
                 this.dialog = false;
             },
             isSelected: function(courseCode) {
