@@ -19,6 +19,7 @@
                         <p v-else>
                             {{requirement.course_codes_raw.slice(0, max_checklist_length) + (requirement.course_codes_raw.length > max_checklist_length ? '...' : '')}}
                         </p>
+                        <p class="remove-req-icon" v-on:click="removeRequirement(requirement)"><v-icon small>mdi-close</v-icon></p>
                     </div>
                 </template>
                 <span>{{requirement.course_codes_raw}}</span>
@@ -33,6 +34,7 @@
                 <p v-if="requirement.credits_required > 0.5">{{requirement.credits_required + ' of ' + requirement.course_codes_raw.slice(0, max_checklist_length) + (requirement.course_codes_raw.length > max_checklist_length ? '...' : '') + " (" + requirement.credits_of_prereqs_met + "/" + requirement.credits_required + ")"}}</p>
                 <p v-else-if="requirement.course_codes_raw.split(',').length > 1">{{requirement.credits_required + ' of ' + requirement.course_codes_raw.slice(0, max_checklist_length) + (requirement.course_codes_raw.length > max_checklist_length ? '...' : '')}}</p>
                 <p v-else>{{requirement.course_codes_raw.slice(0, max_checklist_length) + (requirement.course_codes_raw.length > max_checklist_length ? '...' : '')}}</p>
+                <p class="remove-req-icon"  v-on:click="removeRequirement(requirement)"><v-icon small>mdi-close</v-icon></p>
             </div>
         </div>
     </div>
@@ -48,10 +50,21 @@ export default {
         }
     },
     methods: {
-        ...mapMutations(["updateSingleRequirement"]),
+        ...mapMutations(["updateSingleRequirement", "removeSingleRequirement"]),
         checkboxToggled(requirement) {
             requirement.checklistOverride = requirement.prereqs_met;
-            this.updateSingleRequirement(this.program, requirement, this.programType)
+            this.updateSingleRequirement({
+                program: this.program,
+                requirement: requirement,
+                programType: this.programType,
+            });
+        },
+        removeRequirement(requirement) {
+            this.removeSingleRequirement({
+                program: this.program,
+                requirement: requirement,
+                programType: this.programType,
+            });
         }
     },
     props: ["requirements", "program", "programType"],
@@ -59,10 +72,23 @@ export default {
 </script>
 
 <style scoped>
+.remove-req-icon {
+    margin-left: auto;
+    visibility: hidden;
+}
+
+.remove-req-icon:hover {
+    cursor: pointer;
+}
+
 .requirements-list {
     display: flex;
     flex-wrap: wrap;
     margin-right: 2em;
+}
+
+.requirements-list-item:hover .remove-req-icon {
+    visibility: visible;
 }
 
 .requirements-list-item {
@@ -74,6 +100,7 @@ export default {
 }
 
 .requirement-list-item-inner {
+    width: 95%;
     display: flex;
     justify-content: center;
     align-items: center;

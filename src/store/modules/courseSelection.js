@@ -658,25 +658,43 @@ const mutations = {
             state.checklistOptionRequirements[program] = sortRequirementsByYear(state.checklistOptionRequirements[program]);
         }
     },
-    updateSingleRequirement: (state, { program, requirement, programType }) => {
+    removeSingleRequirement: (state, { program, requirement, programType }) => {
         if (programType === "major") {
-            state.checklistMajorRequirements[program] = state.checklistMajorRequirements[program].map(req => {
-                if (req.id === requirement.id) {
-                    req = requirement;
-                }
+            state.checklistMajorRequirements[program] = state.checklistMajorRequirements[program].filter(req => {
+                return req.id !== requirement.id;
             });
         } else if (programType === "minor") {
-            state.checklistMinorRequirements[program] = state.checklistMinorRequirements[program].map(req => {
-                if (req.id === requirement.id) {
-                    req = requirement;
-                }
+            state.checklistMinorRequirements[program] = state.checklistMinorRequirements[program].filter(req => {
+                return req.id !== requirement.id;
             });
         } else if (programType === "option") {
-            state.checklistOptionRequirements[program] = state.checklistOptionRequirements[program].map(req => {
-                if (req.id === requirement.id) {
-                    req = requirement;
-                }
+            state.checklistOptionRequirements[program] = state.checklistOptionRequirements[program].filter(req => {
+                return req.id === requirement.id;
             });
+        }
+    },
+    updateSingleRequirement: (state, { program, requirement, programType }) => {
+        if (programType === "major") {
+            for (let i = 0; i < state.checklistMajorRequirements[program].length; i++) {
+                if (state.checklistMajorRequirements[program][i].id === requirement.id) {
+                    state.checklistMajorRequirements[program][i] = requirement;
+                    break;
+                }
+            }
+        } else if (programType === "minor") {
+            for (let i = 0; i < state.checklistMinorRequirements[program].length; i++) {
+                if (state.checklistMinorRequirements[program][i].id === requirement.id) {
+                    state.checklistMinorRequirements[program][i] = requirement;
+                    break;
+                }
+            }
+        } else if (programType === "option") {
+            for (let i = 0; i < state.checklistOptionRequirements[program].length; i++) {
+                if (state.checklistOptionRequirements[program][i].id === requirement.id) {
+                    state.checklistOptionRequirements[program][i] = requirement;
+                    break;
+                }
+            }
         }
     },
     updateCacheTime: (state) => { state.cacheTime = new Date(); },
