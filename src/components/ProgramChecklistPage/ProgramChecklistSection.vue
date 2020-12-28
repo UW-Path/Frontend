@@ -50,7 +50,7 @@ export default {
     methods: {
         ...mapMutations(["updateSingleRequirement"]),
         checkboxToggled(requirement) {
-            requirement.checklistOverride = true;
+            requirement.checklistOverride = requirement.prereqs_met;
             this.updateSingleRequirement(this.program, requirement, this.programType)
         }
     },

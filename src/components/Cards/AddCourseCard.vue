@@ -26,8 +26,8 @@
                   </div>
                 </div>
                 <div v-else class="modal-course-list">
-                  <p>No courses match your search. Would you like to add a custom course code to your plan named "{{ searchtext }}"?</p>
-                  <v-btn class="add-custom-btn" @click="selectCustomCourse">Add "{{ searchtext }}"</v-btn>
+                  <p>No courses match your search. Would you like to add a custom course code to your plan named "{{ searchtext.toUpperCase() }}"?</p>
+                  <v-btn class="add-custom-btn" @click="selectCustomCourse">Add "{{ searchtext.toUpperCase() }}"</v-btn>
                 </div>
               </v-col>
               <v-col v-if="selectedCourse" class="course-description-col" align="left">
@@ -108,7 +108,7 @@ export default {
     },
     selectCustomCourse() {
       let customCourse = new CourseInfo({
-        course_code: this.searchtext,
+        course_code: this.searchtext.toUpperCase(),
         course_name: "Custom Added Course",
         info: "This course was not found by UWPath and was entered manually.",
         credit: 0.5,

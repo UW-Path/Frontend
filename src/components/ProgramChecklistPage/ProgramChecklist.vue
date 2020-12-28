@@ -1,17 +1,21 @@
 <template>
     <div class="program-checklist">
+        <v-icon medium class="checklist-toggle-edit">mdi-pencil-outline</v-icon>
         <div class="checklist-section">
             <div v-for="(checklist, major) in checklistMajorRequirements" class="margin-table" :key="major">
                 <p class="checklist-title">{{ major }}</p>
                 <ProgramChecklistSection v-bind:requirements="checklist" v-bind:program="major" v-bind:programType="'major'"/>
+                <AddChecklistRequirement v-bind:program="major" v-bind:programType="'major'"/>
             </div>
             <div v-for="(checklist, minor) in checklistMinorRequirements" class="margin-table" :key="minor">
                 <p class="checklist-title">{{ minor }}</p>
                 <ProgramChecklistSection v-bind:requirements="checklist" v-bind:program="minor" v-bind:programType="'minor'"/>
+                <AddChecklistRequirement v-bind:program="minor" v-bind:programType="'minor'"/>
             </div>
             <div v-for="(checklist, option) in checklistOptionRequirements" class="margin-table" :key="option">
                 <p class="checklist-title">{{ option }}</p>
                 <ProgramChecklistSection v-bind:requirements="checklist" v-bind:program="option" v-bind:programType="'option'"/>
+                <AddChecklistRequirement v-bind:program="option" v-bind:programType="'option'"/>
             </div>
             <p class="smallText">
                 <i>
@@ -25,12 +29,19 @@
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
-import ProgramChecklistSection from "./ProgramChecklistSection.vue"
+import ProgramChecklistSection from "./ProgramChecklistSection.vue";
+import AddChecklistRequirement from "../Modals/AddChecklistRequirement";
 
 export default {
     name: "ProgramChecklist",
+    data() {
+        return {
+            editMode: false,
+        }
+    },
     components: {
-        ProgramChecklistSection
+        ProgramChecklistSection,
+        AddChecklistRequirement,
     },
     methods: {
         ...mapActions(["updateChecklist"])
@@ -45,6 +56,10 @@ export default {
 }
 </script>
 <style scoped>
+.checklist-toggle-edit {
+    position: fixed;
+    right: 4%;
+}
 
 .checklist-title {
     font-size: 1.5em;

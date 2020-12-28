@@ -100,6 +100,56 @@ function getRequirementFulfillmentSize(req_course_codes) {
     return sizeScore;
 }
 
+function sortRequirementsByYear(requirements) {
+    requirements.sort((req1, req2) => {
+        var req1DateScore = 0;
+        var req2DateScore = 0;
+        if (req1.year == 1 || req1.year == 5) {
+            req1DateScore = 2;
+        } else if (req1.year == 2 || req1.year == 6) {
+            req1DateScore = 5;
+        } else if (req1.year == 3 || req1.year == 7) {
+            req1DateScore = 8;
+        } else if (req1.year == 4 || req1.year == 8) {
+            req1DateScore = 11;
+        } else if (req1.year == 9) req1DateScore = 5;
+        else if (req1.year == 9) req1DateScore = 1;
+        else if (req1.year == 10) req1DateScore = 3;
+        else if (req1.year == 11) req1DateScore = 4;
+        else if (req1.year == 12) req1DateScore = 6;
+        else if (req1.year == 13) req1DateScore = 7;
+        else if (req1.year == 14) req1DateScore = 9;
+        else if (req1.year == 15) req1DateScore = 10;
+        else if (req1.year == 16) req1DateScore = 12;
+        else if (req1.year == -1) req1DateScore = 13;
+
+        if (req2.year == 1 || req2.year == 5) {
+            req2DateScore = 2;
+        } else if (req2.year == 2 || req2.year == 6) {
+            req2DateScore = 5;
+        } else if (req2.year == 3 || req2.year == 7) {
+            req2DateScore = 8;
+        } else if (req2.year == 4 || req2.year == 8) {
+            req2DateScore = 11;
+        }
+        else if (req2.year == 9) req2DateScore = 1;
+        else if (req2.year == 10) req2DateScore = 3;
+        else if (req2.year == 11) req2DateScore = 4;
+        else if (req2.year == 12) req2DateScore = 6;
+        else if (req2.year == 13) req2DateScore = 7;
+        else if (req2.year == 14) req2DateScore = 9;
+        else if (req2.year == 15) req2DateScore = 10;
+        else if (req2.year == 16) req2DateScore = 12;
+        else if (req2.year == -1) req2DateScore = 13;
+
+        if (req1DateScore < req2DateScore) return -1;
+        else if (req1DateScore > req2DateScore) return 1;
+        return 0;
+    });
+
+    return requirements;
+}
+
 function ParseRequirementsForChecklist(requirements, selectedCourses, programInfo, unselectedCourses) {
     let usedSelectedCourses = new TrieSearch([['selected_course', 'course_code'],['selected_course', 'course_number']], {
         idFieldOrFunction: function getID(req) { return req.selected_course.course_id }
@@ -233,6 +283,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
                 }
             }
         } else if (matchedSelectedCourses.length + matchedUnselectedCourses.length > 0 && numMatchedCredits > 0 && requirement.sizeScore <= 15) {
+            requirement.prereqs_met = false;
             requirement.credits_of_prereqs_met = numMatchedCredits;
             usedSelectedCourses.addAll(matchedSelectedCourses);
             usedUnselectedCourses.addAll(matchedUnselectedCourses);
@@ -247,6 +298,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
             }
         } else {
             requirement.credits_of_prereqs_met = 0;
+            requirement.prereqs_met = false;
         }
     }
     // Make second pass on requirements to match any remaining courses
@@ -358,51 +410,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
         }
         parsed_requirements.push(requirement);
     }
-    parsed_requirements.sort((req1, req2) => {
-        var req1DateScore = 0;
-        var req2DateScore = 0;
-        if (req1.year == 1 || req1.year == 5) {
-            req1DateScore = 2;
-        } else if (req1.year == 2 || req1.year == 6) {
-            req1DateScore = 5;
-        } else if (req1.year == 3 || req1.year == 7) {
-            req1DateScore = 8;
-        } else if (req1.year == 4 || req1.year == 8) {
-            req1DateScore = 11;
-        } else if (req1.year == 9) req1DateScore = 5;
-        else if (req1.year == 9) req1DateScore = 1;
-        else if (req1.year == 10) req1DateScore = 3;
-        else if (req1.year == 11) req1DateScore = 4;
-        else if (req1.year == 12) req1DateScore = 6;
-        else if (req1.year == 13) req1DateScore = 7;
-        else if (req1.year == 14) req1DateScore = 9;
-        else if (req1.year == 15) req1DateScore = 10;
-        else if (req1.year == 16) req1DateScore = 12;
-        else if (req1.year == -1) req1DateScore = 13;
-
-        if (req2.year == 1 || req2.year == 5) {
-            req2DateScore = 2;
-        } else if (req2.year == 2 || req2.year == 6) {
-            req2DateScore = 5;
-        } else if (req2.year == 3 || req2.year == 7) {
-            req2DateScore = 8;
-        } else if (req2.year == 4 || req2.year == 8) {
-            req2DateScore = 11;
-        }
-        else if (req2.year == 9) req2DateScore = 1;
-        else if (req2.year == 10) req2DateScore = 3;
-        else if (req2.year == 11) req2DateScore = 4;
-        else if (req2.year == 12) req2DateScore = 6;
-        else if (req2.year == 13) req2DateScore = 7;
-        else if (req2.year == 14) req2DateScore = 9;
-        else if (req2.year == 15) req2DateScore = 10;
-        else if (req2.year == 16) req2DateScore = 12;
-        else if (req2.year == -1) req2DateScore = 13;
-
-        if (req1DateScore < req2DateScore) return -1;
-        else if (req1DateScore > req2DateScore) return 1;
-        return 0;
-    });
+    parsed_requirements = sortRequirementsByYear(parsed_requirements);
 
     return parsed_requirements;
 }
@@ -637,6 +645,18 @@ const actions = {
 const mutations = {
     toggleCourseOverride: (state, { courseIndex, termIndex }) => {
         state.table[termIndex].courses[courseIndex].overridden = !state.table[termIndex].courses[courseIndex].overridden;
+    },
+    addChecklistRequirement: (state, {newRequirement, program, programType}) => {
+        if (programType === "major") {
+            state.checklistMajorRequirements[program].push(newRequirement);
+            state.checklistMajorRequirements[program] = sortRequirementsByYear(state.checklistMajorRequirements[program]);
+        } else if (programType === "minor") {
+            state.checklistMinorRequirements[program].push(newRequirement);
+            state.checklistMinorRequirements[program] = sortRequirementsByYear(state.checklistMinorRequirements[program]);
+        } else if (programType === "option") {
+            state.checklistOptionRequirements[program].push(newRequirement);
+            state.checklistOptionRequirements[program] = sortRequirementsByYear(state.checklistOptionRequirements[program]);
+        }
     },
     updateSingleRequirement: (state, { program, requirement, programType }) => {
         if (programType === "major") {
