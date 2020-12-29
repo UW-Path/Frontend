@@ -26,8 +26,8 @@
                   </div>
                 </div>
                 <div v-else class="modal-course-list">
-                  <p>No courses match your search. Would you like to add a custom course code to your plan named "{{ searchtext }}"?</p>
-                  <v-btn class="add-custom-btn" @click="selectCustomCourse">Add "{{ searchtext }}"</v-btn>
+                  <p>No courses match your search. Would you like to add a custom course code to your plan named "{{ searchtext.toUpperCase() }}"?</p>
+                  <v-btn class="add-custom-btn" @click="selectCustomCourse">Add "{{ searchtext.toUpperCase() }}"</v-btn>
                 </div>
               </v-col>
               <v-col v-if="selectedCourse" class="course-description-col" align="left">
@@ -84,7 +84,7 @@ export default {
   },
   methods: {
     ...mapMutations(["addCourse", "validateCourses"]),
-    ...mapActions(["fillOutChecklist"]),
+    ...mapActions(["updateChecklist"]),
     enableDialog() {
       this.dialog = true;
     },
@@ -108,7 +108,7 @@ export default {
     },
     selectCustomCourse() {
       let customCourse = new CourseInfo({
-        course_code: this.searchtext,
+        course_code: this.searchtext.toUpperCase(),
         course_name: "Custom Added Course",
         info: "This course was not found by UWPath and was entered manually.",
         credit: 0.5,
@@ -127,7 +127,7 @@ export default {
       this.dialog = false;
       this.addCourse({newRequirement: req, termIndex: this.termIndex});
       this.validateCourses();
-      this.fillOutChecklist();
+      this.updateChecklist();
     },
     selectAddedCourse() {
       var addedCourse = this.selectedCourse;
@@ -146,7 +146,7 @@ export default {
       this.dialog = false;
       this.addCourse({newRequirement: newRequirement, termIndex: this.termIndex});
       this.validateCourses();
-      this.fillOutChecklist();
+      this.updateChecklist();
     },
     quickSelectAddedCourse(course) {
       this.selectedCourse = course
@@ -166,7 +166,7 @@ export default {
       this.dialog = false;
       this.addCourse({newRequirement: newRequirement, termIndex: this.termIndex});
       this.validateCourses();
-      this.fillOutChecklist();
+      this.updateChecklist();
     }
   },
   async mounted() {

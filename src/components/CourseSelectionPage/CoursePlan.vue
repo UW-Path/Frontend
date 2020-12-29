@@ -91,7 +91,7 @@
        
        ...mapMutations(["addTermToTable", "deleteTermFromTable", "addCourseRequirement",
          "validateCourses", "decrementRequirementID", "updateCacheTime", "sortRequirements"]),
-       ...mapActions(["fillOutChecklist"]),
+       ...mapActions(["updateChecklist"]),
        termMouseOver(termIndex) {
          this.termHovered = termIndex;
        },
@@ -110,13 +110,13 @@
            term.courses.splice(i, 1);
          }
          this.validateCourses();
-         this.fillOutChecklist();
+         this.updateChecklist();
          this.sortRequirements();
        },
        change(event) {
          this.updateCacheTime();
          this.validateCourses();
-         this.fillOutChecklist();
+         this.updateChecklist();
          //we only check add events
          if (!event.added) return;
          let changedReq = event.added.element;

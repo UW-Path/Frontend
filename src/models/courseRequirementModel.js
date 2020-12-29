@@ -110,6 +110,8 @@ export class CourseRequirement {
 
         this.clickedDelete = false;
         this.hidden = false;
+
+        this.checklistOverride = data && data.checklistOverride ? true : false;
     }
 
     deselect() {
