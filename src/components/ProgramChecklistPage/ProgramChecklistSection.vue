@@ -19,7 +19,8 @@
                         <p v-else>
                             {{requirement.course_codes_raw.slice(0, max_checklist_length) + (requirement.course_codes_raw.length > max_checklist_length ? '...' : '')}}
                         </p>
-                        <p class="remove-req-icon" v-on:click="removeRequirement(requirement)"><v-icon small>mdi-close</v-icon></p>
+                        <p class="remove-req-icon" v-if="editMode" v-on:click="removeRequirement(requirement)"><v-icon small>mdi-close</v-icon></p>
+                        <p class="remove-req-icon" v-else></p>
                     </div>
                 </template>
                 <span>{{requirement.course_codes_raw}}</span>
@@ -34,7 +35,8 @@
                 <p v-if="requirement.credits_required > 0.5">{{requirement.credits_required + ' of ' + requirement.course_codes_raw.slice(0, max_checklist_length) + (requirement.course_codes_raw.length > max_checklist_length ? '...' : '') + " (" + requirement.credits_of_prereqs_met + "/" + requirement.credits_required + ")"}}</p>
                 <p v-else-if="requirement.course_codes_raw.split(',').length > 1">{{requirement.credits_required + ' of ' + requirement.course_codes_raw.slice(0, max_checklist_length) + (requirement.course_codes_raw.length > max_checklist_length ? '...' : '')}}</p>
                 <p v-else>{{requirement.course_codes_raw.slice(0, max_checklist_length) + (requirement.course_codes_raw.length > max_checklist_length ? '...' : '')}}</p>
-                <p class="remove-req-icon"  v-on:click="removeRequirement(requirement)"><v-icon small>mdi-close</v-icon></p>
+                <p class="remove-req-icon" v-if="editMode" v-on:click="removeRequirement(requirement)"><v-icon small>mdi-close</v-icon></p>
+                <p class="remove-req-icon" v-else></p>
             </div>
         </div>
     </div>
@@ -67,7 +69,7 @@ export default {
             });
         }
     },
-    props: ["requirements", "program", "programType"],
+    props: ["requirements", "program", "programType", "editMode"],
 }
 </script>
 
