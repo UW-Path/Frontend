@@ -54,7 +54,7 @@ export default {
             dialog: false,
         }
     },
-    name: "ProgramSelectionModal",
+    name: "AddChecklistRequirementModal",
     methods: {
         ...mapMutations(["addChecklistRequirement"]),
         enableDialog: function() {
