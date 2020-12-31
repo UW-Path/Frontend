@@ -57,7 +57,7 @@ export default {
         }
     },
     methods: {
-        ...mapActions(["fetchRequirements"]),
+        ...mapActions(["fetchRequirements", "fillOutChecklist"]),
         ...mapMutations(["clearTable", "removeMajor", "removeMinor", "removeOption" ]),
         changeMajor(programName) {
             this.selectedMajor = programName
@@ -73,7 +73,12 @@ export default {
             this.removeMinor(["ALL"]);
             this.removeOption();
             this.clearTable();
-            this.fetchRequirements({ newMajor: this.findMajorByProgram(this.selectedMajor) });
+            this.fetchRequirements({
+                newMajor: this.findMajorByProgram(this.selectedMajor)
+            })
+            .then(() => {
+                this.fillOutChecklist();
+            });
             this.$router.push('/CourseSelection')   
         },
         cancelSelection() {
