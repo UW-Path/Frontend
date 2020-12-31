@@ -1,9 +1,14 @@
 <template>
     <div class="program-checklist">
         <div class="checklist-toggle-edit">
-            <p v-if="editMode" class="edit-mode-enabled-label">Edit Mode Enabled</p>
-            <v-icon v-on:click="toggleEditMode()" medium>mdi-pencil-outline</v-icon>
             <ResetChecklistConfirmationModal />
+            <v-switch
+                v-model="editMode"
+                inset
+                small
+                label="Edit Checklist"
+                style="margin-left: 1em">
+            </v-switch>
         </div>
         <div class="checklist-section">
             <div v-for="(checklist, major) in checklistMajorRequirements" class="margin-table" :key="major">
@@ -75,6 +80,7 @@ export default {
     justify-content: space-between;
     position: fixed;
     right: 4%;
+    top:15%;
 }
 
 .checklist-title {

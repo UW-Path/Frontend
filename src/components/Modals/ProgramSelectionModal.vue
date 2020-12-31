@@ -1,13 +1,11 @@
 <template>
 <div>
-<v-btn @click="enableDialog()" small>Add a minor, option, etc. <v-icon>mdi-plus-circle-outline</v-icon></v-btn>
+<v-btn @click="enableDialog()" small>Add a minor, option, etc <v-icon style="margin-left: 0.2em" small>mdi-plus-circle-outline</v-icon></v-btn>
 <v-dialog v-model="dialog" max-width="800" @click:outside="close()">
     <v-card>
-        <v-container fluid class="modal-course-list-container" align="center">
-            <v-row class="modal-course-list-row" col>
-            <div class="text-h6 title">Specify Your Degree</div>
-            </v-row>
-            <v-row class="modal-course-list-row" col>
+            <v-card-title>Specify Your Degree</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text><v-row class="modal-course-list-row" col>
                 <v-col align="center flex-centerise">
                 <div class="auto-complete-title"> Major</div> 
                 <v-autocomplete
@@ -50,6 +48,7 @@
                 <v-col align="center flex-centerise">
                     <div class="auto-complete-title"> Joint/Option</div>
                     <v-autocomplete
+                        small
                         :disabled="inConfirmation"
                         :items="getSpecList()"
                         v-on:change="selectSpec"
@@ -67,7 +66,7 @@
             </v-row>
             <v-row class="modal-course-list-row">
                 <v-col class="confirm-container" v-if="!inConfirmation">
-                    <v-btn @click="select()" :disabled="inConfirmation">Select Requirement</v-btn>
+                    <v-btn @click="select()" :disabled="inConfirmation" small>Select Requirement</v-btn>
                 </v-col>
                 <v-col class="flex-centerise confirm-container" v-if="inConfirmation">
                     <div class="confirm-elements confirm-text">Confirm? (changes will be overwritten)</div>
@@ -75,8 +74,8 @@
                     <v-icon large color="red"  @click="cancelSelection()">mdi-close-circle</v-icon>
                 </v-col>
             </v-row>
-        </v-container>
-    </v-card>
+            </v-card-text>
+        </v-card>
 </v-dialog>
 </div>
 </template>
@@ -235,6 +234,8 @@ export default {
 .auto-complete-title {
     text-align: left;
     color: black;
+    font-size: 1.2em;
+    margin-bottom: 0.3em;
 }
 
 .add-major-btn{

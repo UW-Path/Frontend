@@ -1,35 +1,25 @@
 <template>
-    <div>
-        <!-- Required Course Block -->
-        <v-btn class="create-req-button" @click="enableDialog()">
-            Add New Requirement
-            <v-icon class="add-icon" small>mdi-plus-circle-outline</v-icon>
-        </v-btn>
-
-        <!-- Course Popup Modal -->
-        <v-dialog v-model="dialog" max-width="800">
-            <v-card>
-                <v-container fluid class="modal-course-list-container">
-                    <v-row class="modal-course-list-row" col>
-                           <div class="text-h5">Create a New Requirement</div>
-                    </v-row>
-                    <v-row class="modal-course-list-row" col>
-                        <v-col class="modal-course-list-col" align="center">
-                            <v-form ref="form" v-model="valid" :lazy-validation="false">
-                                <v-text-field v-model="reqCourseCodes" label="Course Codes" :rules="courseCodesRules" required></v-text-field>
-                                <v-text-field v-model="creditsRequired" label="Number of Credits Required" :rules="creditRules" required></v-text-field>
-                            </v-form>
-                        </v-col>
-                    </v-row>
-                    <v-row class="modal-course-list-row">
-                        <v-col class="confirm-container">
-                            <v-btn @click="createRequirement()">Create Requirement</v-btn>
-                        </v-col>
-                    </v-row>
-                </v-container>
-            </v-card>
-        </v-dialog>
-    </div>
+   <div>
+      <!-- Required Course Block -->
+      <v-btn small class="create-req-button" @click="enableDialog()">
+         Add New Requirement
+         <v-icon class="add-icon" small>mdi-plus-circle-outline</v-icon>
+      </v-btn>
+      <!-- Course Popup Modal -->
+      <v-dialog v-model="dialog" max-width="800">
+         <v-card>
+            <v-card-title>Create a New Requirement</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>
+               <v-form ref="form" v-model="valid" :lazy-validation="true">
+                  <v-text-field style="padding-bottom:0.5em" v-model="reqCourseCodes" label="Course Codes (Sepereated by comma)" :rules="courseCodesRules" required></v-text-field>
+                  <v-text-field style="padding-bottom:0.5em" v-model="creditsRequired" label="Number of Credits Required" :rules="creditRules" required></v-text-field>
+               </v-form>
+               <div style="display:flex"><v-btn @click="createRequirement()" small>Create Requirement</v-btn></div>
+            </v-card-text>
+         </v-card>
+      </v-dialog>
+   </div>
 </template>
 
 <script>
@@ -96,12 +86,4 @@ export default {
     box-shadow: none;
 }
 
-.modal-course-list-row {
-    margin-left: 5%;
-    margin-right: 5%;
-}
-
-.confirm-container {
-    text-align: left;
-}
 </style>

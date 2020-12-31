@@ -1,30 +1,24 @@
 <template>
-    <div>
-        <!-- Required Course Block -->
-        <v-icon medium @click="enableDialog()">mdi-refresh</v-icon>
-
-        <!-- Course Popup Modal -->
-        <v-dialog v-model="dialog" max-width="800">
-            <v-card>
-                <v-container fluid class="modal-course-list-container">
-                    <v-row class="modal-course-list-row" col>
-                           <div class="text-h5">Reset Checklist?</div>
-                    </v-row>
-                    <v-row class="modal-course-list-row" col>
-                        <v-col class="modal-course-list-col">
-                           Resetting your checklist will restore the default checklist for your program and all changes made by you will be lost.
-                        </v-col>
-                    </v-row>
-                    <v-row class="modal-course-list-row">
-                        <v-col class="modal-course-list-col confirm-container">
-                            <v-btn class="confirmation-button" @click="resetChecklist()">Continue</v-btn>
-                            <v-btn class="confirmation-button" @click="cancelReset()">Cancel</v-btn>
-                        </v-col>
-                    </v-row>
-                </v-container>
-            </v-card>
-        </v-dialog>
-    </div>
+   <div>
+      <!-- Required Course Block -->
+      <v-icon medium @click="enableDialog()">mdi-refresh</v-icon>
+      <!-- Course Popup Modal -->
+      <v-dialog v-model="dialog" max-width="800">
+         <v-card>
+            <v-card-title>Reset Checklist?</v-card-title>
+            <v-divider></v-divider>
+            <v-card-text>
+               <v-col class="text-align-left">
+                  Resetting your checklist will restore the default checklist for your program and all changes made by you will be lost.
+               </v-col>
+               <v-col class="text-align-left">
+                  <v-btn class="confirmation-button" @click="resetChecklist()" small>Continue</v-btn>
+                  <v-btn class="confirmation-button" @click="cancelReset()" small>Cancel</v-btn>
+               </v-col>
+            </v-card-text>
+         </v-card>
+      </v-dialog>
+   </div>
 </template>
 
 <script>
@@ -60,18 +54,7 @@ export default {
     margin-right: 2%;
 }
 
-.modal-course-list-col {
-    padding-left: 0;
-    padding-right: 0;
-}
-
-.modal-course-list-row {
-    margin-left: 2.5%;
-    margin-right: 2.5%;
-    text-align: left;
-}
-
-.confirm-container {
+.text-align-left {
     text-align: left;
 }
 </style>
