@@ -79,8 +79,8 @@ export default {
     align-items: center;
     justify-content: space-between;
     position: fixed;
-    right: 4%;
-    top:15%;
+    right: 4em;
+    top: 7em;
 }
 
 .checklist-title {
