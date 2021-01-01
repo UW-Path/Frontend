@@ -7,11 +7,11 @@
             <v-toolbar-title class="program-titles" v-for="(major,index) in majorRequirements" :key="index" >
                 <a v-bind:href="major.info.link" target="_blank">{{ major.info.program_name }}</a>
             </v-toolbar-title>
-            <v-toolbar-title class="program-titles minor-font" v-for="(minor, index) in minorRequirements" :key="index + majorRequirements.length" v-bind:href="minor.link">
-                <a v-bind:href="minor.info.link" target="_blank">{{ minor.info.program_name  }}</a>
-            </v-toolbar-title>
             <v-toolbar-title class="program-titles minor-font"  v-for="(spec,index) in specRequirements" :key="index + majorRequirements.length + minorRequirements.length" v-bind:href="spec.link"> 
                 <a v-bind:href="spec.info.link" target="_blank">{{ spec.info.program_name  }}</a>
+            </v-toolbar-title>
+            <v-toolbar-title class="program-titles minor-font" v-for="(minor, index) in minorRequirements" :key="index + majorRequirements.length" v-bind:href="minor.link">
+                <a v-bind:href="minor.info.link" target="_blank">{{ minor.info.program_name  }}</a>
             </v-toolbar-title>
         </div>
         <ProgramSelectionModal/>
