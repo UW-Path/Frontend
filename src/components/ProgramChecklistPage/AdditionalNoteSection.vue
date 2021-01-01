@@ -3,7 +3,7 @@
     <span>
     <p class="smallText">
         <i>
-            * Please refer to the undergrad calendar for the most accurate information 
+            * Please refer to the <a :href="getLinkToUnderGradCalender" target="blank">undergrad calendar</a> for the most accurate information 
             (click on the major/minor/option title). Note: Most plans need 20 credits to graduate. <br/>
             If the checklist adds up to less than 20 credits, the remaning are assumed to be general electives.
         </i>
@@ -31,12 +31,19 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 
 export default {
     name: "AdditionalNoteSection",
     props: {
         program: String
     },
+    computed: {
+       ...mapGetters(["majorRequirements"]),
+       getLinkToUnderGradCalender: function() {	
+           return this.majorRequirements[0].info.link
+           }
+    }
 }
 </script>
 
