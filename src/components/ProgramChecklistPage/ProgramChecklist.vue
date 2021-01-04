@@ -26,13 +26,8 @@
                 <ProgramChecklistSection v-bind:editMode="editMode" v-bind:requirements="checklist" v-bind:program="option" v-bind:programType="'option'"/>
                 <AddChecklistRequirementModal v-if="editMode" v-bind:program="option" v-bind:programType="'option'"/>
             </div>
-            <p class="smallText">
-                <i>
-                    * Please refer to the undergrad calendar for the most accurate information 
-                    (click on the major/minor/option title). Note: Most plans need 20 credits to graduate. <br/>
-                    If the checklist adds up to less than 20 credits, the remaning are assumed to be general electives.
-                </i>
-            </p>
+            <AdditionalNoteSection v-bind:program="getMajorName" /> 
+            
         </div>
     </div>
 </template>
@@ -41,6 +36,7 @@ import { mapGetters, mapActions } from "vuex";
 import ProgramChecklistSection from "./ProgramChecklistSection.vue";
 import AddChecklistRequirementModal from "../Modals/AddChecklistRequirementModal";
 import ResetChecklistConfirmationModal from "../Modals/ResetChecklistConfirmationModal";
+import AdditionalNoteSection from "./AdditionalNoteSection.vue";
 
 export default {
     name: "ProgramChecklist",
@@ -52,7 +48,8 @@ export default {
     components: {
         ProgramChecklistSection,
         AddChecklistRequirementModal,
-        ResetChecklistConfirmationModal
+        ResetChecklistConfirmationModal,
+        AdditionalNoteSection,
     },
     methods: {
         ...mapActions(["updateChecklist"]),
@@ -62,6 +59,9 @@ export default {
     },
     computed: {
         ...mapGetters(["checklistMajorRequirements", "checklistMinorRequirements", "checklistOptionRequirements"]),
+        getMajorName: function() {
+			return Object.keys(this.checklistMajorRequirements)[0] //should be major name
+		}
     },
     mounted() {
         this.updateChecklist();
@@ -79,8 +79,8 @@ export default {
     align-items: center;
     justify-content: space-between;
     position: fixed;
-    right: 4%;
-    top:15%;
+    right: 4em;
+    top: 7em;
 }
 
 .checklist-title {
