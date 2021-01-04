@@ -1,5 +1,6 @@
 <template>
   <v-card class="course-card">
+    <!-- for single / selected course cards -->
     <template v-if="this.courseData.selected_course && this.courseData.selected_course.course_code !== 'WAITING'">
       <v-list-item three-line>
         <v-list-item-content>
@@ -84,6 +85,7 @@
         <span>{{ courseData.validation_message }} <br/> Click on warning sign to override!</span>
       </v-tooltip>
     </template>
+    <!-- for muliple unselected course cards -->
     <template v-else>
       <v-list-item>
         <v-list-item-content>
