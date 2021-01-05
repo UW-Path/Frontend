@@ -1,39 +1,42 @@
 <template>
     <div class="program-checklist">
         <div class="checklist-toggle-edit">
-            <p v-if="editMode" class="edit-mode-enabled-label">Edit Mode Enabled</p>
-            <v-icon v-on:click="toggleEditMode()" medium>mdi-pencil-outline</v-icon>
+            <ResetChecklistConfirmationModal />
+            <v-switch
+                v-model="editMode"
+                inset
+                dense
+                label="Edit Checklist"
+                style="margin-left: 1em">
+            </v-switch>
         </div>
         <div class="checklist-section">
             <div v-for="(checklist, major) in checklistMajorRequirements" class="margin-table" :key="major">
                 <p class="checklist-title">{{ major }}</p>
                 <ProgramChecklistSection v-bind:editMode="editMode" v-bind:requirements="checklist" v-bind:program="major" v-bind:programType="'major'"/>
-                <AddChecklistRequirement v-if="editMode" v-bind:program="major" v-bind:programType="'major'"/>
+                <AddChecklistRequirementModal v-if="editMode" v-bind:program="major" v-bind:programType="'major'"/>
             </div>
             <div v-for="(checklist, minor) in checklistMinorRequirements" class="margin-table" :key="minor">
                 <p class="checklist-title">{{ minor }}</p>
                 <ProgramChecklistSection v-bind:editMode="editMode" v-bind:requirements="checklist" v-bind:program="minor" v-bind:programType="'minor'"/>
-                <AddChecklistRequirement v-if="editMode" v-bind:program="minor" v-bind:programType="'minor'"/>
+                <AddChecklistRequirementModal v-if="editMode" v-bind:program="minor" v-bind:programType="'minor'"/>
             </div>
             <div v-for="(checklist, option) in checklistOptionRequirements" class="margin-table" :key="option">
                 <p class="checklist-title">{{ option }}</p>
                 <ProgramChecklistSection v-bind:editMode="editMode" v-bind:requirements="checklist" v-bind:program="option" v-bind:programType="'option'"/>
-                <AddChecklistRequirement v-if="editMode" v-bind:program="option" v-bind:programType="'option'"/>
+                <AddChecklistRequirementModal v-if="editMode" v-bind:program="option" v-bind:programType="'option'"/>
             </div>
-            <p class="smallText">
-                <i>
-                    * Please refer to the undergrad calendar for the most accurate information 
-                    (click on the major/minor/option title). Note: Most plans need 20 credits to graduate. <br/>
-                    If the checklist adds up to less than 20 credits, the remaning are assumed to be general electives.
-                </i>
-            </p>
+            <AdditionalNoteSection v-bind:program="getMajorName" /> 
+            
         </div>
     </div>
 </template>
 <script>
 import { mapGetters, mapActions } from "vuex";
 import ProgramChecklistSection from "./ProgramChecklistSection.vue";
-import AddChecklistRequirement from "../Modals/AddChecklistRequirement";
+import AddChecklistRequirementModal from "../Modals/AddChecklistRequirementModal";
+import ResetChecklistConfirmationModal from "../Modals/ResetChecklistConfirmationModal";
+import AdditionalNoteSection from "./AdditionalNoteSection.vue";
 
 export default {
     name: "ProgramChecklist",
@@ -44,7 +47,9 @@ export default {
     },
     components: {
         ProgramChecklistSection,
-        AddChecklistRequirement,
+        AddChecklistRequirementModal,
+        ResetChecklistConfirmationModal,
+        AdditionalNoteSection,
     },
     methods: {
         ...mapActions(["updateChecklist"]),
@@ -54,6 +59,9 @@ export default {
     },
     computed: {
         ...mapGetters(["checklistMajorRequirements", "checklistMinorRequirements", "checklistOptionRequirements"]),
+        getMajorName: function() {
+			return Object.keys(this.checklistMajorRequirements)[0] //should be major name
+		}
     },
     mounted() {
         this.updateChecklist();
@@ -71,7 +79,8 @@ export default {
     align-items: center;
     justify-content: space-between;
     position: fixed;
-    right: 4%;
+    right: 4em;
+    top: 7em;
 }
 
 .checklist-title {
