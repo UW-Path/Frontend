@@ -125,8 +125,8 @@
                      UWPath takes user privacy seriously. We do not store any personal data regarding course plans nor
                      any other sensitive information about our users. In order to enhance the user experience,
                      we store a small amount data on your local machine. This helps your computer remember your course
-                     plan every time you revisit UWPath. If you would like to remove cache, simply go to
-                     <i> Chrome Settings -> Advanced -> Clear Browsing Data</i>. We also use Google Analytics to track the
+                     plan every time you revisit UWPath. If you would like to remove local storage, simply prompt <i>Developer Tools by pressing F12 -> 
+                     Navigate to Application tab -> Click on Clear Site Data under Clear Storage</i>. We also use Google Analytics to track the
                      traffic of the website anonymously in order to improve our website. 
                      <br/><br/>
                      Please do not hesitate to <a href="/Contact">contact us</a> with any concerns.

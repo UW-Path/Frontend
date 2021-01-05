@@ -9,7 +9,7 @@
             class="primary-tabs">
             <v-tooltip right open-delay="300" max-width="250px">
                 <template v-slot:activator="{ on, attrs }">
-                <v-btn  class="tab-icon download-button" v-bind="attrs" v-on="on" @click="scrollTable()">
+                <v-btn  class="tab-icon tab-button" v-bind="attrs" v-on="on" @click="scrollTable()">
                     <v-icon x-large >mdi-calendar-range-outline</v-icon>
                 </v-btn> 
                 </template>
@@ -18,7 +18,7 @@
 
             <v-tooltip right open-delay="300" max-width="250px">
                 <template v-slot:activator="{ on, attrs }">
-                <v-btn  class="tab-icon download-button" v-bind="attrs" v-on="on" @click="scrollChecklist()">
+                <v-btn  class="tab-icon tab-button" v-bind="attrs" v-on="on" @click="scrollChecklist()">
                     <v-icon  x-large >mdi-check-box-outline</v-icon>
                 </v-btn> 
                 </template>
@@ -27,12 +27,25 @@
 
             <v-tooltip right open-delay="300" max-width="250px">
                 <template v-slot:activator="{ on, attrs }">
-                <v-btn  class="tab-icon download-button" v-bind="attrs" v-on="on" @click="exportXLS()">
+                <v-btn  class="tab-icon tab-button" v-bind="attrs" v-on="on" @click="exportXLS()">
                     <v-icon x-large >mdi-download-outline</v-icon>
                 </v-btn> 
                 </template>
                 <span>Download plan to CSV</span>
             </v-tooltip>
+
+            <v-spacer></v-spacer>
+
+            <v-tooltip right open-delay="300" max-width="250px">
+                <template v-slot:activator="{ on, attrs }">
+                <v-btn  class="tab-icon tab-button" v-bind="attrs" v-on="on" @click="openBugTroubleshootModal()">
+                    <v-icon x-large >mdi-bug</v-icon>
+                </v-btn> 
+                </template>
+                <span>Page not working as expected?</span>
+            </v-tooltip>
+
+
             
             
             <!-- this is a trick to get the v-tab-item to display, the controls are handled by buttons -->
@@ -54,6 +67,9 @@
                 </v-row>
             </v-tab-item>
         </v-tabs>
+        <v-dialog v-model="openBugModal" max-width="800">
+         <TroubleShootModalContent/>
+        </v-dialog>
     </v-container>
 </template>
 
@@ -61,6 +77,7 @@
 import CoursePlan from '../components/CourseSelectionPage/CoursePlan.vue'
 import ProgramSelectionBar from '../components/CourseSelectionPage/ProgramSelectionBar.vue'
 import ProgramChecklist from '../components/ProgramChecklistPage/ProgramChecklist.vue'
+import TroubleShootModalContent from '../components/Modals/TroubleShootModalContent.vue'
 import SideBar from '../components/CourseSelectionPage/SideBar.vue'
 import { mapActions } from "vuex";
 
@@ -71,9 +88,11 @@ export default {
         ProgramSelectionBar,
         SideBar,
         ProgramChecklist,
+        TroubleShootModalContent,
     },
     data: () => ({
-        inTable: true
+        inTable: true,
+        openBugModal: false,
     }),
     methods: {
         ...mapActions(["export"]),
@@ -91,6 +110,9 @@ export default {
         },
         scrollChecklist() {
             this.inTable = false;
+        },
+        openBugTroubleshootModal(){
+            this.openBugModal = true
         }
     }
 }
@@ -118,7 +140,7 @@ export default {
     margin-bottom: 1rem !important;
 }
 
-.download-button {
+.tab-button {
     background-color: transparent !important; 
     box-shadow: none !important;
     height: 48px !important;
