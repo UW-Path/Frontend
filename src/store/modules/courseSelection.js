@@ -620,7 +620,9 @@ const actions = {
             // Handle reqs that don't consume courses (eg English reqs for CS)
             for (let requirement of parsedMajorRequirements[getters.majorRequirements[0].info.program_name]) {
                 if (!(requirement.consume_course)) {
-                    requirement = ParseRequirementsForChecklist([requirement], selectedCourses, getters.majorRequirements[0].info, unselectedCourses)[0];
+                    let reqCopy = {...requirement};
+                    reqCopy.consume_course = true;
+                    requirement.prereqs_met = ParseRequirementsForChecklist([reqCopy], selectedCourses, getters.majorRequirements[0].info, unselectedCourses)[0].prereqs_met;
                 }
             }
             commit('setChecklistMajorRequirements', parsedMajorRequirements);
