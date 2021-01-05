@@ -69,6 +69,9 @@ export class CourseRequirement {
         this.satisfiesMinorReq = data.satisfiesMinorReq;
         this.satisfiesSpecializationReq = data.satisfiesSpecializationReq;
 
+        // Set this to false if you want courses matched with this in the checklist to also match with otheer reqs
+        this.consume_course = data && typeof data.consume_course  === 'undefined' ? true : data.consume_course;
+
         this.credits_of_prereqs_met = data && parseFloat(data.credits_of_prereqs_met) ? data.credits_of_prereqs_met : 0;
         this.credits_required = data ? parseFloat(data.credits_required) : 0;
         this.overridden = data && data.overridden ? data.overridden : false;
