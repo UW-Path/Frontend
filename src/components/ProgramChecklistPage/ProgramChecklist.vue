@@ -5,7 +5,7 @@
             <v-switch
                 v-model="editMode"
                 inset
-                small
+                dense
                 label="Edit Checklist"
                 style="margin-left: 1em">
             </v-switch>
