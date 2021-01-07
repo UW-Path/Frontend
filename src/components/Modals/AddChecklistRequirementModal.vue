@@ -13,7 +13,7 @@
             <v-card-text>
                <v-form ref="form" v-model="valid" :lazy-validation="true">
                   <v-text-field style="padding-bottom:0.5em" v-model="reqCourseCodes" label="Course Codes (Sepereated by comma)" :rules="courseCodesRules" required></v-text-field>
-                  <v-text-field style="padding-bottom:0.5em" v-model="creditsRequired" label="Number of Credits Required" :rules="creditRules" required></v-text-field>
+                  <v-text-field type="number" style="padding-bottom:1em" v-model="creditsRequired" label="Number of Credits Required" :rules="creditRules" required></v-text-field>
                </v-form>
                <div style="display:flex"><v-btn @click="createRequirement()" small>Create Requirement</v-btn></div>
             </v-card-text>
