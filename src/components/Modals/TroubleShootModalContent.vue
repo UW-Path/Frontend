@@ -4,7 +4,7 @@
          <v-divider></v-divider>
          <v-card-text >
             <v-col class="text-align-left">
-               Please try and clear local storage and hard-reload the page. This should solve 99% of the problem! If refreshing
+               Please try and clear local storage and hard-reload the page. This should solve 99% of problems! If refreshing
                local storage still doesn't work, please <a href='/Contact'>contact us</a> and we will address the issue immediately.
             </v-col>
             <v-col class="text-align-left">
