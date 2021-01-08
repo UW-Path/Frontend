@@ -229,7 +229,7 @@ export default {
 .course-desc{
   font-size: 0.8em; 
   margin-bottom: 1em;
-  max-width: 10em;
+  max-width: 9.5em;
 }
 
 </style>
