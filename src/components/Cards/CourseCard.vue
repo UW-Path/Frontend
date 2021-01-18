@@ -153,15 +153,6 @@ export default {
 </script>
 
 <style scoped>
-.chip {
-  margin-right: 0.2em;
-  padding-left: 0.3rem;
-  padding-right: 0.3rem;
-  text-align: center;
-  height: 1.6em !important;
-  font-size: 0.8em !important;
-  letter-spacing: normal !important;
-}
 
 .card {
   margin-top: 0.50rem;
@@ -193,7 +184,7 @@ export default {
 }
 
 .course-card {
-  height: 5.2em;
+  height: 5.3rem;
   padding: 1%;
   border-radius: 0.5em !important;
 }
