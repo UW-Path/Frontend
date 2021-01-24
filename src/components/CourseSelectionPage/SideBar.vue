@@ -59,7 +59,8 @@ export default {
 for adding padding to scrollbar */
 @-moz-document url-prefix() {
   .sidebar-req-container {
-    padding-right: calc(7.5% - 7px);
+    /* padding - scrollbar width */
+    padding-right: calc(15px - 7px);
   }
 }
 
