@@ -443,6 +443,7 @@
 .modal-course-list {
     margin-top: 1rem;
     width: 90%;
+    min-height: calc(100% - 50px - 1rem);
     max-height: 50vh;
     overflow-y: auto;
 }

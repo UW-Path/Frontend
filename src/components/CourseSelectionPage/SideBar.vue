@@ -3,7 +3,7 @@
     <v-list-item v-if="!majorRequirements.length && !minorRequirements.length && !specRequirements.length" id="no-program-message">
         Select a program above to get a list of requirements
     </v-list-item>
-    <div class="sidebar-req-container">
+    <div class="sidebar-req-container" :class="checkMobile() ? 'side-req-container-mobile' : '' " >
         <RequirementDropdown v-bind:programArray="majorRequirements" />
         <RequirementDropdown v-bind:programArray="minorRequirements" />
         <RequirementDropdown v-bind:programArray="specRequirements" />
@@ -14,7 +14,10 @@
 
 <script>
 import { mapGetters } from "vuex";
-import RequirementDropdown from './RequirementDropdown'
+import RequirementDropdown from './RequirementDropdown';
+import isMobile from 'ismobilejs';
+
+
 export default {
     name: "SideBar",
     components: {
@@ -26,6 +29,9 @@ export default {
         }
     },
     methods: {
+        checkMobile() {
+         return isMobile(window.navigator).any
+       },
     },
     computed: mapGetters(["majorRequirements", "minorRequirements", "specRequirements"]),
 }
@@ -44,7 +50,7 @@ export default {
 .sidebar-req-container {
     overflow-y: scroll;
     overflow-x: hidden;
-    padding-left: 7.5%;
+    padding-left: 15px;
     margin-top: 7.5%;
     scrollbar-color: #FFD646 #A0BDD6; 
 }
@@ -55,6 +61,11 @@ for adding padding to scrollbar */
   .sidebar-req-container {
     padding-right: calc(7.5% - 7px);
   }
+}
+
+/* Somehow the scroll bar is not shown in native browsers so we need to add the padding */
+.side-req-container-mobile {
+    padding-right: 15px;
 }
 
 .sidebar-req-container::-webkit-scrollbar-thumb {

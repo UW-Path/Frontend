@@ -71,7 +71,7 @@
                     </v-row>
                     <v-row class="modal-course-list-row">
                         <v-col class="confirm-container" v-if="!inConfirmation">
-                            <v-btn @click="select()" :disabled="inConfirmation">Select Requirement</v-btn>
+                            <v-btn @click="select()" :disabled="inConfirmation" small>Select Requirement</v-btn>
                         </v-col>
                         <v-col class="flex-centerise confirm-container" v-if="inConfirmation">
                             <div class="confirm-elements confirm-text">
