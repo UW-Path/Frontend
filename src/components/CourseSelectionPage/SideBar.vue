@@ -46,8 +46,15 @@ export default {
     overflow-x: hidden;
     padding-left: 7.5%;
     margin-top: 7.5%;
-    scrollbar-width: thin;
-    scrollbar-color: #FFD646 #A0BDD6;
+    scrollbar-color: #FFD646 #A0BDD6; 
+}
+
+/* FireFox's specific settings 
+for adding padding to scrollbar */
+@-moz-document url-prefix() {
+  .sidebar-req-container {
+    padding-right: calc(7.5% - 7px);
+  }
 }
 
 .sidebar-req-container::-webkit-scrollbar-thumb {
