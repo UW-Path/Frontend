@@ -54,13 +54,16 @@ const actions = {
                     .map(course => { return course.course_code }).join(",");
                 let list2_courses = response.data.table1.filter( course => {return course.list_number === 2})
                     .map(course => { return course.course_code }).join(",");
+
                 let list1 = { 
                     course_codes: list1_courses,
                     number_of_courses: 1,
+                    group: "English I"
                 };
                 let list2 = {
                     course_codes: list2_courses,
                     number_of_courses: 1,
+                    group: "English II"
                 };
                 newMajorRequirements.push(list1);
                 newMajorRequirements.push(list2);
@@ -69,11 +72,15 @@ const actions = {
             if (table2needed) {
                 newMajorRequirements = newMajorRequirements.concat(response.data.table2)
             }
+
             for (let requirement of newMajorRequirements) {
                 const code = requirement.course_codes;
-                const group = (code === "SCIENCE" || code === "MATH" ||
-                               code === "LANGUAGE" || code === "NON-MATH" ||
-                               (code !== "Program Elective" && code.includes("Elective"))) ? code : "";
+                let group = "";
+                if(code === "SCIENCE" || code === "MATH" || code === "LANGUAGE" || code === "NON-MATH" ||
+                    code !== "Program Elective" && code.includes("Elective")) group = code;
+                // check for english I/II
+                if(requirement.group) group = requirement.group;
+
 
                 let parsed_requirement = {
                     course_codes_raw: requirement.course_codes,

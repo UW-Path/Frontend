@@ -27,7 +27,7 @@
                 </div>
                 <div v-else class="modal-course-list">
                   <p>No courses match your search. Would you like to add a custom course code to your plan named "{{ searchtext.toUpperCase() }}"?</p>
-                  <v-btn class="add-custom-btn" @click="selectCustomCourse">Add "{{ searchtext.toUpperCase() }}"</v-btn>
+                  <v-btn class="add-custom-btn" @click="selectCustomCourse" small>Add "{{ searchtext.toUpperCase() }}"</v-btn>
                 </div>
               </v-col>
               <v-col v-if="selectedCourse" class="course-description-col" align="left">
@@ -182,6 +182,9 @@ export default {
 
 
 <style  scoped>
+.add-custom-btn{
+  margin:1em;
+}
 .card-container {
     margin-top: 0.75rem;
     opacity: 0.75;

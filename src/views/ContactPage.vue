@@ -20,15 +20,15 @@
             <p>We strive to provide our users with as accurate of an experience as we can. However, with the thousands of courses  the University of Waterloo offers, we acknowledge that sometimes we will get it wrong.</p>
             <p>That's why your feedback is critical to us.</p>
             <p>If you see any course or degree information that looks incorrect, report it to us below and we will fix it right away.</p>
-            <p><i>Note: We recognized many majors in the Faculty of Arts aren't available right now. We hope to fully support majors and minors soon!</i></p>
+            <p><i>Note: We recognize many majors in the Faculty of Arts aren't available right now. We hope to fully support majors and minors soon!</i></p>
             <p>Check out our <b><a href="https://github.com/UW-Path">Github</a></b> !</p>
          </div>
          <div class="contact-page-form">
             <v-form ref="form" v-model="valid" :lazy-validation="false">
-               <v-text-field rounded dense filled v-model="name" :counter="40" :rules="nameRules" label="Name" required></v-text-field>
-               <v-text-field rounded dense filled v-model="subject" :counter="40" :rules="subjectRules" label="Subject" required ></v-text-field>
-               <v-text-field  rounded dense filled v-model="email" :counter="40" :rules="emailRules" label="Email" required ></v-text-field>
-               <v-textarea  rounded dense filled v-model="message" :counter="200" :rules="messageRules" label="Message" required class="message-area"></v-textarea>
+               <v-text-field rounded dense filled v-model="name" :counter="50" :rules="nameRules" label="Name" required></v-text-field>
+               <v-text-field rounded dense filled v-model="subject" :counter="50" :rules="subjectRules" label="Subject" required ></v-text-field>
+               <v-text-field  rounded dense filled v-model="email" :counter="50" :rules="emailRules" label="Email" required ></v-text-field>
+               <v-textarea  rounded dense filled v-model="message" :counter="1000" :rules="messageRules" label="Message" required class="message-area"></v-textarea>
             </v-form>
          </div>
          <div class="button-container">

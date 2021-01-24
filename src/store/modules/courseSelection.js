@@ -173,8 +173,8 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
     let parsed_requirements = [];
     // Make first pass on requirements to see if any are fulfilled
     for (let requirement of requirements) {
-        if (requirement.checklistOverride) continue;
-        let required_courses = requirement.course_codes_raw.split(/,\s|\sor\s/);
+        if (requirement.checklistOverride || !requirement.consume_course) continue;
+        let required_courses = requirement.course_codes_raw.split(",");
         let numMatchedCredits = 0;
         let matchedSelectedCourses = [];
         let matchedUnselectedCourses = [];
@@ -189,6 +189,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
         }
 
         for (let course of required_courses) {
+            course = course.trim();
             if (matchedSelectedCourses.length + matchedUnselectedCourses.length > 0 && ((numMatchedCredits >= requirement.credits_required) || (required_courses.length === 1 && required_courses[0][required_courses[0].length - 1] === 'L'))) {
                 break;
             }
@@ -303,7 +304,7 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
     }
     // Make second pass on requirements to match any remaining courses
     for (let requirement of requirements) {
-        if (requirement.prereqs_met || requirement.checklistOverride) {
+        if (requirement.prereqs_met || requirement.checklistOverride || !requirement.consume_course) {
             parsed_requirements.push(requirement);
             continue;
         }
@@ -513,12 +514,14 @@ const actions = {
                             number_of_courses: 1,
                             credits_required: 0.5,
                             credits_of_prereqs_met: 0,
+                            consume_course: false,
                         };
                         let list2 = {
                             course_codes: list2_courses,
                             number_of_courses: 1,
                             credits_required: 0.5,
                             credits_of_prereqs_met: 0,
+                            consume_course: false,
                         };
                         let possibleUnselectedMatches = unselectedCourses.get(list1_courses);
                         if (possibleUnselectedMatches.length > 0) {
@@ -612,7 +615,16 @@ const actions = {
             let parsedMajorRequirements = {};
             parsedMajorRequirements[getters.majorRequirements[0].info.program_name] = ParseRequirementsForChecklist(
                 getters.checklistMajorRequirements[getters.majorRequirements[0].info.program_name],
-                selectedCourses, getters.majorRequirements[0].info, unselectedCourses);    
+                selectedCourses, getters.majorRequirements[0].info, unselectedCourses);
+
+            // Handle reqs that don't consume courses (eg English reqs for CS)
+            for (let requirement of parsedMajorRequirements[getters.majorRequirements[0].info.program_name]) {
+                if (!(requirement.consume_course)) {
+                    let reqCopy = {...requirement};
+                    reqCopy.consume_course = true;
+                    requirement.prereqs_met = ParseRequirementsForChecklist([reqCopy], selectedCourses, getters.majorRequirements[0].info, unselectedCourses)[0].prereqs_met;
+                }
+            }
             commit('setChecklistMajorRequirements', parsedMajorRequirements);
         }
         else {

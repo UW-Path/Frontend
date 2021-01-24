@@ -1,5 +1,6 @@
 <template>
   <v-card class="course-card">
+    <!-- for single / selected course cards -->
     <template v-if="this.courseData.selected_course && this.courseData.selected_course.course_code !== 'WAITING'">
       <v-list-item three-line>
         <v-list-item-content>
@@ -69,7 +70,7 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-tooltip bottom open-delay="300" max-width="350px" v-if="courseData.major.length || courseData.minor.length || courseData.specialization.length">
+      <v-tooltip bottom open-delay="300" max-width="350px">
         <template v-slot:activator="{ on, attrs }">
           <v-icon @click.stop="toggleOverride(courseIndex, termIndex)"
                   v-bind:class="{ course_card_prereqs_met: courseData.prereqs_met || courseData.inRequirementBar || courseData.overridden,
@@ -84,6 +85,7 @@
         <span>{{ courseData.validation_message }} <br/> Click on warning sign to override!</span>
       </v-tooltip>
     </template>
+    <!-- for muliple unselected course cards -->
     <template v-else>
       <v-list-item>
         <v-list-item-content>
@@ -218,7 +220,7 @@ export default {
 .course-desc{
   font-size: 0.8em; 
   margin-bottom: 1em;
-  margin-right: 0.8em;
+  max-width: 9.5em;
 }
 
 </style>
