@@ -37,6 +37,12 @@ body {
   height: 100vh;
 }
 
+.v-application {
+  font-family: 'Montserrat' !important;
+}
+
+/* Global scrollbar settings */
+
 /* The emerging W3C standard
    that is currently Firefox-only */
 * {
@@ -57,7 +63,5 @@ body {
   border: 4px solid #FFFFFF;
 }
 
-.v-application {
-  font-family: 'Montserrat' !important;
-}
+
 </style>

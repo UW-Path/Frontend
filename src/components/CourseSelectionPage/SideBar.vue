@@ -52,8 +52,16 @@ export default {
     overflow-x: hidden;
     padding-left: 15px;
     margin-top: 7.5%;
-    scrollbar-width: thin;
-    scrollbar-color: #FFD646 #A0BDD6;
+    scrollbar-color: #FFD646 #A0BDD6; 
+}
+
+/* FireFox's specific settings 
+for adding padding to scrollbar */
+@-moz-document url-prefix() {
+  .sidebar-req-container {
+    /* padding - scrollbar width */
+    padding-right: calc(15px - 7px);
+  }
 }
 
 /* Somehow the scroll bar is not shown in native browsers so we need to add the padding */
