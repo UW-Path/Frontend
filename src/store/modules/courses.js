@@ -25,7 +25,7 @@ const actions = {
     // To delete the requirements, one would need to call the functions in mutation
     async fetchRequirements({ commit, getters, state }, options) {
         if (!options.newMajor && !getters.majorRequirements.length) return;
-        const response = await axios.get(backend_api + "/api/requirements/requirements", {
+        const response = await axios.get(backend_api + "/requirements/requirements", {
             params: {
                 major: options.newMajor ? options.newMajor.program_name : getters.majorRequirements[0].info.program_name,
                 minors: options.newMinor ? options.newMinor : getters.minorRequirements.map(minor => minor.info.program_name).join(),

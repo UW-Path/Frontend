@@ -256,7 +256,7 @@
                 }
                 // TODO: this should be a card if there exists more courses that are more than 1
                 else if (courseCode === "SCIENCE" || courseCode === "MATH" || courseCode === "LANGUAGE" || courseCode === "NON-MATH") {
-                    response = await axios.get(backend_api + "/api/course-info/filter", {
+                    response = await axios.get(backend_api + "/course-info/filter", {
                         params: {
                             start: 0,
                             end: 499,
@@ -265,7 +265,7 @@
                     }).catch(error => { void error; return null });
                     parsedCourseInfos = response.data;
                 } else if (courseCode.includes("Elective")) {
-                    response = await axios.get(backend_api + "/api/course-info/filter", {
+                    response = await axios.get(backend_api + "/course-info/filter", {
                         params: {
                             start: 0,
                             end: 1000,
@@ -277,7 +277,7 @@
                 // 2. QUERYABLE CASES
                 else if (!hasNumber.test(courseCode)){
                     // Handles non numerical courses such as MATH, ACTSC
-                    response = await axios.get(backend_api + "/api/course-info/filter", {
+                    response = await axios.get(backend_api + "/course-info/filter", {
                         params: {
                             start: 0,
                             end: 499,
@@ -290,7 +290,7 @@
                     // Handles X00's case, eg PHYS 300-
                     let split = courseCode.split(" ");
                     if(split[1] === "LAB"){
-                        response = await axios.get(backend_api + "/api/course-info/filter", {
+                        response = await axios.get(backend_api + "/course-info/filter", {
                             params: {
                                 start: Number(split[2].slice(0, -1)),
                                 end: Number(split[2].slice(0, -1)) + 99,
@@ -307,7 +307,7 @@
                             credit: 0.5,
                         }];
                     } else{
-                        response = await axios.get(backend_api + "/api/course-info/filter", {
+                        response = await axios.get(backend_api + "/course-info/filter", {
                             params: {
                                 start: Number(split[1].slice(0, -1)),
                                 end: Number(split[1].slice(0, -1)) + 99,
@@ -320,7 +320,7 @@
                 else if (courseCode.split("-").length === 2 && courseCode.split("-")[0].length > 0 && courseCode.split("-")[1].length > 0) {
                     // Handles range case, eg CS 440-CS 498
                     let split = courseCode.split("-");
-                    response = await axios.get(backend_api + "/api/course-info/filter", {
+                    response = await axios.get(backend_api + "/course-info/filter", {
                         params: {
                             start: Number(split[0].split(" ")[1]),
                             end: Number(split[1].split(" ")[1]),
@@ -340,7 +340,7 @@
                 }
                 else if (courseCode.split(" ").length >= 1) {
                     // Handles normal course case, ege MATH 239
-                    response = await axios.get(backend_api + "/api/course-info/get", {
+                    response = await axios.get(backend_api + "/course-info/get", {
                         params: {
                             pk: courseCode,
                         }

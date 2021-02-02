@@ -441,7 +441,7 @@ const actions = {
     },
     async export({ state }) {
         let course_table = getCoursesTable(state);
-        axios.post(backend_api + "/api/requirements/export", {
+        axios.post(backend_api + "/requirements/export", {
             table: course_table,
             responseType: 'blob',
         }).then((response) => {
@@ -456,7 +456,7 @@ const actions = {
     },
     fillOutChecklist({ commit, getters }) {
         if (!getters.majorRequirements.length) return;
-        axios.get(backend_api + "/api/requirements/requirements", {
+        axios.get(backend_api + "/requirements/requirements", {
             params: {
                 major: getters.majorRequirements[0].info.program_name,
                 minors: getters.minorRequirements.map(minor => minor.info.program_name).join(),
@@ -767,7 +767,7 @@ const mutations = {
                         // We also don't call backend if the course has been overriden 
                         
                         if (!requirement.isBackendError && !requirement.overridden) {
-                            axios.get(backend_api + "/api/meets_prereqs/get", {
+                            axios.get(backend_api + "/meets_prereqs/get", {
                                 params: {
                                     list_of_courses_taken: listOfCoursesTaken,
                                     current_term_courses: currentTermCourses,
