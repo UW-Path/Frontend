@@ -12,22 +12,28 @@
          />
       <!-- Course Popup Modal -->
       <v-dialog v-model="dialog" :max-width="isChoice() ? 1200 : 700">
-        <v-card v-if="!loadingCourses" class="modal">
+        <v-card v-if="selectedCourse" class="modal">
             <v-container fluid class="modal-course-list-container">
                 <v-row class="modal-course-list-row">
                     <v-col align="center" v-if="isChoice()">
                         <v-text-field class="modal-search" v-model="searchtext" label="Search for a Course" prepend-inner-icon="mdi-magnify" hide-details="true" single-line outlined dense></v-text-field>
-                        <div class="modal-course-list">
-                            <div class="modal-course" v-bind:class="{ selectedCourseCode: course && selectedCourse && (selectedCourse.course_code === course.course_code) }" v-for="(course,index) in filteredCourses" :key="index"
-                                >
+                        <div v-if="allCourseChoices.length > 0" class="modal-course-list">
+                            <div class="modal-course" v-bind:class="{ selectedCourseCode: course && selectedCourse && (selectedCourse.course_code === course.course_code) }" v-for="(course,index) in filteredCourses" :key="index">
                                 <v-icon class="quick-add-icon" @click="quickSelectCourse(course)">mdi-plus</v-icon> 
                                 <div class="modal-course-list-display" v-on:click="selectedCourse = course">
                                     {{course.course_name !== "" ? course.course_code + ": " + course.course_name : course.course_code }}
                                 </div>
                             </div>
                         </div>
+                        <v-card v-else class="loading-card">
+                            <v-progress-circular
+                                size=75
+                                indeterminate
+                                color="primary"
+                            ></v-progress-circular>
+                        </v-card>
                     </v-col>
-                    <v-col v-if="selectedCourse" class="course-description-col" align="left">
+                    <v-col class="course-description-col" align="left">
                         <v-card-title class="course-title">
                         {{ selectedCourse.course_code }}
                         <v-spacer></v-spacer>
@@ -80,12 +86,13 @@
    </div>
 </template>
 <script>
-   import { mapMutations, mapActions } from "vuex";
+   import { mapMutations, mapActions, mapGetters } from "vuex";
    import CourseCard from "../Cards/CourseCard";
    import axios from "axios";
    import { CourseInfo } from "../../models/courseInfoModel";
    import TrieSearch from "trie-search";
    import { backend_api } from '../../backendAPI';
+   import _ from 'lodash'; 
 
    export default {
        name: "RequirementOptionsModal",
@@ -103,7 +110,6 @@
                     return course.course_id + course.course_code;
                     }
                 }),
-                loadingCourses: true,
            }
        },
        props: {
@@ -112,44 +118,49 @@
            courseIndex: Number,
            onSelectionBar: Boolean
        },
-       created() {
-            let promises = [];
-            let required_courses = this.course.course_codes_raw.split(/,\s|\sor\s|,/);
-            this.loadingCourses = true;
+        created() {
             // Set a temporary number_of_choices while we wait for the course choices to get loaded.
             if (this.course.number_of_courses > 1 || !this.course.course_codes_raw.match(/\d/)) {
                 this.course.number_of_choices = 4;
             }
-
-            // Get all possible course choices for the requirement
-            for (let course of required_courses) {
-                promises.push(this.parseRequirement(course))
-            }
-            Promise.all(promises).then(choices => {
-                for (let choice of choices) {
-                    this.allCourseChoices = this.allCourseChoices.concat(choice);
+            if (this.courseSatisfactionCache[this.course.course_codes_raw]) {
+                this.allCourseChoices = this.courseSatisfactionCache[this.course.course_codes_raw];
+                _.defer(this.updateAllCourseChoicesTrie);
+            } else {
+                let promises = [];
+                let required_courses = this.course.course_codes_raw.split(/,\s|\sor\s|,/);
+                // Get all possible course choices for the requirement
+                for (let course of required_courses) {
+                    promises.push(this.parseRequirement(course))
                 }
-                this.allCourseChoicesTrie.addAll(this.allCourseChoices);
-
+                Promise.all(promises).then(choices => {
+                    for (let choice of choices) {
+                        this.allCourseChoices = this.allCourseChoices.concat(choice);
+                    }
+                    _.defer(this.updateAllCourseChoicesTrie);
+                    this.setCacheItem({ course_codes_raw: this.course.course_codes_raw, satisfyingCourses: this.allCourseChoices});
+                })
+                .catch(error => { console.error(error) });
+            }
+        },
+       methods: {
+            ...mapMutations(["validateCourses", "separateRequirement",  "removeRequirementFromTable", "addCourseRequirement", "sortRequirements", "updateCacheTime", "setCacheItem"]),
+            ...mapActions(["updateChecklist", "toggleCourseOverride"]),
+            async updateAllCourseChoicesTrie() {
                 // Handle cases like "BUS 300-" where only a single course code is used but many choices exist
                 if (this.allCourseChoices.length === 1 && this.allCourseChoices[0].course_code.includes('-')) {
                     this.course.number_of_choices = 4;
                 } else {
                     this.course.number_of_choices = this.allCourseChoices.length;
                 }
-
                 // Set a selected course if none exists
                 if ((this.allCourseChoices.length === 1) && (!this.course.selected_course || this.course.selected_course.course_code === "WAITING")) {
                     this.course.selected_course = this.allCourseChoices[0];
                 }
-                this.selectedCourse = this.allCourseChoices[0];
-                this.loadingCourses = false;
-            })
-            .catch(error => { console.error(error) })
-       },
-       methods: {
-            ...mapMutations(["validateCourses", "separateRequirement",  "removeRequirementFromTable", "addCourseRequirement", "sortRequirements", "updateCacheTime"]),
-            ...mapActions(["updateChecklist", "toggleCourseOverride"]),
+                this.selectedCourse = this.selectedCourse || this.allCourseChoices[0];
+                // Update course Trie
+                this.allCourseChoicesTrie.addAll(this.allCourseChoices);
+            },
             toggleOverride(courseIndex, termIndex) {
                 this.toggleCourseOverride({ courseIndex, termIndex });
             },
@@ -362,8 +373,9 @@
             }
        },
        computed: {
+           ...mapGetters(["courseSatisfactionCache"]),
            filteredCourses: function () {
-                if (this.searchtext === "") return this.allCourseChoices.slice(0,100);
+                if (this.searchtext === "") return this.allCourseChoices.slice(0,50);
                 else  {
                     var digitSplit = this.searchtext.replace(/\s/g, "").match(/[\d.]+|\D+/g);
                     var filterArray = [];
@@ -487,5 +499,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    box-shadow: none !important;
 }
 </style>

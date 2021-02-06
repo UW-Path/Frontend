@@ -42,11 +42,7 @@
    import { mapGetters, mapMutations, mapActions } from "vuex";
    import RequirementOptionsModal from '../Modals/RequirementOptionsModal'
    import AddCourseCard from "../Cards/AddCourseCard"
-   import TrieSearch from 'trie-search';
-   import axios from 'axios';
-   import { CourseInfo } from '../../models/courseInfoModel';
    import isMobile from 'ismobilejs';
-   import { backend_api } from '../../backendAPI';
    
    export default {
      name: "CoursePlan",
@@ -56,39 +52,16 @@
        RequirementOptionsModal,
        AddCourseCard
      },
+     props: {
+       allCourses: Object,
+     },
      data() {
        return {
          isDisabled: false,
          termHovered: -1,
-         allCourses: new TrieSearch(['course_code', 'course_number'], {
-           idFieldOrFunction: function(course) {
-             return course.course_id + course.course_code;
-           }
-         }),
        };
      },
-     mounted() {
-       axios.get(backend_api + "/api/course-info/filter", {
-         params: {
-           start: 0,
-           end: 1000,
-           code: "none",
-         }
-       })
-       .then(response => {
-         response.data.sort((course1, course2) => {
-           if (course1.course_code < course2.course_code) return -1;
-           else if (course1.course_code > course2.course_code) 1;
-           else return 0;
-         });
-         this.allCourses.addAll(response.data.map(course => {
-           return new CourseInfo(course)
-         }));
-       })
-       .catch(error => { console.error(error) })
-     },
      methods: {
-       
        ...mapMutations(["addTermToTable", "deleteTermFromTable", "addCourseRequirement",
          "validateCourses", "decrementRequirementID", "updateCacheTime", "sortRequirements"]),
        ...mapActions(["updateChecklist"]),

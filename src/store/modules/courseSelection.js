@@ -215,7 +215,6 @@ function ParseRequirementsForChecklist(requirements, selectedCourses, programInf
                 } else if (course.split(" ")[0] === "NON-MATH") {
                     courseSearchParams = nonMathCourses;
                 }
-                let possibleMatches = [];
                 for (let searchParam of courseSearchParams) {
                     possibleMatches = possibleMatches.concat(selectedCourses.get([searchParam,
                         course.split(" ")[1][0]], TrieSearch.UNION_REDUCER))

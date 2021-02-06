@@ -52,15 +52,15 @@
             <v-tab v-show="false"></v-tab>
             
             <v-tab-item class="primary-tab transparent">
-                <v-row class="main-row" v-if="inTable">
+                <v-row class="main-row" v-show="inTable">
                     <v-col class="side-bar" lg="2" md="3" sm="3">
                         <side-bar/>
                     </v-col>
                     <v-col class="main-panel" lg="10" md="9" sm="9">
-                        <course-plan/>
+                        <course-plan :allCourses="allCourses"/>
                     </v-col>
                 </v-row>
-                <v-row v-else class="main-row" id="checklist-row">
+                <v-row v-show="!inTable" class="main-row" id="checklist-row">
                     <v-col class="main-panel">
                         <program-checklist/>
                     </v-col>
@@ -74,11 +74,15 @@
 </template>
 
 <script>
-import CoursePlan from '../components/CourseSelectionPage/CoursePlan.vue'
-import ProgramSelectionBar from '../components/CourseSelectionPage/ProgramSelectionBar.vue'
-import ProgramChecklist from '../components/ProgramChecklistPage/ProgramChecklist.vue'
-import TroubleShootModalContent from '../components/Modals/TroubleShootModalContent.vue'
-import SideBar from '../components/CourseSelectionPage/SideBar.vue'
+import CoursePlan from '../components/CourseSelectionPage/CoursePlan.vue';
+import ProgramSelectionBar from '../components/CourseSelectionPage/ProgramSelectionBar.vue';
+import ProgramChecklist from '../components/ProgramChecklistPage/ProgramChecklist.vue';
+import TroubleShootModalContent from '../components/Modals/TroubleShootModalContent.vue';
+import { CourseInfo } from '../models/courseInfoModel';
+import SideBar from '../components/CourseSelectionPage/SideBar.vue';
+import TrieSearch from 'trie-search';
+import axios from 'axios';
+import { backend_api } from '../backendAPI';
 import { mapActions } from "vuex";
 
 export default {
@@ -93,6 +97,11 @@ export default {
     data: () => ({
         inTable: true,
         openBugModal: false,
+        allCourses: new TrieSearch(['course_code', 'course_number'], {
+            idFieldOrFunction: function(course) {
+                return course.course_id + course.course_code;
+            }
+        }),
     }),
     methods: {
         ...mapActions(["export"]),
@@ -114,7 +123,27 @@ export default {
         openBugTroubleshootModal(){
             this.openBugModal = true
         }
-    }
+    },
+    created() {
+        axios.get(backend_api + "/api/course-info/filter", {
+            params: {
+                start: 0,
+                end: 1000,
+                code: "none",
+            }
+        })
+        .then(response => {
+            response.data.sort((course1, course2) => {
+                if (course1.course_code < course2.course_code) return -1;
+                else if (course1.course_code > course2.course_code) 1;
+                else return 0;
+            });
+            this.allCourses.addAll(response.data.map(course => {
+                return new CourseInfo(course)
+            }));
+        })
+        .catch(error => { console.error(error) })
+    },
 }
 </script>
 
