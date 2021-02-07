@@ -118,8 +118,6 @@
 <style scoped>
   .main-course-selection-panel {
     max-width: 100%;
-    scrollbar-width: thin;
-    scrollbar-color: #FFD646 #FFFFFF;
     margin: 0;
   }
 
