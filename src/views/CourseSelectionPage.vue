@@ -125,7 +125,7 @@ export default {
         }
     },
     created() {
-        axios.get(backend_api + "/api/course-info/filter", {
+        axios.get(backend_api + "/course-info/filter", {
             params: {
                 start: 0,
                 end: 1000,
