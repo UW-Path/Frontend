@@ -1,29 +1,25 @@
 <template>
-    <v-app id="app" style="overflow-y: hidden;">
-      <router-view/>
-    </v-app>
+  <v-app id="app" style="overflow-y: hidden;">
+    <router-view />
+  </v-app>
 </template>
 
-
 <script>
-import {  mapActions } from "vuex";
+import { mapActions } from "vuex";
 export default {
   methods: {
-  ...mapActions(["fetchMajors"]),
-    deleted() {
-    }
+    ...mapActions(["fetchMajors"]),
+    deleted() {}
   },
   created() {
     this.fetchMajors();
-    window.addEventListener('beforeunload', this.deleted)
+    window.addEventListener("beforeunload", this.deleted);
   }
-}
-
-
+};
 </script>
 
 <style lang="scss">
-@import 'style.css';
+@import "style.css";
 #app {
   font-family: Montserrat;
   -webkit-font-smoothing: antialiased;
@@ -38,7 +34,7 @@ body {
 }
 
 .v-application {
-  font-family: 'Montserrat' !important;
+  font-family: "Montserrat" !important;
 }
 
 /* Global scrollbar settings */
@@ -47,7 +43,7 @@ body {
    that is currently Firefox-only */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #FFD646 #FFFFFF;
+  scrollbar-color: #ffd646 #ffffff;
 }
 
 /* Works on Chrome/Edge/Safari */
@@ -55,13 +51,11 @@ body {
   width: 15px;
 }
 *::-webkit-scrollbar-track {
-  background: #FFFFFF;
+  background: #ffffff;
 }
 *::-webkit-scrollbar-thumb {
-  background-color: #FFD646;
+  background-color: #ffd646;
   border-radius: 20px;
-  border: 4px solid #FFFFFF;
+  border: 4px solid #ffffff;
 }
-
-
 </style>

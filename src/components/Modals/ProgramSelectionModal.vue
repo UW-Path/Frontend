@@ -222,66 +222,71 @@ export default {
             this.dialog = false;
             this.inConfirmation = false
         }
-    },
-    computed: mapGetters(["allMajors", "allMinors", "allSpecializations", 
-                            "findMajorByProgram", "findMinorByProgram", "findOptionByProgram", 
-                            "majorRequirements", "minorRequirements", "specRequirements"]),
-}
+  },
+  computed: mapGetters([
+    "allMajors",
+    "allMinors",
+    "allSpecializations",
+    "findMajorByProgram",
+    "findMinorByProgram",
+    "findOptionByProgram",
+    "majorRequirements",
+    "minorRequirements",
+    "specRequirements"
+  ])
+};
 </script>
 
 <style scoped>
-
 .modal-course-list-row {
-    margin-left: 1%;
-    margin-right: 1%;
+  margin-left: 1%;
+  margin-right: 1%;
 }
 
 .course-title {
-    padding-top: 0px;
+  padding-top: 0px;
 }
 
 .flex-centerise {
-    vertical-align: middle;
+  vertical-align: middle;
 }
 
 .title {
-    text-align: left;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+  text-align: left;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 .confirm-container {
-    text-align: left;
+  text-align: left;
 }
 
 .confirm-elements {
-    display: inline-block;
+  display: inline-block;
 }
 
 .confirm-button {
-    margin-right: 0;
+  margin-right: 0;
 }
 
 .confirm-text {
-    color: black;
-    margin-right: 0.5rem;
+  color: black;
+  margin-right: 0.5rem;
 }
 
 .select-btn {
-    height: 100%;
+  height: 100%;
 }
 
 .auto-complete-title {
-    text-align: left;
-    color: black;
-    font-size: 1.2em;
-    margin-bottom: 0.3em;
+  text-align: left;
+  color: black;
+  font-size: 1.2em;
+  margin-bottom: 0.3em;
 }
 
-.add-major-btn{
-    margin-right: 0.3em;
-    color: #5C8CE9 !important;
+.add-major-btn {
+  margin-right: 0.3em;
+  color: #5c8ce9 !important;
 }
-
-
 </style>
