@@ -11,6 +11,7 @@
                 <v-autocomplete
                     :disabled="inConfirmation"
                     :items="getMajorList()"
+                    v-model="selectedMajor"
                     v-on:change="selectMajor"
                     dense
                     prepend-inner-icon="mdi-magnify"
@@ -18,7 +19,7 @@
                     hide-details
                     background-color="#f2f2f2"
                     class="autocomplete"
-                    :label="majorRequirements.length ? majorRequirements[0].info.program_name : noProgram"
+                    :label="noProgram"
                     height="3rem"
                     color="black"
                 ></v-autocomplete>
@@ -51,6 +52,7 @@
                         small
                         :disabled="inConfirmation"
                         :items="getSpecList()"
+                        v-model="selectedSpec"
                         v-on:change="selectSpec"
                         dense
                         prepend-inner-icon="mdi-magnify"
@@ -58,7 +60,7 @@
                         hide-details
                         background-color="#f2f2f2"
                         class="autocomplete"
-                        :label="specRequirements.length ? specRequirements[0].info.program_name : noProgram"
+                        :label="noProgram"
                         height="3rem"
                         color="black"
                     ></v-autocomplete>
@@ -81,7 +83,10 @@
 </template>
 
 <script>
+import axios from "axios";
 import { mapGetters, mapActions, mapMutations } from "vuex";
+import { ProgramInfo } from "../../models/ProgramInfoModel"
+import { backend_api } from '../../backendAPI';
 
 export default {
     data () {
@@ -89,12 +94,21 @@ export default {
             dialog: false,
             inConfirmation: false,
             noProgram: "None",
-            newMajor: "",
-            selectedMinors: this.minorRequirements ? this.minorRequirements.map(x => x.info.program_name) : [],
-            newSpec: "",
+            selectedMajor: "",
+            selectedMinors: [],
+            selectedSpec: "",
+
+            // Updated list of available minors/specs based on selected Major
+            newMinorsList: [],
+            newSpecList: [],
         }
     },
     name: "ProgramSelectionModal",
+    mounted() {
+        this.selectedMajor = this.majorRequirements.length ? this.majorRequirements[0].info.program_name : "";
+        this.selectedMinors = this.minorRequirements ? this.minorRequirements.map(x => x.info.program_name) : [];
+        this.selectedSpec = this.specRequirements && this.specRequirements.length > 0 ? this.specRequirements[0].info.program_name : "";
+    },
     methods: {
         ...mapActions(["fetchRequirements", "fillOutChecklist"]),
         ...mapMutations(["clearTable", "clearMinorFromTable", "clearOptionTable", "removeMajor", "removeMinor", "removeOption", "updateCacheTime"]),
@@ -103,19 +117,41 @@ export default {
             this.inConfirmation = false;
         },
         select: function() { this.inConfirmation = true; },
-        selectMajor: function (major) { this.newMajor = major; this.updateCacheTime(); },
-        selectSpec: function (spec) { this.newSpec = spec; this.updateCacheTime(); },
+        selectMajor: function (major) {
+            axios.get(backend_api + "/requirements/requirements", {
+                params: { major: major, minors: "", option: "" }
+            }).then(response => {
+                this.selectedMajor = major;
+                this.selectedSpec = "";
+                this.selectedMinors = [];
+                this.newMinorsList = response.data["minor_list"].map(minor => { return new ProgramInfo(minor) });
+                this.newSpecList = response.data["option_list"].map(spec => { return new ProgramInfo(spec) });
+                this.updateCacheTime();
+            })
+            .catch(err => {
+                console.error(err);
+            });
+        },
+        selectSpec: function (spec) { this.selectedSpec = spec; this.updateCacheTime(); },
         getMajorList: function() {
             return this.allMajors.map(e => { return e.program_name });
         },
         getMinorList: function() {
-            return this.allMinors.map(e => { return e.program_name });
+            if (!this.majorRequirements.length || this.selectedMajor !== this.majorRequirements[0].info.program_name) {
+                return this.newMinorsList.map(e => { return e.program_name });
+            } else {
+                return this.allMinors.map(e => { return e.program_name });
+            }
         },
         getSpecList: function() {
-            return [this.noProgram].concat(this.allSpecializations.map(e => { return e.program_name }));
+            if (!this.majorRequirements.length || this.selectedMajor !== this.majorRequirements[0].info.program_name) {
+                return [this.noProgram].concat(this.newSpecList.map(e => { return e.program_name }));
+            } else {
+                return [this.noProgram].concat(this.allSpecializations.map(e => { return e.program_name }));
+            }
         },
         confirmSelection: function() {
-            let changeMajor = this.newMajor !== this.noProgram && (!this.majorRequirements.length || this.newMajor !== this.majorRequirements[0].info.program_name) ? this.findMajorByProgram(this.newMajor) : undefined
+            let changeMajor = this.selectedMajor !== this.noProgram && (!this.majorRequirements.length || this.selectedMajor !== this.majorRequirements[0].info.program_name) ? this.findMajorByProgram(this.selectedMajor) : undefined;
 
             let addedMinors = [];
             for (let minor of this.selectedMinors) {
@@ -139,10 +175,9 @@ export default {
                 }
                 prevMinors.push(prev.info.program_name)
             }
-            let changeOption = this.newSpec !== this.noProgram && (!this.specRequirements.length || this.newSpec !== this.specRequirements[0].info.program_name) ? this.findOptionByProgram(this.newSpec) : undefined
-
+            let changeOption = this.selectedSpec !== this.noProgram && (!this.specRequirements.length || this.selectedSpec !== this.specRequirements[0].info.program_name) ? this.findOptionByProgram(this.selectedSpec) : undefined
             //remove current major/minor/options if none is chosen or if it needs to be changed
-            if (changeMajor || this.newMajor === this.noProgram) {
+            if (changeMajor || this.selectedMajor === this.noProgram) {
                 this.removeMajor();
                 this.removeMinor(prevMinors);
                 this.removeOption();
@@ -152,7 +187,7 @@ export default {
                 this.removeMinor(removedMinors);
                 this.clearMinorFromTable(removedMinors);
             }
-            if (changeOption || this.newSpec === this.noProgram) {
+            if (changeOption || this.selectedSpec === this.noProgram) {
                 this.removeOption();
                 this.clearOptionTable();
             }
@@ -162,11 +197,14 @@ export default {
                 newSpecialization: changeOption
             })
             .then(() => {
+                this.selectedMajor = this.majorRequirements.length ? this.majorRequirements[0].info.program_name : "";
+                this.selectedMinors = this.minorRequirements ? this.minorRequirements.map(x => x.info.program_name) : [];
+                this.selectedSpec = this.specRequirements && this.specRequirements.length > 0 ? this.specRequirements[0].info.program_name : "";
                 this.fillOutChecklist();
             });
 
-            this.newMajor = "";
-            this.newSpec = "";
+            this.newMinorsList = [];
+            this.newSpecList = [];
             this.dialog = false;
             this.inConfirmation = false;
 
@@ -176,9 +214,11 @@ export default {
             this.inConfirmation = false;
         },
         close() {
-            this.newMajor = "";
-            this.newMinor = this.minorRequirements ? this.minorRequirements.map(x => x.info.program_name) : [];
-            this.newSpec = "";
+            this.selectedMajor = this.majorRequirements.length ? this.majorRequirements[0].info.program_name : "";
+            this.selectedMinors = this.minorRequirements ? this.minorRequirements.map(x => x.info.program_name) : [];
+            this.selectedSpec = this.specRequirements && this.specRequirements.length > 0 ? this.specRequirements[0].info.program_name : "";
+            this.newMinorsList = [];
+            this.newSpecList = [];
             this.dialog = false;
             this.inConfirmation = false
         }
