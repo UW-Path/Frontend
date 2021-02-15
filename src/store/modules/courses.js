@@ -8,15 +8,15 @@ const state = {
     minorRequirements: [],
     specRequirements:  [],
 
-    //this caches all of the stuff and the courses that are currently on the table and on the 
-    courseCache: {}
+    // This maps the course_codes_raw of a req to the course information of courses which satisfy the req
+    courseSatisfactionCache: {}
 };
 
 const getters = {
     majorRequirements: (state) => state.majorRequirements,
     minorRequirements: (state) => state.minorRequirements,
     specRequirements: (state) => state.specRequirements,
-    courseCache: (state) => state.courseCache
+    courseSatisfactionCache: (state) => state.courseSatisfactionCache
 };
 
 
@@ -140,6 +140,9 @@ const actions = {
 };
 
 const mutations = {
+    setCacheItem: (state, { course_codes_raw, satisfyingCourses }) => {
+        state.courseSatisfactionCache[course_codes_raw] = satisfyingCourses;
+    },
     addCourseRequirement: (state, requirement) => {
         if (requirement.major.length) {
             let major = state.majorRequirements.find(req => {
