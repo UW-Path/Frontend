@@ -47,16 +47,16 @@
 import { mapGetters } from "vuex";
 
 export default {
-    name: "AdditionalNoteSection",
-    props: {
-        program: String
-    },
-    computed: {
-        ...mapGetters(["majorRequirements"]),
-        getLinkToUnderGradCalender: function() {
-            return this.majorRequirements[0] && this.majorRequirements[0].info.link;
-        }
+  name: "AdditionalNoteSection",
+  props: {
+    program: String
+  },
+  computed: {
+    ...mapGetters(["majorRequirements"]),
+    getLinkToUnderGradCalender: function() {
+      return this.majorRequirements[0] && this.majorRequirements[0].info.link;
     }
+  }
 };
 </script>
 
