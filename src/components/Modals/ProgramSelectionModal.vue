@@ -145,6 +145,16 @@ export default {
       "updateCacheTime"
     ]),
     enableDialog: function() {
+      this.selectedMajor = this.majorRequirements.length
+        ? this.majorRequirements[0].info.program_name
+        : "";
+      this.selectedMinors = this.minorRequirements
+        ? this.minorRequirements.map(x => x.info.program_name)
+        : [];
+      this.selectedSpec =
+        this.specRequirements && this.specRequirements.length > 0
+          ? this.specRequirements[0].info.program_name
+          : "";
       this.dialog = true;
       this.inConfirmation = false;
     },
@@ -250,7 +260,10 @@ export default {
           ? this.findOptionByProgram(this.selectedSpec)
           : undefined;
       //remove current major/minor/options if none is chosen or if it needs to be changed
-      if (changeMajor || this.selectedMajor === this.noProgram) {
+      if (changeMajor) {
+        this.removeMajor();
+        this.clearTable();
+      } else if (this.selectedMajor === this.noProgram) {
         this.removeMajor();
         this.removeMinor(prevMinors);
         this.removeOption();
