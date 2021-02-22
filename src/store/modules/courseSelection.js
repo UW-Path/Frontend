@@ -301,7 +301,8 @@ const state = {
   checklistMajorRequirements: {},
   checklistMinorRequirements: {},
   checklistOptionRequirements: {},
-  cacheTime: 0
+  cacheTime: 0,
+  needsRefresh: false,
 };
 
 const getters = {
@@ -312,7 +313,8 @@ const getters = {
   getCourse: state => (termIndex, courseIndex) => {
     return state.table[termIndex].courses[courseIndex];
   },
-  cacheTime: state => state.cacheTime
+  cacheTime: state => state.cacheTime,
+  needsRefresh: state => state.needsRefresh
 };
 
 function getRequirementFulfillmentSize(req_course_codes) {
@@ -794,7 +796,7 @@ function getCoursesTable(state) {
     let t = [];
     for (let j = 0; j < state.table[i].courses.length; j++) {
       let courses = [];
-      courses.push(state.table[i].courses[j].course_codes_raw);
+      courses.push("1 of " + state.table[i].courses[j].course_codes_raw);
       if (!state.table[i].courses[j].selected_course) {
         courses.push("WAITING");
       } else {
@@ -1112,7 +1114,10 @@ const actions = {
     } else {
       commit("setChecklistOptionRequirements", {});
     }
-  }
+  },
+  addTableRequirements: ({ commit }, { tableAdditions }) => {
+    commit("addTableRequirements", { tableAdditions });
+  },
 };
 
 const mutations = {
@@ -1120,6 +1125,15 @@ const mutations = {
     state.table[termIndex].courses[courseIndex].overridden = !state.table[
       termIndex
     ].courses[courseIndex].overridden;
+  },
+  setNeedsRefresh: (state, { needsRefresh }) => {
+    state.needsRefresh = needsRefresh;
+  },
+  addTableRequirements: (state, { tableAdditions }) => {
+    state.needsRefresh = true;
+    for (let i = 0; i < tableAdditions.length; i++) {
+      state.table[i].courses = state.table[i].courses.concat(tableAdditions[i]);
+    }
   },
   addChecklistRequirement: (
     state,
