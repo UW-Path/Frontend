@@ -50,6 +50,20 @@
         <span>Download plan to CSV</span>
       </v-tooltip>
 
+      <v-tooltip right open-delay="300" max-width="250px">
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            class="tab-icon tab-button"
+            v-bind="attrs"
+            v-on="on"
+            @click="scrollUpload()"
+          >
+            <v-icon x-large>mdi-upload-outline</v-icon>
+          </v-btn>
+        </template>
+        <span>Upload plan from spreadsheet</span>
+      </v-tooltip>
+
       <v-spacer></v-spacer>
 
       <v-tooltip right open-delay="300" max-width="250px">
@@ -78,9 +92,14 @@
             <course-plan :allCourses="allCourses" />
           </v-col>
         </v-row>
-        <v-row v-show="!inTable" class="main-row" id="checklist-row">
+        <v-row v-show="inChecklist" class="main-row" id="checklist-row">
           <v-col class="main-panel">
             <program-checklist />
+          </v-col>
+        </v-row>
+        <v-row v-show="inUpload" class="main-row" id="checklist-row">
+          <v-col class="main-panel">
+            <upload-plan-page />
           </v-col>
         </v-row>
       </v-tab-item>
@@ -95,13 +114,14 @@
 import CoursePlan from "../components/CourseSelectionPage/CoursePlan.vue";
 import ProgramSelectionBar from "../components/CourseSelectionPage/ProgramSelectionBar.vue";
 import ProgramChecklist from "../components/ProgramChecklistPage/ProgramChecklist.vue";
+import UploadPlanPage from "../components/UploadPage/UploadPlanPage.vue";
 import TroubleShootModalContent from "../components/Modals/TroubleShootModalContent.vue";
 import { CourseInfo } from "../models/courseInfoModel";
 import SideBar from "../components/CourseSelectionPage/SideBar.vue";
 import TrieSearch from "trie-search";
 import axios from "axios";
 import { backend_api } from "../backendAPI";
-import { mapActions } from "vuex";
+import { mapActions, mapMutations, mapGetters } from "vuex";
 
 export default {
   name: "CourseSelection",
@@ -110,10 +130,13 @@ export default {
     ProgramSelectionBar,
     SideBar,
     ProgramChecklist,
+    UploadPlanPage,
     TroubleShootModalContent
   },
   data: () => ({
     inTable: true,
+    inChecklist: false,
+    inUpload: false,
     openBugModal: false,
     allCourses: new TrieSearch(["course_code", "course_number"], {
       idFieldOrFunction: function(course) {
@@ -121,8 +144,12 @@ export default {
       }
     })
   }),
+  computed: {
+    ...mapGetters(["needsRefresh"])
+  },
   methods: {
-    ...mapActions(["export"]),
+    ...mapMutations(["validateCourses", "setNeedsRefresh"]),
+    ...mapActions(["export", "updateChecklist"]),
     exportPDF() {
       this.export({ PDF: true, XLS: false });
     },
@@ -134,9 +161,30 @@ export default {
     },
     scrollTable() {
       this.inTable = true;
+      this.inChecklist = false;
+      this.inUpload = false;
+      // Update checklist and validate courses
+      if (this.needsRefresh) {
+        this.updateChecklist();
+        this.validateCourses();
+        this.setNeedsRefresh({ needsRefresh: false });
+      }
     },
     scrollChecklist() {
       this.inTable = false;
+      this.inChecklist = true;
+      this.inUpload = false;
+      // Update checklist and validate courses
+      if (this.needsRefresh) {
+        this.updateChecklist();
+        this.validateCourses();
+        this.setNeedsRefresh({ needsRefresh: false });
+      }
+    },
+    scrollUpload() {
+      this.inTable = false;
+      this.inChecklist = false;
+      this.inUpload = true;
     },
     openBugTroubleshootModal() {
       this.openBugModal = true;

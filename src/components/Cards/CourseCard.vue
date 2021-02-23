@@ -43,6 +43,7 @@
                   <v-chip
                     color="light-green"
                     label
+                    x-small
                     text-color="white"
                     class="chip"
                     v-bind="attrs"

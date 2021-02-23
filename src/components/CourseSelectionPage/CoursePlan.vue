@@ -114,11 +114,11 @@ export default {
       this.sortRequirements();
     },
     change(event) {
+      //we only check add events
+      if (!event.added) return;
       this.updateCacheTime();
       this.validateCourses();
       this.updateChecklist();
-      //we only check add events
-      if (!event.added) return;
       let changedReq = event.added.element;
       if (changedReq.number_of_courses > 1 && changedReq.inRequirementBar) {
         changedReq.number_of_courses = 1;
