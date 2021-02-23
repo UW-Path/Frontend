@@ -145,7 +145,7 @@ export default {
     })
   }),
   computed: {
-    ...mapGetters(["needsRefresh"]),
+    ...mapGetters(["needsRefresh"])
   },
   methods: {
     ...mapMutations(["validateCourses", "setNeedsRefresh"]),

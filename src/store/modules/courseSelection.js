@@ -302,7 +302,7 @@ const state = {
   checklistMinorRequirements: {},
   checklistOptionRequirements: {},
   cacheTime: 0,
-  needsRefresh: false,
+  needsRefresh: false
 };
 
 const getters = {
@@ -1117,7 +1117,7 @@ const actions = {
   },
   addTableRequirements: ({ commit }, { tableAdditions }) => {
     commit("addTableRequirements", { tableAdditions });
-  },
+  }
 };
 
 const mutations = {
