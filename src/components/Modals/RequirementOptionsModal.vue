@@ -424,7 +424,7 @@ export default {
         courseCode === "NON-MATH"
       ) {
         response = await axios
-          .get(backend_api + "/course-info/filter", {
+          .get(backend_api + "/api/course-info/filter", {
             params: {
               start: 0,
               end: 499,
@@ -438,7 +438,7 @@ export default {
         parsedCourseInfos = response.data;
       } else if (courseCode.includes("Elective")) {
         response = await axios
-          .get(backend_api + "/course-info/filter", {
+          .get(backend_api + "/api/course-info/filter", {
             params: {
               start: 0,
               end: 1000,
@@ -455,7 +455,7 @@ export default {
       else if (!hasNumber.test(courseCode)) {
         // Handles non numerical courses such as MATH, ACTSC
         response = await axios
-          .get(backend_api + "/course-info/filter", {
+          .get(backend_api + "/api/course-info/filter", {
             params: {
               start: 0,
               end: 499,
@@ -472,7 +472,7 @@ export default {
         let split = courseCode.split(" ");
         if (split[1] === "LAB") {
           response = await axios
-            .get(backend_api + "/course-info/filter", {
+            .get(backend_api + "/api/course-info/filter", {
               params: {
                 start: Number(split[2].slice(0, -1)),
                 end: Number(split[2].slice(0, -1)) + 99,
@@ -496,7 +496,7 @@ export default {
           ];
         } else {
           response = await axios
-            .get(backend_api + "/course-info/filter", {
+            .get(backend_api + "/api/course-info/filter", {
               params: {
                 start: Number(split[1].slice(0, -1)),
                 end: Number(split[1].slice(0, -1)) + 99,
@@ -516,7 +516,7 @@ export default {
         // Handles range case, eg CS 440-CS 498
         let split = courseCode.split("-");
         response = await axios
-          .get(backend_api + "/course-info/filter", {
+          .get(backend_api + "/api/course-info/filter", {
             params: {
               start: Number(split[0].split(" ")[1]),
               end: Number(split[1].split(" ")[1]),
@@ -541,7 +541,7 @@ export default {
       } else if (courseCode.split(" ").length >= 1) {
         // Handles normal course case, ege MATH 239
         response = await axios
-          .get(backend_api + "/course-info/get", {
+          .get(backend_api + "/api/course-info/get", {
             params: {
               pk: courseCode
             }

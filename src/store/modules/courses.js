@@ -28,7 +28,7 @@ const actions = {
   async fetchRequirements({ commit, getters, state }, options) {
     if (!options.newMajor && !getters.majorRequirements.length) return;
     const response = await axios.get(
-      backend_api + "/requirements/requirements",
+      backend_api + "/api/requirements/requirements",
       {
         params: {
           major: options.newMajor

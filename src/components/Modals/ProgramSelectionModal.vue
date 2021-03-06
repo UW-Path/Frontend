@@ -163,7 +163,7 @@ export default {
     },
     selectMajor: function(major) {
       axios
-        .get(backend_api + "/requirements/requirements", {
+        .get(backend_api + "/api/requirements/requirements", {
           params: { major: major, minors: "", option: "" }
         })
         .then(response => {
