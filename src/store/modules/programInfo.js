@@ -48,7 +48,7 @@ const getters = {
 const actions = {
   fetchMajors({ commit }) {
     axios
-      .get(backend_api + "/requirements/unique_major")
+      .get(backend_api + "/api/requirements/unique_major")
       .then(response => {
         commit("setMajor", response.data["Major"]);
       })
