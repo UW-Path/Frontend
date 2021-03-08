@@ -42,6 +42,10 @@ jobs:
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
               docker login -u ${docker_user} -p ${docker_pass}
-              docker tag frontend "uwpath/frontend:${CIRCLE_SHA1:0:8}"
-              docker push "uwpath/frontend:${CIRCLE_SHA1:0:8}"
+              docker tag frontend "uwpath/frontend:${CIRCLE_SHA1:0:7}"
+              docker push "uwpath/frontend:${CIRCLE_SHA1:0:7}"
+            elif [ "${CIRCLE_BRANCH}" == "staging" ]; then
+              docker login -u ${docker_user} -p ${docker_pass}
+              docker tag frontend "uwpath/frontend-staging:${CIRCLE_SHA1:0:7}"
+              docker push "uwpath/frontend-frontend:${CIRCLE_SHA1:0:7}"
             fi
