@@ -47,5 +47,5 @@ jobs:
             elif [ "${CIRCLE_BRANCH}" == "staging" ]; then
               docker login -u ${docker_user} -p ${docker_pass}
               docker tag frontend "uwpath/frontend-staging:${CIRCLE_SHA1:0:7}"
-              docker push "uwpath/frontend-frontend:${CIRCLE_SHA1:0:7}"
+              docker push "uwpath/frontend-staging:${CIRCLE_SHA1:0:7}"
             fi
