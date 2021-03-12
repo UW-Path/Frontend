@@ -168,7 +168,7 @@ export default {
         })
         .then(response => {
           this.selectedMajor = major;
-          this.selectedSpec = "";
+          this.selectedSpec = this.noProgram;
           this.selectedMinors = [];
           this.newMinorsList = response.data["minor_list"].map(minor => {
             return new ProgramInfo(minor);
@@ -222,6 +222,17 @@ export default {
           })
         );
       }
+    },
+    findOptionByProgram: function(program) {
+      const changedMajor =
+        !this.majorRequirements.length ||
+        this.selectedMajor !== this.majorRequirements[0].info.program_name;
+      const programSpecs = changedMajor
+        ? this.newSpecList
+        : this.allSpecializations;
+      return programSpecs.find(obj => {
+        return program === obj.program_name;
+      });
     },
     confirmSelection: function() {
       let changeMajor =
@@ -328,7 +339,6 @@ export default {
     "allSpecializations",
     "findMajorByProgram",
     "findMinorByProgram",
-    "findOptionByProgram",
     "majorRequirements",
     "minorRequirements",
     "specRequirements"
