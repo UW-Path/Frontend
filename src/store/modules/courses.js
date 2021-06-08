@@ -7,10 +7,10 @@ import { MajorRequirement, OtherRequirement } from "../../models/ProgramModel";
 import { backend_api } from "../../backendAPI";
 
 const state = {
+  academicYear: "", //the academic year for which the major/minor/option is chosen from
   majorRequirements: [],
   minorRequirements: [],
   specRequirements: [],
-
   // This maps the course_codes_raw of a req to the course information of courses which satisfy the req
   courseSatisfactionCache: {}
 };
@@ -19,14 +19,18 @@ const getters = {
   majorRequirements: state => state.majorRequirements,
   minorRequirements: state => state.minorRequirements,
   specRequirements: state => state.specRequirements,
-  courseSatisfactionCache: state => state.courseSatisfactionCache
+  courseSatisfactionCache: state => state.courseSatisfactionCache,
+  academicYear: state => state.academicYear
 };
 
 const actions = {
   // Fetching requirements simply adds requirements to the requirement column.
-  // To delete the requirements, one would need to call the functions in mutation
+  // To delete the requirements, one would need to call the functions in mutations section
   async fetchRequirements({ commit, getters, state }, options) {
     if (!options.newMajor && !getters.majorRequirements.length) return;
+
+    console.log("academic year is: " + state.academicYear);
+
     const response = await axios.get(
       backend_api + "/api/requirements/requirements",
       {
@@ -41,7 +45,10 @@ const actions = {
                 .join(),
           option: options.newSpecialization
             ? options.newSpecialization.program_name
-            : ""
+            : "",
+          calender_year: state.academicYear.length
+            ? state.academicYear
+            : "2020-2021" // set defualt year as 2020-2021 for now
         }
       }
     );
@@ -291,6 +298,9 @@ const mutations = {
       for (let section of Object.values(spec.sections()))
         if (checkArrayForID(section)) return;
     }
+  },
+  setAcademicYear: (state, academicYear) => {
+    state.academicYear = academicYear;
   }
 };
 

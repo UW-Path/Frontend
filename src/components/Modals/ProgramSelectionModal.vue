@@ -8,7 +8,22 @@
     >
     <v-dialog v-model="dialog" max-width="800" @click:outside="close()">
       <v-card>
-        <v-card-title>Specify Your Degree</v-card-title>
+        <v-card-title>
+          Specify Your Degree
+          <v-tooltip top class="academic-year-notif-tooltip">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn icon v-bind="attrs" v-on="on">
+                <v-icon>
+                  mdi-information-outline
+                </v-icon>
+              </v-btn>
+            </template>
+            <div>
+              All programs selected is based on the offerings in the
+              <b>{{ this.academicYear }}</b> academic year
+            </div>
+          </v-tooltip>
+        </v-card-title>
         <v-divider></v-divider>
         <v-card-text
           ><v-row class="modal-course-list-row" col>
@@ -341,7 +356,8 @@ export default {
     "findMinorByProgram",
     "majorRequirements",
     "minorRequirements",
-    "specRequirements"
+    "specRequirements",
+    "academicYear"
   ])
 };
 </script>
@@ -397,5 +413,10 @@ export default {
 .add-major-btn {
   margin-right: 0.3em;
   color: #5c8ce9 !important;
+}
+
+.academic-year-notif-tooltip {
+  display: inline-block;
+  margin-right: 0.3rem;
 }
 </style>

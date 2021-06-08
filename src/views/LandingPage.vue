@@ -21,15 +21,17 @@
           <div class="slogan d-block d-sm-none" style="color:red">
             <h4>Please use a laptop or an Ipad for the best experience!</h4>
           </div>
+
+          <!-- used to select the major -->
           <div class="autocomplete-container">
             <v-autocomplete
-              :disabled="inConfirmation"
+              v-if="selectingMajor"
               :items="
                 allMajors.map(e => {
                   return e.program_name;
                 })
               "
-              v-on:change="changeMajor"
+              v-on:change="setMajor"
               dense
               :allow-overflow="false"
               prepend-inner-icon="mdi-magnify"
@@ -41,24 +43,51 @@
               height="3rem"
               color="black"
             ></v-autocomplete>
-            <div class="findprogram" v-if="!inConfirmation">
-              <span @click="findProgram()" class="link"
+
+            <!-- used to select the year after selecting the major -->
+            <v-autocomplete
+              v-if="selectingYear"
+              :items="majorYearList"
+              v-on:change="setYear"
+              dense
+              :allow-overflow="false"
+              prepend-inner-icon="mdi-magnify"
+              solo
+              clearable
+              hide-details
+              background-color="rgb(256, 256, 256)"
+              class="autocomplete"
+              label="Select Your Starting Academic Year"
+              height="3rem"
+              color="black"
+            ></v-autocomplete>
+
+            <div class="findprogram" v-if="selectingMajor">
+              <span @click="goToContactPage()" class="link"
                 >Can't find your program?</span
               >
             </div>
           </div>
 
-          <div v-if="inConfirmation">
+          <div v-if="selectingYear && !confirming">
             <div class="confirmation-msg">
-              It seems like you have already selected a major, are you sure to
-              overwrite?
+              <v-icon large color="green" @click="cancelYearSelection()"
+                >mdi-arrow-left-circle</v-icon
+              >
+              Select a different major
             </div>
-            <v-icon large color="light-green" @click="confirmSelection()"
-              >mdi-checkbox-marked-circle</v-icon
-            >
-            <v-icon large color="red" @click="cancelSelection()"
-              >mdi-close-circle</v-icon
-            >
+          </div>
+
+          <div v-if="confirming">
+            <div class="confirmation-msg">
+              <v-icon large color="green" @click="confirm()"
+                >mdi-checkbox-marked-circle</v-icon
+              >
+              <v-icon large color="red" @click="cancelConfirm()"
+                >mdi-close-circle</v-icon
+              >
+              A major was selected in the past, do you wish to overwrite?
+            </div>
           </div>
         </v-col>
       </v-row>
@@ -72,41 +101,65 @@ export default {
   name: "Home",
   data() {
     return {
-      inConfirmation: false,
-      selectedMajor: ""
+      majorYearList: [],
+      selectingMajor: true,
+      selectingYear: false,
+      confirming: false,
+      selectedMajor: "",
+      selectedYear: ""
     };
   },
   methods: {
-    ...mapActions(["fetchRequirements", "fillOutChecklist"]),
+    ...mapActions([
+      "fetchRequirements",
+      "fillOutChecklist",
+      "fetchAcademicYearsOfMajor"
+    ]),
     ...mapMutations([
       "clearTable",
       "removeMajor",
       "removeMinor",
-      "removeOption"
+      "removeOption",
+      "setAcademicYear"
     ]),
-    changeMajor(programName) {
+    setMajor(programName) {
       this.selectedMajor = programName;
-      if (this.majorRequirements.length > 0) this.inConfirmation = true;
-      else this.confirmSelection();
+      this.selectingMajor = false;
+      this.selectingYear = true;
+
+      this.fetchAcademicYearsOfMajor(this.selectedMajor).then(response => {
+        this.majorYearList = response.data.years.map(ele => {
+          return ele.year;
+        });
+      });
     },
-    findProgram() {
-      this.$router.push("/Contact");
+    setYear(year) {
+      this.selectedYear = year;
+      if (this.majorRequirements.length > 0) this.confirming = true;
+      else this.confirm();
     },
-    confirmSelection() {
-      this.inConfirmation = false;
+    confirm() {
+      this.confirming = false;
+      this.setAcademicYear(this.selectedYear);
       this.removeMajor();
       this.removeMinor(["ALL"]);
       this.removeOption();
       this.clearTable();
       this.fetchRequirements({
-        newMajor: this.findMajorByProgram(this.selectedMajor)
+        newMajor: this.findMajorByProgram(this.selectedMajor),
+        newMajorYear: this.selectedYear
       }).then(() => {
         this.fillOutChecklist();
       });
       this.$router.push("/CourseSelection");
     },
-    cancelSelection() {
-      this.inConfirmation = false;
+    cancelConfirm() {
+      this.confirming = false;
+      this.selectingYear = true;
+    },
+    cancelYearSelection() {
+      this.selectingYear = false;
+      this.selectingMajor = true;
     },
     goToAboutPage() {
       this.$router.push("/About");
@@ -119,7 +172,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["allMajors", "findMajorByProgram", "majorRequirements"])
+    ...mapGetters([
+      "allMajors",
+      "findMajorByProgram",
+      "majorRequirements",
+      "academicYear"
+    ])
   }
 };
 </script>

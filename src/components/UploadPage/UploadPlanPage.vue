@@ -1,40 +1,34 @@
 <template>
   <div>
-    <v-file-input
-      chips
-      v-on:change="validateFile"
-      v-model="selectedFile"
-    >
+    <v-file-input chips v-on:change="validateFile" v-model="selectedFile">
     </v-file-input>
     <v-btn v-on:click="uploadCSV">
       Import Plan
     </v-btn>
-  </div> 
+  </div>
 </template>
 <script>
-  import csv from 'csvtojson';
+import csv from "csvtojson";
 
-  export default {
-    name: "UploadPlanPage",    
-    data() {
-      return {
-        selectedFile: undefined,
-      };
+export default {
+  name: "UploadPlanPage",
+  data() {
+    return {
+      selectedFile: undefined
+    };
+  },
+  methods: {
+    validateFile(e) {
+      this.selectedFile = e;
     },
-    methods: {
-      validateFile(e) {
-        this.selectedFile = e;
-      },
-      uploadCSV() {
-        csv()
+    uploadCSV() {
+      csv()
         .fromStream(this.selectedFile)
         .then(planJson => {
-            console.log(planJson);
+          console.log(planJson);
         });
-      },
-    },
-  };
+    }
+  }
+};
 </script>
-<style scoped>
-
-</style>
+<style scoped></style>
