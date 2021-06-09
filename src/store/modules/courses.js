@@ -5,9 +5,7 @@ import {
 } from "../../models/courseRequirementModel";
 import { MajorRequirement, OtherRequirement } from "../../models/ProgramModel";
 import { backend_api } from "../../backendAPI";
-
 const state = {
-  academicYear: "", //the academic year for which the major/minor/option is chosen from
   majorRequirements: [],
   minorRequirements: [],
   specRequirements: [],
@@ -20,7 +18,6 @@ const getters = {
   minorRequirements: state => state.minorRequirements,
   specRequirements: state => state.specRequirements,
   courseSatisfactionCache: state => state.courseSatisfactionCache,
-  academicYear: state => state.academicYear
 };
 
 const actions = {
@@ -29,7 +26,18 @@ const actions = {
   async fetchRequirements({ commit, getters, state }, options) {
     if (!options.newMajor && !getters.majorRequirements.length) return;
 
-    console.log("academic year is: " + state.academicYear);
+    // based on Major since we only refer to ONE calender year
+    let year = ""
+    if (options.newMajor){
+      year = options.newMajor.year
+    }
+    else if (getters.majorRequirements[0].info.year){
+      year = getters.majorRequirements[0].info.year
+    }
+    else{
+      // this case sholdn't happen, unless it is old cache
+      year = "2020-2021" //set as default for now
+    }
 
     const response = await axios.get(
       backend_api + "/api/requirements/requirements",
@@ -46,9 +54,7 @@ const actions = {
           option: options.newSpecialization
             ? options.newSpecialization.program_name
             : "",
-          calender_year: state.academicYear.length
-            ? state.academicYear
-            : "2020-2021" // set defualt year as 2020-2021 for now
+          calender_year: year 
         }
       }
     );
@@ -298,9 +304,6 @@ const mutations = {
       for (let section of Object.values(spec.sections()))
         if (checkArrayForID(section)) return;
     }
-  },
-  setAcademicYear: (state, academicYear) => {
-    state.academicYear = academicYear;
   }
 };
 
