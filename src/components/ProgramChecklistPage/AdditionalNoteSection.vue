@@ -3,15 +3,13 @@
   <span>
     <p class="smallText">
       <i>
-        * The checklist is based on the most recent academic calendar year.
+        * The checklist is based on the {{this.academicYear}} academic calendar year.
       </i>
     </p>
     <p class="smallText">
       <i>
         ** Please refer to the
-        <a :href="getLinkToUnderGradCalender" target="blank"
-          >undergrad calendar</a
-        >
+        <a :href="getLinkToUnderGradCalender" target="blank">undergrad calendar</a>
         for the most accurate information (click on the major/minor/option
         title). Note: Most plans need 20 credits to graduate. <br />
         If the checklist adds up to less than 20 credits, the remaning are
@@ -52,9 +50,12 @@ export default {
     program: String
   },
   computed: {
-    ...mapGetters(["majorRequirements"]),
+    ...mapGetters(["majorRequirements", "academicYear"]),
     getLinkToUnderGradCalender: function() {
-      return this.majorRequirements[0] && this.majorRequirements[0].info.link;
+        let additionalParams = ""
+        // academicYear has format "20xx-20xx"
+        if (this.academicYear) additionalParams = "?ActiveDate=9/1/" + this.academicYear.substring(0,4)
+        return this.majorRequirements[0] && this.majorRequirements[0].info.link + additionalParams //home page if somehow years didn't work
     }
   }
 };

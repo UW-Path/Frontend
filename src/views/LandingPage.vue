@@ -57,7 +57,7 @@
               hide-details
               background-color="rgb(256, 256, 256)"
               class="autocomplete"
-              label="Select Your Starting Academic Year"
+              :label="getAcdemicYearLabel"
               height="3rem"
               color="black"
             ></v-autocomplete>
@@ -71,22 +71,22 @@
 
           <div v-if="selectingYear && !confirming">
             <div class="confirmation-msg">
-              <v-icon large color="green" @click="cancelYearSelection()"
+              <v-icon medium color="green accent-4" @click="cancelYearSelection()"
                 >mdi-arrow-left-circle</v-icon
               >
-              Select a different major
+              <div class="helper-text"> Select a different major</div>
             </div>
           </div>
 
           <div v-if="confirming">
             <div class="confirmation-msg">
-              <v-icon large color="green" @click="confirm()"
+              <v-icon medium color="green accent-4" @click="confirm()"
                 >mdi-checkbox-marked-circle</v-icon
               >
-              <v-icon large color="red" @click="cancelConfirm()"
+              <v-icon medium color="red" @click="cancelConfirm()"
                 >mdi-close-circle</v-icon
               >
-              A major was selected in the past, do you wish to overwrite?
+              <div class="helper-text">A major was selected in the past, do you wish to overwrite?</div>
             </div>
           </div>
         </v-col>
@@ -177,7 +177,10 @@ export default {
       "findMajorByProgram",
       "majorRequirements",
       "academicYear"
-    ])
+    ]),
+    getAcdemicYearLabel(){
+      return "Select Academic Year: " + this.selectedMajor 
+    }
   }
 };
 </script>
@@ -249,6 +252,7 @@ export default {
   margin-top: 1rem;
   margin-bottom: 0.5rem;
   margin-left: 0.4em;
+  display: flex;
 }
 .background {
   background: url(../assets/cover.png) !important;
@@ -257,6 +261,10 @@ export default {
   background-size: cover !important;
   height: 100%;
   overflow: hidden;
+}
+
+.helper-text{
+  margin-left:0.5em;
 }
 </style>
 
