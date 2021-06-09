@@ -120,7 +120,6 @@ export default {
       "removeMajor",
       "removeMinor",
       "removeOption",
-      "setAcademicYear"
     ]),
     setMajor(programName) {
       this.selectedMajor = programName;
@@ -140,7 +139,6 @@ export default {
     },
     confirm() {
       this.confirming = false;
-      this.setAcademicYear(this.selectedYear);
       this.removeMajor();
       this.removeMinor(["ALL"]);
       this.removeOption();
@@ -176,7 +174,6 @@ export default {
       "allMajors",
       "findMajorByProgram",
       "majorRequirements",
-      "academicYear"
     ]),
     getAcdemicYearLabel(){
       return "Select Academic Year: " + this.selectedMajor 

@@ -20,7 +20,7 @@
             </template>
             <div>
               All programs selected is based on the offerings in the
-              <b>{{ this.academicYear }}</b> academic year
+              <b>{{ this.majorRequirements[0].info.year }}</b> academic year
             </div>
           </v-tooltip>
         </v-card-title>
@@ -357,7 +357,6 @@ export default {
     "majorRequirements",
     "minorRequirements",
     "specRequirements",
-    "academicYear"
   ])
 };
 </script>

@@ -3,7 +3,7 @@
   <span>
     <p class="smallText">
       <i>
-        * The checklist is based on the {{this.academicYear}} academic calendar year.
+        * The checklist is based on the {{this.majorRequirements[0].info.year}} academic calendar year.
       </i>
     </p>
     <p class="smallText">
@@ -50,11 +50,11 @@ export default {
     program: String
   },
   computed: {
-    ...mapGetters(["majorRequirements", "academicYear"]),
+    ...mapGetters(["majorRequirements"]),
     getLinkToUnderGradCalender: function() {
         let additionalParams = ""
-        // academicYear has format "20xx-20xx"
-        if (this.academicYear) additionalParams = "?ActiveDate=9/1/" + this.academicYear.substring(0,4)
+        // year has format "20xx-20xx"
+        if (this.majorRequirements[0] && this.majorRequirements[0].info.year) additionalParams = "?ActiveDate=9/1/" + this.majorRequirements[0].info.year.substring(0,4)
         return this.majorRequirements[0] && this.majorRequirements[0].info.link + additionalParams //home page if somehow years didn't work
     }
   }
