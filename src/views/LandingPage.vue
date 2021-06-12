@@ -74,10 +74,13 @@
 
           <div v-if="selectingYear && !confirming">
             <div class="confirmation-msg">
-              <v-icon medium color="green accent-4" @click="cancelYearSelection()"
+              <v-icon
+                medium
+                color="green accent-4"
+                @click="cancelYearSelection()"
                 >mdi-arrow-left-circle</v-icon
               >
-              <div class="helper-text"> Select a different major</div>
+              <div class="helper-text">Select a different major</div>
             </div>
           </div>
 
@@ -89,7 +92,9 @@
               <v-icon medium color="red" @click="cancelConfirm()"
                 >mdi-close-circle</v-icon
               >
-              <div class="helper-text">A major was selected in the past, do you wish to overwrite?</div>
+              <div class="helper-text">
+                A major was selected in the past, do you wish to overwrite?
+              </div>
             </div>
           </div>
         </v-col>
@@ -122,7 +127,7 @@ export default {
       "clearTable",
       "removeMajor",
       "removeMinor",
-      "removeOption",
+      "removeOption"
     ]),
     setMajor(programName) {
       this.selectedMajor = programName;
@@ -173,13 +178,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
-      "allMajors",
-      "findMajorByProgram",
-      "majorRequirements",
-    ]),
-    getAcdemicYearLabel(){
-      return "Select Academic Year: " + this.selectedMajor 
+    ...mapGetters(["allMajors", "findMajorByProgram", "majorRequirements"]),
+    getAcdemicYearLabel() {
+      return "Select Academic Year: " + this.selectedMajor;
     }
   }
 };
@@ -263,8 +264,8 @@ export default {
   overflow: hidden;
 }
 
-.helper-text{
-  margin-left:0.5em;
+.helper-text {
+  margin-left: 0.5em;
 }
 
 /* For fading in the auto complete box */

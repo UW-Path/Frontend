@@ -3,13 +3,15 @@
   <span>
     <p class="smallText">
       <i>
-        * The checklist is based on the {{getYear}} academic calendar year.
+        * The checklist is based on the {{ getYear }} academic calendar year.
       </i>
     </p>
     <p class="smallText">
       <i>
         ** Please refer to the
-        <a :href="getLinkToUnderGradCalender" target="blank">undergrad calendar</a>
+        <a :href="getLinkToUnderGradCalender" target="blank"
+          >undergrad calendar</a
+        >
         for the most accurate information (click on the major/minor/option
         title). Note: Most plans need 20 credits to graduate. <br />
         If the checklist adds up to less than 20 credits, the remaning are
@@ -51,16 +53,26 @@ export default {
   computed: {
     ...mapGetters(["majorRequirements"]),
     getYear: function() {
-        if(this.majorRequirements[0] && this.majorRequirements[0].info && this.majorRequirements[0].info.year){
-            return this.majorRequirements[0].info.year
-        }
-        return ""
+      if (
+        this.majorRequirements[0] &&
+        this.majorRequirements[0].info &&
+        this.majorRequirements[0].info.year
+      ) {
+        return this.majorRequirements[0].info.year;
+      }
+      return "";
     },
     getLinkToUnderGradCalender: function() {
-        let additionalParams = ""
-        // year has format "20xx-20xx"
-        if (this.getYear) additionalParams = "?ActiveDate=9/1/" + this.majorRequirements[0].info.year.substring(0,4)
-        return this.majorRequirements[0] && this.majorRequirements[0].info.link + additionalParams //home page if somehow years didn't work
+      let additionalParams = "";
+      // year has format "20xx-20xx"
+      if (this.getYear)
+        additionalParams =
+          "?ActiveDate=9/1/" +
+          this.majorRequirements[0].info.year.substring(0, 4);
+      return (
+        this.majorRequirements[0] &&
+        this.majorRequirements[0].info.link + additionalParams
+      ); //home page if somehow years didn't work
     }
   }
 };

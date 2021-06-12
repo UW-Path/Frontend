@@ -356,7 +356,7 @@ export default {
     "findMinorByProgram",
     "majorRequirements",
     "minorRequirements",
-    "specRequirements",
+    "specRequirements"
   ])
 };
 </script>
