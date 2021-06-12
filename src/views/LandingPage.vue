@@ -24,44 +24,47 @@
 
           <!-- used to select the major -->
           <div class="autocomplete-container">
-            <v-autocomplete
-              v-if="selectingMajor"
-              :items="
-                allMajors.map(e => {
-                  return e.program_name;
-                })
-              "
-              v-on:change="setMajor"
-              dense
-              :allow-overflow="false"
-              prepend-inner-icon="mdi-magnify"
-              solo
-              hide-details
-              background-color="rgb(256, 256, 256)"
-              class="autocomplete"
-              label="Find your program"
-              height="3rem"
-              color="black"
-            ></v-autocomplete>
+            <transition name="fade">
+              <v-autocomplete
+                v-if="selectingMajor"
+                :items="
+                  allMajors.map(e => {
+                    return e.program_name;
+                  })
+                "
+                v-on:change="setMajor"
+                dense
+                :allow-overflow="false"
+                prepend-inner-icon="mdi-magnify"
+                solo
+                hide-details
+                background-color="rgb(256, 256, 256)"
+                class="autocomplete"
+                label="Find your program"
+                height="3rem"
+                color="black"
+              ></v-autocomplete>
+            </transition>
 
             <!-- used to select the year after selecting the major -->
-            <v-autocomplete
-              v-if="selectingYear"
-              :items="majorYearList"
-              v-on:change="setYear"
-              dense
-              :allow-overflow="false"
-              prepend-inner-icon="mdi-magnify"
-              solo
-              clearable
-              hide-details
-              background-color="rgb(256, 256, 256)"
-              class="autocomplete"
-              :label="getAcdemicYearLabel"
-              height="3rem"
-              color="black"
-            ></v-autocomplete>
-
+            <transition name="fade">
+              <v-autocomplete
+                v-if="selectingYear"
+                :items="majorYearList"
+                v-on:change="setYear"
+                dense
+                :allow-overflow="false"
+                prepend-inner-icon="mdi-magnify"
+                solo
+                clearable
+                hide-details
+                background-color="rgb(256, 256, 256)"
+                class="autocomplete"
+                :label="getAcdemicYearLabel"
+                height="3rem"
+                color="black"
+              ></v-autocomplete>
+            </transition>
             <div class="findprogram" v-if="selectingMajor">
               <span @click="goToContactPage()" class="link"
                 >Can't find your program?</span
@@ -262,6 +265,18 @@ export default {
 
 .helper-text{
   margin-left:0.5em;
+}
+
+/* For fading in the auto complete box */
+
+.fade-enter-active {
+  transition: opacity 0.8s;
+}
+.fade-leave-active {
+  transition: opacity 0s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>
 
