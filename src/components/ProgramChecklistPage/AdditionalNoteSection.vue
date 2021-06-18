@@ -3,7 +3,7 @@
   <span>
     <p class="smallText">
       <i>
-        * The checklist is based on the most recent academic calendar year.
+        * The checklist is based on the {{ getYear }} academic calendar year.
       </i>
     </p>
     <p class="smallText">
@@ -45,7 +45,6 @@
 
 <script>
 import { mapGetters } from "vuex";
-
 export default {
   name: "AdditionalNoteSection",
   props: {
@@ -53,8 +52,27 @@ export default {
   },
   computed: {
     ...mapGetters(["majorRequirements"]),
+    getYear: function() {
+      if (
+        this.majorRequirements[0] &&
+        this.majorRequirements[0].info &&
+        this.majorRequirements[0].info.year
+      ) {
+        return this.majorRequirements[0].info.year;
+      }
+      return "";
+    },
     getLinkToUnderGradCalender: function() {
-      return this.majorRequirements[0] && this.majorRequirements[0].info.link;
+      let additionalParams = "";
+      // year has format "20xx-20xx"
+      if (this.getYear)
+        additionalParams =
+          "?ActiveDate=9/1/" +
+          this.majorRequirements[0].info.year.substring(0, 4);
+      return (
+        this.majorRequirements[0] &&
+        this.majorRequirements[0].info.link + additionalParams
+      ); //home page if somehow years didn't work
     }
   }
 };

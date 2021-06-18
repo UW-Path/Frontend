@@ -21,44 +21,81 @@
           <div class="slogan d-block d-sm-none" style="color:red">
             <h4>Please use a laptop or an Ipad for the best experience!</h4>
           </div>
+
+          <!-- used to select the major -->
           <div class="autocomplete-container">
-            <v-autocomplete
-              :disabled="inConfirmation"
-              :items="
-                allMajors.map(e => {
-                  return e.program_name;
-                })
-              "
-              v-on:change="changeMajor"
-              dense
-              :allow-overflow="false"
-              prepend-inner-icon="mdi-magnify"
-              solo
-              hide-details
-              background-color="rgb(256, 256, 256)"
-              class="autocomplete"
-              label="Find your program"
-              height="3rem"
-              color="black"
-            ></v-autocomplete>
-            <div class="findprogram" v-if="!inConfirmation">
-              <span @click="findProgram()" class="link"
+            <transition name="fade">
+              <v-autocomplete
+                v-if="selectingMajor"
+                :items="
+                  allMajors.map(e => {
+                    return e.program_name;
+                  })
+                "
+                v-on:change="setMajor"
+                dense
+                :allow-overflow="false"
+                prepend-inner-icon="mdi-magnify"
+                solo
+                hide-details
+                background-color="rgb(256, 256, 256)"
+                class="autocomplete"
+                label="Find your program"
+                height="3rem"
+                color="black"
+              ></v-autocomplete>
+            </transition>
+
+            <!-- used to select the year after selecting the major -->
+            <transition name="fade">
+              <v-autocomplete
+                v-if="selectingYear"
+                :items="majorYearList"
+                v-on:change="setYear"
+                dense
+                :allow-overflow="false"
+                prepend-inner-icon="mdi-magnify"
+                solo
+                clearable
+                hide-details
+                background-color="rgb(256, 256, 256)"
+                class="autocomplete"
+                :label="getAcdemicYearLabel"
+                height="3rem"
+                color="black"
+              ></v-autocomplete>
+            </transition>
+            <div class="findprogram" v-if="selectingMajor">
+              <span @click="goToContactPage()" class="link"
                 >Can't find your program?</span
               >
             </div>
           </div>
 
-          <div v-if="inConfirmation">
+          <div v-if="selectingYear && !confirming">
             <div class="confirmation-msg">
-              It seems like you have already selected a major, are you sure to
-              overwrite?
+              <v-icon
+                medium
+                color="green accent-4"
+                @click="cancelYearSelection()"
+                >mdi-arrow-left-circle</v-icon
+              >
+              <div class="helper-text">Select a different major</div>
             </div>
-            <v-icon large color="light-green" @click="confirmSelection()"
-              >mdi-checkbox-marked-circle</v-icon
-            >
-            <v-icon large color="red" @click="cancelSelection()"
-              >mdi-close-circle</v-icon
-            >
+          </div>
+
+          <div v-if="confirming">
+            <div class="confirmation-msg">
+              <v-icon medium color="green accent-4" @click="confirm()"
+                >mdi-checkbox-marked-circle</v-icon
+              >
+              <v-icon medium color="red" @click="cancelConfirm()"
+                >mdi-close-circle</v-icon
+              >
+              <div class="helper-text">
+                A major was selected in the past, do you wish to overwrite?
+              </div>
+            </div>
           </div>
         </v-col>
       </v-row>
@@ -72,41 +109,63 @@ export default {
   name: "Home",
   data() {
     return {
-      inConfirmation: false,
-      selectedMajor: ""
+      majorYearList: [],
+      selectingMajor: true,
+      selectingYear: false,
+      confirming: false,
+      selectedMajor: "",
+      selectedYear: ""
     };
   },
   methods: {
-    ...mapActions(["fetchRequirements", "fillOutChecklist"]),
+    ...mapActions([
+      "fetchRequirements",
+      "fillOutChecklist",
+      "fetchAcademicYearsOfMajor"
+    ]),
     ...mapMutations([
       "clearTable",
       "removeMajor",
       "removeMinor",
       "removeOption"
     ]),
-    changeMajor(programName) {
+    setMajor(programName) {
       this.selectedMajor = programName;
-      if (this.majorRequirements.length > 0) this.inConfirmation = true;
-      else this.confirmSelection();
+      this.selectingMajor = false;
+      this.selectingYear = true;
+
+      this.fetchAcademicYearsOfMajor(this.selectedMajor).then(response => {
+        this.majorYearList = response.data.years.map(ele => {
+          return ele.year;
+        });
+      });
     },
-    findProgram() {
-      this.$router.push("/Contact");
+    setYear(year) {
+      this.selectedYear = year;
+      if (this.majorRequirements.length > 0) this.confirming = true;
+      else this.confirm();
     },
-    confirmSelection() {
-      this.inConfirmation = false;
+    confirm() {
+      this.confirming = false;
       this.removeMajor();
       this.removeMinor(["ALL"]);
       this.removeOption();
       this.clearTable();
       this.fetchRequirements({
-        newMajor: this.findMajorByProgram(this.selectedMajor)
+        newMajor: this.findMajorByProgram(this.selectedMajor),
+        newMajorYear: this.selectedYear
       }).then(() => {
         this.fillOutChecklist();
       });
       this.$router.push("/CourseSelection");
     },
-    cancelSelection() {
-      this.inConfirmation = false;
+    cancelConfirm() {
+      this.confirming = false;
+      this.selectingYear = true;
+    },
+    cancelYearSelection() {
+      this.selectingYear = false;
+      this.selectingMajor = true;
     },
     goToAboutPage() {
       this.$router.push("/About");
@@ -119,7 +178,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(["allMajors", "findMajorByProgram", "majorRequirements"])
+    ...mapGetters(["allMajors", "findMajorByProgram", "majorRequirements"]),
+    getAcdemicYearLabel() {
+      return "Select Academic Year: " + this.selectedMajor;
+    }
   }
 };
 </script>
@@ -191,6 +253,7 @@ export default {
   margin-top: 1rem;
   margin-bottom: 0.5rem;
   margin-left: 0.4em;
+  display: flex;
 }
 .background {
   background: url(../assets/cover.png) !important;
@@ -199,6 +262,22 @@ export default {
   background-size: cover !important;
   height: 100%;
   overflow: hidden;
+}
+
+.helper-text {
+  margin-left: 0.5em;
+}
+
+/* For fading in the auto complete box */
+
+.fade-enter-active {
+  transition: opacity 0.8s;
+}
+.fade-leave-active {
+  transition: opacity 0s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>
 

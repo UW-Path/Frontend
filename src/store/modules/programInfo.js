@@ -55,6 +55,16 @@ const actions = {
       .catch(err => {
         console.error(err);
       });
+  },
+  // returns promises for views to call and "then" it
+  fetchAcademicYearsOfMajor({ commit }, major) {
+    void commit;
+    return axios.get(
+      backend_api + "/api/requirements/get_available_year_for_program",
+      {
+        params: { major: major }
+      }
+    );
   }
 };
 
