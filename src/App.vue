@@ -6,12 +6,27 @@
 
 <script>
 import { mapActions } from "vuex";
+import firebase from "firebase/app";
+import "firebase/auth";
+
 export default {
   methods: {
     ...mapActions(["fetchMajors"]),
     deleted() {}
   },
   created() {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        // User is signed in, see docs for a list of available properties
+        // https://firebase.google.com/docs/reference/js/firebase.User
+        // var uid = user.uid;
+        console.log("User:", user);
+        // Store user in Vuex state
+      } else {
+        // User is signed out
+        console.log("No User");
+      }
+    });
     this.fetchMajors();
     window.addEventListener("beforeunload", this.deleted);
   }
