@@ -630,10 +630,10 @@ export default {
   padding-bottom: 5px;
 }
 
-.modal {
-  /* height: min(500px, 90%) !important;
-    max-height: min(500px, 90%) !important; */
-}
+/* .modal {
+  height: min(500px, 90%) !important;
+    max-height: min(500px, 90%) !important;
+} */
 
 .modal-actions {
   position: absolute;
