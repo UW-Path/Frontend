@@ -7,9 +7,7 @@
       </v-btn>
       <v-btn text color="white" v-on:click="goToContactPage"> Contact </v-btn>
       <v-btn text color="white" v-on:click="goToAboutPage"> About </v-btn>
-      <v-btn color="white" depressed v-on:click="googleSignIn">
-        Login With Google
-      </v-btn>
+      <auth-button />
     </v-app-bar>
     <v-container class="container">
       <v-row no-gutters justify="center" align="center" class="center">
@@ -108,11 +106,13 @@
 
 <script>
 import { mapGetters, mapActions, mapMutations } from "vuex";
-import firebase from "firebase/app";
-import "firebase/auth";
+import AuthButton from "../components/AuthButton.vue";
 
 export default {
   name: "Home",
+  components: {
+    AuthButton
+  },
   data() {
     return {
       majorYearList: [],
@@ -181,18 +181,6 @@ export default {
     },
     goToContactPage() {
       this.$router.push("/Contact");
-    },
-    googleSignIn() {
-      const provider = new firebase.auth.GoogleAuthProvider();
-      firebase
-        .auth()
-        .signInWithPopup(provider)
-        .then(authData => {
-          console.log(authData);
-        })
-        .catch(err => {
-          console.error(err);
-        });
     }
   },
   computed: {
