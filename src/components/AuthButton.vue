@@ -3,7 +3,7 @@
     Sign Out
   </v-btn>
   <v-btn v-else color="white" depressed v-on:click="googleSignIn">
-    Login With Google
+    Sign In To Save
   </v-btn>
 </template>
 
@@ -20,9 +20,6 @@ export default {
       firebase
         .auth()
         .signInWithPopup(provider)
-        .then(authData => {
-          console.log(authData);
-        })
         .catch(err => {
           console.error(err);
         });

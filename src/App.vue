@@ -11,8 +11,13 @@ import "firebase/auth";
 
 export default {
   methods: {
-    ...mapActions(["fetchMajors"]),
-    ...mapMutations(["setUser", "clearUser"]),
+    ...mapActions(["fetchMajors", "updateChecklist"]),
+    ...mapMutations([
+      "setUser",
+      "clearUser",
+      "loadCoursesFromFireStore",
+      "loadCourseSelectionFromFirestore"
+    ]),
     deleted() {}
   },
   created() {
@@ -20,6 +25,27 @@ export default {
       if (user) {
         // Store user in Vuex state
         this.setUser(user);
+        // Load user data
+        firebase
+          .firestore()
+          .collection("users")
+          .doc(user.uid)
+          .get()
+          .then(doc => {
+            const userData = doc.data();
+            if (
+              !userData ||
+              !userData.coursesJSON ||
+              !userData.courseSelectionJSON
+            ) {
+              return;
+            }
+            this.loadCoursesFromFireStore(JSON.parse(userData.coursesJSON));
+            this.loadCourseSelectionFromFirestore(
+              JSON.parse(userData.courseSelectionJSON)
+            );
+            this.updateChecklist();
+          });
       } else {
         this.clearUser();
       }

@@ -1322,6 +1322,38 @@ const mutations = {
   },
   clearTable: state => {
     state.table = JSON.parse(JSON.stringify(defaultTable));
+  },
+  loadCourseSelectionFromFirestore: (state, firestoreCourseSelectionModule) => {
+    state.table = firestoreCourseSelectionModule.table.map(term => {
+      return { courses: term.courses.map(req => new CourseRequirement(req)) };
+    });
+    for (const [programName, requirements] of Object.entries(
+      firestoreCourseSelectionModule.checklistMajorRequirements
+    )) {
+      firestoreCourseSelectionModule.checklistMajorRequirements[
+        programName
+      ] = requirements.map(req => new CourseRequirement(req));
+    }
+    for (const [programName, requirements] of Object.entries(
+      firestoreCourseSelectionModule.checklistMinorRequirements
+    )) {
+      firestoreCourseSelectionModule.checklistMinorRequirements[
+        programName
+      ] = requirements.map(req => new CourseRequirement(req));
+    }
+    for (const [programName, requirements] of Object.entries(
+      firestoreCourseSelectionModule.checklistOptionRequirements
+    )) {
+      firestoreCourseSelectionModule.checklistOptionRequirements[
+        programName
+      ] = requirements.map(req => new CourseRequirement(req));
+    }
+    state.checklistMajorRequirements =
+      firestoreCourseSelectionModule.checklistMajorRequirements;
+    state.checklistMinorRequirements =
+      firestoreCourseSelectionModule.checklistMinorRequirements;
+    state.checklistOptionRequirements =
+      firestoreCourseSelectionModule.checklistOptionRequirements;
   }
 };
 
