@@ -21,6 +21,9 @@ export default {
     deleted() {}
   },
   created() {
+    // Create session flag to redirect users with existing plans to course selection
+    sessionStorage.setItem("sessionStarted", this.$route.name === "Landing");
+    // Create auth listener
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         // Store user in Vuex state
@@ -40,11 +43,19 @@ export default {
             ) {
               return;
             }
-            this.loadCoursesFromFireStore(JSON.parse(userData.coursesJSON));
-            this.loadCourseSelectionFromFirestore(
-              JSON.parse(userData.courseSelectionJSON)
+            const coursesModule = JSON.parse(userData.coursesJSON);
+            const courseSelectionModule = JSON.parse(
+              userData.courseSelectionJSON
             );
+            this.loadCoursesFromFireStore(coursesModule);
+            this.loadCourseSelectionFromFirestore(courseSelectionModule);
             this.updateChecklist();
+            if (
+              coursesModule.majorRequirements.length > 0 &&
+              this.$route.name !== "CourseSelection"
+            ) {
+              this.$router.push("/CourseSelection");
+            }
           });
       } else {
         this.clearUser();

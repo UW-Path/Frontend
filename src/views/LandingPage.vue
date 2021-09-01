@@ -81,7 +81,7 @@
                 @click="cancelYearSelection()"
                 >mdi-arrow-left-circle</v-icon
               >
-              <div class="helper-text">Select a different major</div>
+              <div class="helper-text">Cancel</div>
             </div>
           </div>
 
@@ -187,6 +187,15 @@ export default {
     ...mapGetters(["allMajors", "findMajorByProgram", "majorRequirements"]),
     getAcdemicYearLabel() {
       return "Select Academic Year: " + this.selectedMajor;
+    }
+  },
+  created() {
+    if (
+      sessionStorage.getItem("sessionStarted") == "true" &&
+      this.majorRequirements.length > 0
+    ) {
+      sessionStorage.setItem("sessionStarted", false);
+      this.goToCourseSelectionPage();
     }
   }
 };
