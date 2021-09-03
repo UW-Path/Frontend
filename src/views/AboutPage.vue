@@ -189,6 +189,16 @@
           </div>
         </div>
         <br />
+        <h1 style="text-align:left">Sponsorship</h1>
+        <div class="row">
+          <div class="col-12" style="text-align:left">
+            <img src="../assets/MEF_logo.png" alt="MEF" />
+            <p>
+              UWPath is proudly sponsored by University of Waterloo's Math Endowment Fund (<a href="https://uwaterloo.ca/math-endowment-fund/" target="_blank">MEF)</a> 
+            </p>
+          </div>
+        </div>
+        <br />
       </div>
     </div>
   </div>
