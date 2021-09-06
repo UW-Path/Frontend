@@ -69,6 +69,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { getLinkToUnderGradCalender } from "../../getLinkToUnderGradCalender";
 export default {
   name: "AdditionalNoteSection",
   props: {
@@ -89,13 +90,7 @@ export default {
     }
   },
   methods: {
-    getLinkToUnderGradCalender: function(link) {
-      let additionalParams = "";
-      // year has format "20xx-20xx"
-      if (this.getYear)
-        additionalParams = "?ActiveDate=9/1/" + this.getYear.substring(0, 4);
-      return link + additionalParams; //home page if somehow years didn't work
-    }
+    getLinkToUnderGradCalender
   }
 };
 </script>

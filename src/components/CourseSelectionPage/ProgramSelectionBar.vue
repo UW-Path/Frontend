@@ -51,6 +51,8 @@
 import ProgramSelectionModal from "../Modals/ProgramSelectionModal";
 import UWPathIcon from "../UWPathIcon";
 import { mapGetters } from "vuex";
+import { getLinkToUnderGradCalender } from "../../getLinkToUnderGradCalender";
+
 export default {
   name: "ProgramSelectionBar",
   components: {
@@ -72,19 +74,12 @@ export default {
     }
   },
   methods: {
+    getLinkToUnderGradCalender,
     goToContactPage() {
       this.$router.push("/Contact");
     },
     goToAboutUsPage() {
       this.$router.push("/About");
-    },
-    getLinkToUnderGradCalender(link) {
-      let additionalParams = "";
-      // year has format "20xx-20xx"
-      if (this.getYear)
-        additionalParams = "?ActiveDate=9/1/" + this.getYear.substring(0, 4);
-
-      return link + additionalParams; //home page if somehow years didn't work
     }
   }
 };
