@@ -28,10 +28,11 @@ export default new Vuex.Store({
         "courses.majorRequirements",
         "courses.minorRequirements",
         "courses.specRequirements",
+        "courses.calenderYear",
         "programInfo",
         "courseSelection.checklistMajorRequirements",
         "courseSelection.checklistMinorRequirements",
-        "courseSelection.checklistOptionRequirements"
+        "courseSelection.checklistOptionRequirements",
       ],
       getState: key => {
         const value = window.localStorage.getItem(key);
@@ -125,6 +126,7 @@ export default new Vuex.Store({
               obj["courses"]["majorRequirements"] = [];
               obj["courses"]["minorRequirements"] = [];
               obj["courses"]["specRequirements"] = [];
+              obj["courses"]["calenderYear"] = "";
 
               obj["programInfo"]["majors"] = [];
               obj["programInfo"]["minors"] = [];
