@@ -32,7 +32,7 @@ export default new Vuex.Store({
         "programInfo",
         "courseSelection.checklistMajorRequirements",
         "courseSelection.checklistMinorRequirements",
-        "courseSelection.checklistOptionRequirements",
+        "courseSelection.checklistOptionRequirements"
       ],
       getState: key => {
         const value = window.localStorage.getItem(key);

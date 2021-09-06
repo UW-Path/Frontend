@@ -8,14 +8,35 @@
     </p>
     <p class="smallText">
       <i>
-        ** Please refer to the undergrad calendar 
-        (<span v-if="this.majorRequirements.length"><a :href="getLinkToUnderGradCalender(majorRequirements[0].info.link)" target="blank">{{majorRequirements[0].info.program_name}}</a></span>
+        ** Please refer to the undergrad calendar (<span
+          v-if="this.majorRequirements.length"
+          ><a
+            :href="getLinkToUnderGradCalender(majorRequirements[0].info.link)"
+            target="blank"
+            >{{ majorRequirements[0].info.program_name }}</a
+          ></span
+        >
         <!-- We may have multiple minors -->
         <span v-if="this.minorRequirements.length">
-          <span v-for="(minor, index) in minorRequirements"
-             :key="index + majorRequirements.length">, <a :href="getLinkToUnderGradCalender(minor.info.link)" target="blank">{{minor.info.program_name}}</a></span></span>
-        <span v-if="this.specRequirements.length">, <a :href="getLinkToUnderGradCalender(specRequirements[0].info.link)" target="blank">{{specRequirements[0].info.program_name}}</a></span>)
-        for the most accurate information (click on the major/minor/option
+          <span
+            v-for="(minor, index) in minorRequirements"
+            :key="index + majorRequirements.length"
+            >,
+            <a
+              :href="getLinkToUnderGradCalender(minor.info.link)"
+              target="blank"
+              >{{ minor.info.program_name }}</a
+            ></span
+          ></span
+        >
+        <span v-if="this.specRequirements.length"
+          >,
+          <a
+            :href="getLinkToUnderGradCalender(specRequirements[0].info.link)"
+            target="blank"
+            >{{ specRequirements[0].info.program_name }}</a
+          ></span
+        >) for the most accurate information (click on the major/minor/option
         title). Note: Most plans need 20 credits to graduate. <br /><br />
         If the checklist adds up to less than 20 credits, the remaning are
         assumed to be general electives.
@@ -54,31 +75,26 @@ export default {
     program: String
   },
   computed: {
-    ...mapGetters(["majorRequirements",
-                   "minorRequirements",
-                   "specRequirements",
-                   "calenderYear",
+    ...mapGetters([
+      "majorRequirements",
+      "minorRequirements",
+      "specRequirements",
+      "calenderYear"
     ]),
     getYear: function() {
-      if (
-        this.calenderYear
-      ) {
-        return this.calenderYear
+      if (this.calenderYear) {
+        return this.calenderYear;
       }
       return "";
-    },
+    }
   },
   methods: {
     getLinkToUnderGradCalender: function(link) {
       let additionalParams = "";
       // year has format "20xx-20xx"
       if (this.getYear)
-        additionalParams =
-          "?ActiveDate=9/1/" +
-          this.getYear.substring(0, 4);
-     return (
-       link + additionalParams
-      ); //home page if somehow years didn't work
+        additionalParams = "?ActiveDate=9/1/" + this.getYear.substring(0, 4);
+      return link + additionalParams; //home page if somehow years didn't work
     }
   }
 };

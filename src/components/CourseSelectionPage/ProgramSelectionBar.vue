@@ -9,9 +9,11 @@
         v-for="(major, index) in majorRequirements"
         :key="index"
       >
-        <a v-bind:href="getLinkToUnderGradCalender(major.info.link)" target="_blank">{{
-          major.info.program_name
-        }}</a>
+        <a
+          v-bind:href="getLinkToUnderGradCalender(major.info.link)"
+          target="_blank"
+          >{{ major.info.program_name }}</a
+        >
       </v-toolbar-title>
       <v-toolbar-title
         class="program-titles minor-font"
@@ -19,9 +21,11 @@
         :key="index + majorRequirements.length + minorRequirements.length"
         v-bind:href="spec.link"
       >
-        <a v-bind:href="getLinkToUnderGradCalender(spec.info.link)" target="_blank">{{
-          spec.info.program_name
-        }}</a>
+        <a
+          v-bind:href="getLinkToUnderGradCalender(spec.info.link)"
+          target="_blank"
+          >{{ spec.info.program_name }}</a
+        >
       </v-toolbar-title>
       <v-toolbar-title
         class="program-titles minor-font"
@@ -29,9 +33,11 @@
         :key="index + majorRequirements.length"
         v-bind:href="minor.link"
       >
-        <a v-bind:href="getLinkToUnderGradCalender(minor.info.link)" target="_blank">{{
-          minor.info.program_name
-        }}</a>
+        <a
+          v-bind:href="getLinkToUnderGradCalender(minor.info.link)"
+          target="_blank"
+          >{{ minor.info.program_name }}</a
+        >
       </v-toolbar-title>
     </div>
     <ProgramSelectionModal />
@@ -59,13 +65,11 @@ export default {
       "calenderYear"
     ]),
     getYear: function() {
-      if (
-        this.calenderYear
-      ) {
-        return this.calenderYear
+      if (this.calenderYear) {
+        return this.calenderYear;
       }
       return "";
-    },
+    }
   },
   methods: {
     goToContactPage() {
@@ -77,16 +81,11 @@ export default {
     getLinkToUnderGradCalender(link) {
       let additionalParams = "";
       // year has format "20xx-20xx"
-      debugger
       if (this.getYear)
-        additionalParams =
-          "?ActiveDate=9/1/" +
-          this.getYear.substring(0, 4);
-  
-        return (
-          link + additionalParams
-        ); //home page if somehow years didn't work
-    },
+        additionalParams = "?ActiveDate=9/1/" + this.getYear.substring(0, 4);
+
+      return link + additionalParams; //home page if somehow years didn't work
+    }
   }
 };
 </script>

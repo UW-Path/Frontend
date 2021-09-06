@@ -11,7 +11,7 @@ const state = {
   specRequirements: [],
   // This maps the course_codes_raw of a req to the course information of courses which satisfy the req
   courseSatisfactionCache: {},
-  calenderYear: "",
+  calenderYear: ""
 };
 
 const getters = {
@@ -19,7 +19,7 @@ const getters = {
   minorRequirements: state => state.minorRequirements,
   specRequirements: state => state.specRequirements,
   courseSatisfactionCache: state => state.courseSatisfactionCache,
-  calenderYear: state => state.calenderYear,
+  calenderYear: state => state.calenderYear
 };
 
 const actions = {
@@ -39,7 +39,7 @@ const actions = {
       year = "2020-2021"; //set as default for now
     }
 
-    state.calenderYear = year
+    state.calenderYear = year;
 
     const response = await axios.get(
       backend_api + "/api/requirements/requirements",
