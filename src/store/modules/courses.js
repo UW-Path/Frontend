@@ -56,7 +56,7 @@ const actions = {
           option: options.newSpecialization
             ? options.newSpecialization.program_name
             : "",
-          calender_year: year
+          calendar_year: year
         }
       }
     );
