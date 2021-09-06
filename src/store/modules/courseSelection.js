@@ -826,6 +826,8 @@ const actions = {
       });
   },
   fillOutChecklist({ commit, getters }) {
+    console.log("FILL OUT CHECKLIST")
+    console.log(getters.calenderYear)
     if (!getters.majorRequirements.length) return;
     axios
       .get(backend_api + "/api/requirements/requirements", {
@@ -838,7 +840,7 @@ const actions = {
             getters.specRequirements.length !== 0
               ? getters.specRequirements[0].info.program_name
               : "",
-          calender_year: getters.majorRequirements[0].info.year
+          calender_year: getters.calenderYear
         }
       })
       .then(response => {
