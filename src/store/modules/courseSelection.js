@@ -838,7 +838,7 @@ const actions = {
             getters.specRequirements.length !== 0
               ? getters.specRequirements[0].info.program_name
               : "",
-          calender_year: getters.calenderYear
+          calender_year: getters.calendarYear
         }
       })
       .then(response => {

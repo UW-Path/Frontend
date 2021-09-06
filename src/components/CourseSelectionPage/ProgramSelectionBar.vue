@@ -62,11 +62,11 @@ export default {
       "majorRequirements",
       "minorRequirements",
       "specRequirements",
-      "calenderYear"
+      "calendarYear"
     ]),
     getYear: function() {
-      if (this.calenderYear) {
-        return this.calenderYear;
+      if (this.calendarYear) {
+        return this.calendarYear;
       }
       return "";
     }
