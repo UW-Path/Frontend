@@ -5,62 +5,16 @@
 </template>
 
 <script>
-import { mapActions, mapMutations } from "vuex";
-import firebase from "firebase/app";
-import "firebase/auth";
-
+import { mapActions } from "vuex";
 export default {
   methods: {
-    ...mapActions(["fetchMajors", "updateChecklist"]),
-    ...mapMutations([
-      "setUser",
-      "clearUser",
-      "loadCoursesFromFireStore",
-      "loadCourseSelectionFromFirestore"
-    ]),
+    ...mapActions(["fetchMajors"]),
     deleted() {}
   },
   created() {
     // Create session flag to redirect users with existing plans to course selection
     sessionStorage.setItem("sessionStarted", this.$route.name === "Landing");
-    // Create auth listener
-    firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        // Store user in Vuex state
-        this.setUser(user);
-        // Load user data
-        firebase
-          .firestore()
-          .collection("users")
-          .doc(user.uid)
-          .get()
-          .then(doc => {
-            const userData = doc.data();
-            if (
-              !userData ||
-              !userData.coursesJSON ||
-              !userData.courseSelectionJSON
-            ) {
-              return;
-            }
-            const coursesModule = JSON.parse(userData.coursesJSON);
-            const courseSelectionModule = JSON.parse(
-              userData.courseSelectionJSON
-            );
-            this.loadCoursesFromFireStore(coursesModule);
-            this.loadCourseSelectionFromFirestore(courseSelectionModule);
-            this.updateChecklist();
-            if (
-              coursesModule.majorRequirements.length > 0 &&
-              this.$route.name !== "CourseSelection"
-            ) {
-              this.$router.push("/CourseSelection");
-            }
-          });
-      } else {
-        this.clearUser();
-      }
-    });
+    // Fetch the majors
     this.fetchMajors();
     window.addEventListener("beforeunload", this.deleted);
   }
