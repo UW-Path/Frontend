@@ -9,9 +9,11 @@
         v-for="(major, index) in majorRequirements"
         :key="index"
       >
-        <a v-bind:href="major.info.link" target="_blank">{{
-          major.info.program_name
-        }}</a>
+        <a
+          v-bind:href="getLinkToUnderGradCalender(major.info.link)"
+          target="_blank"
+          >{{ major.info.program_name }}</a
+        >
       </v-toolbar-title>
       <v-toolbar-title
         class="program-titles minor-font"
@@ -19,9 +21,11 @@
         :key="index + majorRequirements.length + minorRequirements.length"
         v-bind:href="spec.link"
       >
-        <a v-bind:href="spec.info.link" target="_blank">{{
-          spec.info.program_name
-        }}</a>
+        <a
+          v-bind:href="getLinkToUnderGradCalender(spec.info.link)"
+          target="_blank"
+          >{{ spec.info.program_name }}</a
+        >
       </v-toolbar-title>
       <v-toolbar-title
         class="program-titles minor-font"
@@ -29,9 +33,11 @@
         :key="index + majorRequirements.length"
         v-bind:href="minor.link"
       >
-        <a v-bind:href="minor.info.link" target="_blank">{{
-          minor.info.program_name
-        }}</a>
+        <a
+          v-bind:href="getLinkToUnderGradCalender(minor.info.link)"
+          target="_blank"
+          >{{ minor.info.program_name }}</a
+        >
       </v-toolbar-title>
     </div>
     <ProgramSelectionModal />
@@ -45,18 +51,30 @@
 import ProgramSelectionModal from "../Modals/ProgramSelectionModal";
 import UWPathIcon from "../UWPathIcon";
 import { mapGetters } from "vuex";
+import { getLinkToUnderGradCalender } from "../../getLinkToUnderGradCalender";
+
 export default {
   name: "ProgramSelectionBar",
   components: {
     ProgramSelectionModal,
     UWPathIcon
   },
-  computed: mapGetters([
-    "majorRequirements",
-    "minorRequirements",
-    "specRequirements"
-  ]),
+  computed: {
+    ...mapGetters([
+      "majorRequirements",
+      "minorRequirements",
+      "specRequirements",
+      "calendarYear"
+    ]),
+    getYear: function() {
+      if (this.calendarYear) {
+        return this.calendarYear;
+      }
+      return "";
+    }
+  },
   methods: {
+    getLinkToUnderGradCalender,
     goToContactPage() {
       this.$router.push("/Contact");
     },

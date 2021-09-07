@@ -10,14 +10,16 @@ const state = {
   minorRequirements: [],
   specRequirements: [],
   // This maps the course_codes_raw of a req to the course information of courses which satisfy the req
-  courseSatisfactionCache: {}
+  courseSatisfactionCache: {},
+  calendarYear: ""
 };
 
 const getters = {
   majorRequirements: state => state.majorRequirements,
   minorRequirements: state => state.minorRequirements,
   specRequirements: state => state.specRequirements,
-  courseSatisfactionCache: state => state.courseSatisfactionCache
+  courseSatisfactionCache: state => state.courseSatisfactionCache,
+  calendarYear: state => state.calendarYear
 };
 
 const actions = {
@@ -29,13 +31,15 @@ const actions = {
     // based on Major since we only refer to ONE calender year
     let year = "";
     if (options.newMajor) {
-      year = options.newMajor.year;
-    } else if (getters.majorRequirements[0].info.year) {
-      year = getters.majorRequirements[0].info.year;
+      year = options.newMajorYear;
+    } else if (getters.calendarYear) {
+      year = getters.calendarYear;
     } else {
       // this case sholdn't happen, unless it is old cache
       year = "2020-2021"; //set as default for now
     }
+
+    state.calendarYear = year;
 
     const response = await axios.get(
       backend_api + "/api/requirements/requirements",
@@ -52,7 +56,7 @@ const actions = {
           option: options.newSpecialization
             ? options.newSpecialization.program_name
             : "",
-          calender_year: year
+          calendar_year: year
         }
       }
     );

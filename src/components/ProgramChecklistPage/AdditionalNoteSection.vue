@@ -8,12 +8,36 @@
     </p>
     <p class="smallText">
       <i>
-        ** Please refer to the
-        <a :href="getLinkToUnderGradCalender" target="blank"
-          >undergrad calendar</a
+        ** Please refer to the undergrad calendar (<span
+          v-if="this.majorRequirements.length"
+          ><a
+            :href="getLinkToUnderGradCalender(majorRequirements[0].info.link)"
+            target="blank"
+            >{{ majorRequirements[0].info.program_name }}</a
+          ></span
         >
-        for the most accurate information (click on the major/minor/option
-        title). Note: Most plans need 20 credits to graduate. <br />
+        <!-- We may have multiple minors -->
+        <span v-if="this.minorRequirements.length">
+          <span
+            v-for="(minor, index) in minorRequirements"
+            :key="index + majorRequirements.length"
+            >,
+            <a
+              :href="getLinkToUnderGradCalender(minor.info.link)"
+              target="blank"
+              >{{ minor.info.program_name }}</a
+            ></span
+          ></span
+        >
+        <span v-if="this.specRequirements.length"
+          >,
+          <a
+            :href="getLinkToUnderGradCalender(specRequirements[0].info.link)"
+            target="blank"
+            >{{ specRequirements[0].info.program_name }}</a
+          ></span
+        >) for the most accurate information (click on the major/minor/option
+        title). Note: Most plans need 20 credits to graduate. <br /><br />
         If the checklist adds up to less than 20 credits, the remaning are
         assumed to be general electives.
       </i>
@@ -45,35 +69,28 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { getLinkToUnderGradCalender } from "../../getLinkToUnderGradCalender";
 export default {
   name: "AdditionalNoteSection",
   props: {
     program: String
   },
   computed: {
-    ...mapGetters(["majorRequirements"]),
+    ...mapGetters([
+      "majorRequirements",
+      "minorRequirements",
+      "specRequirements",
+      "calendarYear"
+    ]),
     getYear: function() {
-      if (
-        this.majorRequirements[0] &&
-        this.majorRequirements[0].info &&
-        this.majorRequirements[0].info.year
-      ) {
-        return this.majorRequirements[0].info.year;
+      if (this.calendarYear) {
+        return this.calendarYear;
       }
       return "";
-    },
-    getLinkToUnderGradCalender: function() {
-      let additionalParams = "";
-      // year has format "20xx-20xx"
-      if (this.getYear)
-        additionalParams =
-          "?ActiveDate=9/1/" +
-          this.majorRequirements[0].info.year.substring(0, 4);
-      return (
-        this.majorRequirements[0] &&
-        this.majorRequirements[0].info.link + additionalParams
-      ); //home page if somehow years didn't work
     }
+  },
+  methods: {
+    getLinkToUnderGradCalender
   }
 };
 </script>

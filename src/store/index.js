@@ -28,6 +28,7 @@ export default new Vuex.Store({
         "courses.majorRequirements",
         "courses.minorRequirements",
         "courses.specRequirements",
+        "courses.calendarYear",
         "programInfo",
         "courseSelection.checklistMajorRequirements",
         "courseSelection.checklistMinorRequirements",
@@ -125,6 +126,7 @@ export default new Vuex.Store({
               obj["courses"]["majorRequirements"] = [];
               obj["courses"]["minorRequirements"] = [];
               obj["courses"]["specRequirements"] = [];
+              obj["courses"]["calendarYear"] = "";
 
               obj["programInfo"]["majors"] = [];
               obj["programInfo"]["minors"] = [];
