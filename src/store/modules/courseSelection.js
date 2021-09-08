@@ -825,7 +825,7 @@ const actions = {
         console.error(error);
       });
   },
-  fillOutChecklist({ commit, getters }) {
+  fillOutChecklist({ commit, getters, dispatch }) {
     if (!getters.majorRequirements.length) return;
     axios
       .get(backend_api + "/api/requirements/requirements", {
@@ -1008,6 +1008,7 @@ const actions = {
         } else {
           commit("setChecklistOptionRequirements", {});
         }
+        dispatch("updateFirestore");
       })
       .catch(err => {
         // eslint-disable-next-line no-console

@@ -172,11 +172,20 @@ export default {
           : "";
       this.dialog = true;
       this.inConfirmation = false;
+      if (
+        this.majorRequirements.length > 0 &&
+        this.lastSelectedMajor !== this.majorRequirements[0].info.program_name
+      ) {
+        this.selectMajor(this.majorRequirements[0].info.program_name);
+      }
     },
     select: function() {
       this.inConfirmation = true;
     },
     selectMajor: function(major) {
+      if (this.majorRequirements.length > 0) {
+        this.lastSelectedMajor = major;
+      }
       axios
         .get(backend_api + "/api/requirements/requirements", {
           params: { major: major, minors: "", option: "" }
@@ -207,36 +216,16 @@ export default {
       });
     },
     getMinorList: function() {
-      if (
-        !this.majorRequirements.length ||
-        this.selectedMajor !== this.majorRequirements[0].info.program_name
-      ) {
-        return this.newMinorsList.map(e => {
-          return e.program_name;
-        });
-      } else {
-        return this.allMinors.map(e => {
-          return e.program_name;
-        });
-      }
+      return this.newMinorsList.map(e => {
+        return e.program_name;
+      });
     },
     getSpecList: function() {
-      if (
-        !this.majorRequirements.length ||
-        this.selectedMajor !== this.majorRequirements[0].info.program_name
-      ) {
-        return [this.noProgram].concat(
-          this.newSpecList.map(e => {
-            return e.program_name;
-          })
-        );
-      } else {
-        return [this.noProgram].concat(
-          this.allSpecializations.map(e => {
-            return e.program_name;
-          })
-        );
-      }
+      return [this.noProgram].concat(
+        this.newSpecList.map(e => {
+          return e.program_name;
+        })
+      );
     },
     findOptionByProgram: function(program) {
       const changedMajor =
