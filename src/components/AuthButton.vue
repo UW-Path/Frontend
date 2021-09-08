@@ -204,11 +204,13 @@ export default {
   flex-direction: column;
   align-items: center;
   padding: 1rem;
+  padding-top: 1.5rem;
   background-color: white;
   font-size: 1rem;
 }
 
 .confirm-buttons {
+  margin: 1rem;
   display: flex;
   justify-content: space-around;
   width: 100%;
