@@ -30,7 +30,7 @@
             v-on="on"
             @click="scrollChecklist()"
           >
-            <v-icon x-large>mdi-check-box-outline</v-icon>
+            <v-icon x-large>mdi-checkbox-outline</v-icon>
           </v-btn>
         </template>
         <span>Degree Checklist</span>
@@ -128,9 +128,6 @@ export default {
     },
     exportXLS() {
       this.export({ PDF: false, XLS: true });
-    },
-    changeTab(event) {
-      console.log(event);
     },
     scrollTable() {
       this.inTable = true;
