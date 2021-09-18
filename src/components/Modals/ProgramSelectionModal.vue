@@ -129,6 +129,7 @@ export default {
       selectedMajor: "",
       selectedMinors: [],
       selectedSpec: "",
+      lastSelectedMajor: "",
 
       // Updated list of available minors/specs based on selected Major
       newMinorsList: [],
@@ -331,8 +332,6 @@ export default {
         this.specRequirements && this.specRequirements.length > 0
           ? this.specRequirements[0].info.program_name
           : "";
-      this.newMinorsList = [];
-      this.newSpecList = [];
       this.dialog = false;
       this.inConfirmation = false;
     }

@@ -44,7 +44,7 @@
     <v-spacer></v-spacer>
     <v-btn text color="white" v-on:click="goToContactPage"> Contact </v-btn>
     <v-btn text color="white" v-on:click="goToAboutUsPage"> About </v-btn>
-    <auth-button />
+    <auth-button style="margin-right: 2px" />
   </v-app-bar>
 </template>
 

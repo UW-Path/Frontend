@@ -4,6 +4,7 @@
       Sign Out
     </v-btn>
     <v-btn v-else color="white" depressed v-on:click="googleSignIn">
+      <img width="20" class="google-auth-icon" src="../assets/googleLogo.png" />
       Sign In To Save
     </v-btn>
     <v-dialog v-model="dialog" max-width="800" persistent>
@@ -88,11 +89,16 @@ export default {
                 ) {
                   this.dialog = true;
                   return;
-                } else if (this.coursesModule.majorRequirements.length > 0) {
+                } else if (
+                  planChanged &&
+                  this.coursesModule.majorRequirements.length > 0
+                ) {
                   this.loadPlan();
                   if (this.$route.name !== "CourseSelection") {
                     this.$router.push("/CourseSelection");
                   }
+                } else {
+                  this.updateFirestore();
                 }
                 this.updateChecklist();
               });
@@ -214,5 +220,9 @@ export default {
   display: flex;
   justify-content: space-around;
   width: 100%;
+}
+
+.google-auth-icon {
+  margin-right: 0.75rem;
 }
 </style>
