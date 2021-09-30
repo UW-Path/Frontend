@@ -1,10 +1,13 @@
 <template>
   <div>
-    <v-btn @click="enableDialog()" small
+    <v-btn v-if="!mobile" @click="enableDialog()" small
       >Add a minor, option, etc
       <v-icon style="margin-left: 0.2em" small
         >mdi-plus-circle-outline</v-icon
       ></v-btn
+    >
+    <v-btn v-else @click="enableDialog()" small>
+      <v-icon small>mdi-plus-circle-outline</v-icon></v-btn
     >
     <v-dialog v-model="dialog" max-width="800" @click:outside="close()">
       <v-card>
@@ -135,6 +138,9 @@ export default {
       newMinorsList: [],
       newSpecList: []
     };
+  },
+  props: {
+    mobile: Boolean
   },
   name: "ProgramSelectionModal",
   mounted() {

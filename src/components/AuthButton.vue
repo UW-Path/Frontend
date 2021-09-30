@@ -1,10 +1,26 @@
 <template>
   <div>
-    <v-btn v-if="isSignedIn" color="white" depressed v-on:click="signOut">
+    <v-btn
+      id="auth-button"
+      v-if="isSignedIn"
+      color="white"
+      depressed
+      v-on:click="signOut"
+      small
+      elevation="2"
+    >
       Sign Out
     </v-btn>
-    <v-btn v-else color="white" depressed v-on:click="googleSignIn">
-      <img width="20" class="google-auth-icon" src="../assets/googleLogo.png" />
+    <v-btn
+      id="auth-button"
+      v-else
+      color="white"
+      depressed
+      v-on:click="googleSignIn"
+      small
+      elevation="2"
+    >
+      <img width="17" class="google-auth-icon" src="../assets/googleLogo.png" />
       Sign In To Save
     </v-btn>
     <v-dialog v-model="dialog" max-width="800" persistent>
