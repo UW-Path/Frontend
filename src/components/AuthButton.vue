@@ -3,7 +3,7 @@
     <v-btn
       id="auth-button"
       v-if="isSignedIn"
-      color="white"
+      color="#f5f5f5"
       depressed
       v-on:click="signOut"
       small
@@ -14,7 +14,7 @@
     <v-btn
       id="auth-button"
       v-else
-      color="white"
+      color="#f5f5f5"
       depressed
       v-on:click="googleSignIn"
       small
