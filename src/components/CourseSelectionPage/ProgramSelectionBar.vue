@@ -24,7 +24,11 @@
         <a
           v-bind:href="getLinkToUnderGradCalender(spec.info.link)"
           target="_blank"
-          >{{ spec.info.program_name }}</a
+          >{{
+            isMobile
+              ? spec.info.program_name.match(/\b(\w)/g).join("")
+              : spec.info.program_name
+          }}</a
         >
       </v-toolbar-title>
       <v-toolbar-title
@@ -36,14 +40,19 @@
         <a
           v-bind:href="getLinkToUnderGradCalender(minor.info.link)"
           target="_blank"
-          >{{ minor.info.program_name }}</a
+          >{{
+            isMobile
+              ? minor.info.program_name.match(/\b(\w)/g).join("")
+              : minor.info.program_name
+          }}</a
         >
       </v-toolbar-title>
     </div>
-    <ProgramSelectionModal />
+    <ProgramSelectionModal :mobile="isMobile" />
     <v-spacer></v-spacer>
     <v-btn text color="white" v-on:click="goToContactPage"> Contact </v-btn>
     <v-btn text color="white" v-on:click="goToAboutUsPage"> About </v-btn>
+    <auth-button style="margin-right: 2px; margin-left: 2px" />
   </v-app-bar>
 </template>
 
@@ -53,11 +62,18 @@ import UWPathIcon from "../UWPathIcon";
 import { mapGetters } from "vuex";
 import { getLinkToUnderGradCalender } from "../../getLinkToUnderGradCalender";
 
+import AuthButton from "../AuthButton.vue";
 export default {
   name: "ProgramSelectionBar",
   components: {
     ProgramSelectionModal,
-    UWPathIcon
+    UWPathIcon,
+    AuthButton
+  },
+  data() {
+    return {
+      isMobile: false
+    };
   },
   computed: {
     ...mapGetters([
@@ -81,6 +97,9 @@ export default {
     goToAboutUsPage() {
       this.$router.push("/About");
     }
+  },
+  mounted() {
+    this.isMobile = window.outerWidth <= 1100;
   }
 };
 </script>
