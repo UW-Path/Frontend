@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+    uwpath_frontend:
+      build: .
+      ports:
+        - "80:80"
+        - "443:443"
+      networks:
+        - uwpath_backend_network
+
+networks:
+  uwpath_backend_network:
+    external: true
