@@ -10,5 +10,7 @@ FROM nginx as production-stage
 RUN mkdir /app
 COPY --from=build-stage /app/dist /app
 COPY nginx.conf /etc/nginx/nginx.conf
+COPY tls.crt /etc/nginx/ssl/tls.crt
+COPY tls.key /etc/nginx/ssl/tls.key
 EXPOSE 443
 EXPOSE 80
