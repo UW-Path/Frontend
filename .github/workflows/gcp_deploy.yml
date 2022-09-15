@@ -1,4 +1,4 @@
-name: gcp_deploy_backend_dev
+name: gcp_deploy_frontend_dev
 on:
   push:
     branches:
