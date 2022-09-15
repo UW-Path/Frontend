@@ -32,7 +32,7 @@ jobs:
         env:
           IMAGE_NAME: ${{ secrets.GCP_IMAGE_NAME_DEV }}
           PROJECT_ID: ${{ secrets.GCP_PROJECT_ID_DEV}}
-        run: gcloud run deploy uwpath-backend-dev --image="$IMAGE_NAME" --project="$PROJECT_ID" --region=us-central1
+        run: gcloud run deploy uwpath-frontend-dev --image="$IMAGE_NAME" --project="$PROJECT_ID" --region=us-central1
 
       - name: Clean Env
         if: always()
