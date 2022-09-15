@@ -1,8 +1,8 @@
-name: int_deploy
+name: dev_deploy
 on:
   push:
     branches:
-      - int
+      - dev
       
 jobs:
   deploy:
