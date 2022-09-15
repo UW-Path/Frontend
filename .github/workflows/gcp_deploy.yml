@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - dev
+      - pipeline-setup
 
 jobs:
   deploy:
@@ -14,9 +15,10 @@ jobs:
         env:
           SERVICE_CREDENTIALS: ${{ secrets.GCP_SERVICE_CREDENTIALS_DEV }}
           SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT_DEV}}
+          PROJECT_ID: ${{ secrets.GCP_PROJECT_ID_DEV }}
         run: |-
           echo "$SERVICE_CREDENTIALS" > ./credentials.json
-          gcloud auth activate-service-account "$SERVICE_ACCOUNT" --key-file=./credentials.json --project="$GCP_PROJECT_ID_DEV"
+          gcloud auth activate-service-account "$SERVICE_ACCOUNT" --key-file=./credentials.json --project="$PROJECT_ID"
           gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
       - name: Docker Build
         env:
@@ -29,7 +31,7 @@ jobs:
       - name: Deploy to Cloud Run
         env:
           IMAGE_NAME: ${{ secrets.GCP_IMAGE_NAME_DEV }}
-          PROJECT_ID: ${{ secrets.GCP_PROJECT_ID}}
+          PROJECT_ID: ${{ secrets.GCP_PROJECT_ID_DEV}}
         run: gcloud run deploy uwpath-backend-dev --image="$IMAGE_NAME" --project="$PROJECT_ID" --region=us-central1
 
       - name: Clean Env
