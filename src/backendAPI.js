@@ -1,2 +1,2 @@
 // Production/Int Kubernetes API
-export const backend_api = "https://api.dev.uwpath.com";
+export const backend_api = process.env.BACKEND_URL || "";
