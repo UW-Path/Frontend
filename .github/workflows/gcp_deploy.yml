@@ -20,6 +20,8 @@ jobs:
           echo "$SERVICE_CREDENTIALS" > ./credentials.json
           gcloud auth activate-service-account "$SERVICE_ACCOUNT" --key-file=./credentials.json --project="$PROJECT_ID"
           gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+      - name: Create Env File
+        run: echo 'VUE_APP_BACKEND_URL=https://api.dev.uwpath.com' > ./.env
       - name: Docker Build
         env:
           IMAGE_NAME: ${{ secrets.GCP_IMAGE_NAME_DEV }}
