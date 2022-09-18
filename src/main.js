@@ -10,13 +10,13 @@ import firebase from "firebase/app";
 import "firebase/analytics";
 
 var firebaseConfig = {
-  apiKey: process.env.VUE_APP_FIREBASE_API_KEY || "",
-  authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN || "",
-  projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID || "",
-  storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET || "",
-  messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID || "",
-  appId: process.env.VUE_APP_APP_FIREBASE_ID || "",
-  measurementId: process.env.VUE_APP_FIREBASE_MEASUREMENT_ID || ""
+  apiKey: process.env.VUE_APP_FIREBASE_API_KEY || "AIzaSyCcdvqCfmh-c_n5otfHPTY4MXXmeVDWaWw",
+  authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN || "uwpath-local-a3502.firebaseapp.com",
+  projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID || "uwpath-local-a3502",
+  storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET || "uwpath-local-a3502.appspot.com",
+  messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID || "167184177299",
+  appId: process.env.VUE_APP_FIREBASE_ID || "1:167184177299:web:102245645f9a2706bdd566",
+  measurementId: process.env.VUE_APP_FIREBASE_MEASUREMENT_ID
 };
 
 firebase.initializeApp(firebaseConfig);
