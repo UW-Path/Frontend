@@ -15,7 +15,7 @@ var firebaseConfig = {
   projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID || "uwpath-local-a3502",
   storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET || "uwpath-local-a3502.appspot.com",
   messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID || "167184177299",
-  appId: process.env.VUE_APP_FIREBASE_ID || "1:167184177299:web:102245645f9a2706bdd566",
+  appId: process.env.VUE_APP_FIREBASE_APP_ID || "1:167184177299:web:102245645f9a2706bdd566",
   measurementId: process.env.VUE_APP_FIREBASE_MEASUREMENT_ID
 };
 
