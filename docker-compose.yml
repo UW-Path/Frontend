@@ -6,8 +6,7 @@ services:
       container_name: uwpath_frontend
       build: .
       ports:
-        - "80:80"
-        - "443:443"
+        - "8080:8080"
       networks:
         - uwpath_backend_network
 
