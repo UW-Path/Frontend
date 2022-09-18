@@ -10,13 +10,13 @@ import firebase from "firebase/app";
 import "firebase/analytics";
 
 var firebaseConfig = {
-  apiKey: "AIzaSyAz-abljp-yHxlgSMO465rp0zGoZBcsJzk",
-  authDomain: "uwpath-879ac.firebaseapp.com",
-  projectId: "uwpath-879ac",
-  storageBucket: "uwpath-879ac.appspot.com",
-  messagingSenderId: "288015124617",
-  appId: "1:288015124617:web:1d0b2a7e0dc8a9207f9e58",
-  measurementId: "G-7301M3YSJ5"
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  messagingSenderId: process.env.MESSAGING_SENDER_ID,
+  appId: process.env.APP_ID,
+  measurementId: process.env.MEASUREMENT_ID
 };
 
 firebase.initializeApp(firebaseConfig);
