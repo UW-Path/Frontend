@@ -2,7 +2,7 @@ name: gcp_deploy_frontend_dev
 on:
   push:
     branches:
-      - pipeline-setup-prod
+      - master
 
 jobs:
   deploy:
