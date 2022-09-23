@@ -2,7 +2,7 @@ name: gcp_deploy_frontend_dev
 on:
   push:
     branches:
-      - dev
+      - pipeline-setup-prod
 
 jobs:
   deploy:
@@ -12,30 +12,30 @@ jobs:
       - uses: actions/checkout@v3
       - name: G-Cloud Authenticate
         env:
-          SERVICE_CREDENTIALS: ${{ secrets.GCP_SERVICE_CREDENTIALS_DEV }}
-          SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT_DEV }}
-          PROJECT_ID: ${{ secrets.GCP_PROJECT_ID_DEV }}
+          SERVICE_CREDENTIALS: ${{ secrets.GCP_SERVICE_CREDENTIALS_PROD }}
+          SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT_PROD }}
+          PROJECT_ID: ${{ secrets.GCP_PROJECT_ID_PROD }}
         run: |-
           echo "$SERVICE_CREDENTIALS" > ./credentials.json
           gcloud auth activate-service-account "$SERVICE_ACCOUNT" --key-file=./credentials.json --project="$PROJECT_ID"
           gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
       - name: Create Env File
         env:
-          SECRETS: $${{ secrets.VUE_APP_VARIABLES_DEV }}
+          SECRETS: $${{ secrets.VUE_APP_VARIABLES_PROD }}
         run: echo "$SECRETS" > ./.env
       - name: Docker Build
         env:
-          IMAGE_NAME: ${{ secrets.GCP_IMAGE_NAME_DEV }}
+          IMAGE_NAME: ${{ secrets.GCP_IMAGE_NAME_PROD }}
         run: docker build -t "$IMAGE_NAME" .
       - name: Push to Container Registry
         env:
-          IMAGE_NAME: ${{ secrets.GCP_IMAGE_NAME_DEV }}
+          IMAGE_NAME: ${{ secrets.GCP_IMAGE_NAME_PROD }}
         run: sudo -u $USER docker push "$IMAGE_NAME"
       - name: Deploy to Cloud Run
         env:
-          IMAGE_NAME: ${{ secrets.GCP_IMAGE_NAME_DEV }}
-          PROJECT_ID: ${{ secrets.GCP_PROJECT_ID_DEV }}
-        run: gcloud run deploy uwpath-frontend-dev --image="$IMAGE_NAME" --project="$PROJECT_ID" --region=us-central1
+          IMAGE_NAME: ${{ secrets.GCP_IMAGE_NAME_PROD }}
+          PROJECT_ID: ${{ secrets.GCP_PROJECT_ID_PROD }}
+        run: gcloud run deploy uwpath-frontend-prod --image="$IMAGE_NAME" --project="$PROJECT_ID" --region=us-central1
 
       - name: Clean Env
         if: always()
