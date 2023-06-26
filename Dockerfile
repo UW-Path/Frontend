@@ -1,5 +1,5 @@
 # Choose the Image which has Node installed already
-FROM node:lts-alpine
+FROM node:16.3.0-alpine
 
 # install simple http server for serving static content
 RUN npm install -g http-server
