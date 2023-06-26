@@ -1,14 +1,23 @@
-# build stage
-FROM node:lts-gallium as build-stage
+# Choose the Image which has Node installed already
+FROM node:16.3.0-alpine
+
+# install simple http server for serving static content
+RUN npm install -g http-server
+
+# make the 'app' folder the current working directory
 WORKDIR /app
+
+# copy both 'package.json' and 'package-lock.json' (if available)
 COPY package*.json ./
+
+# install project dependencies
 RUN npm install
-COPY ./ .
+
+# copy project files and folders to the current working directory (i.e. 'app' folder)
+COPY . .
+
+# build app for production with minification
 RUN npm run build
 
-FROM nginx as production-stage
-RUN mkdir /app
-COPY --from=build-stage /app/dist /app
-COPY nginx.conf /etc/nginx/nginx.conf
-EXPOSE 443
-EXPOSE 80
+EXPOSE 8080
+CMD [ "http-server", "dist" ]
