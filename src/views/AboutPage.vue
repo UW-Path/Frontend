@@ -190,6 +190,21 @@
           </div>
         </div>
         <br />
+        <h1 style="text-align:left">Disclaimer</h1>
+        <div class="row">
+          <div class="col-12" style="text-align:left">
+            <p>
+              The material and information contained on this website is for general 
+              information purposes only and is meant to be used solely as a tool. You 
+              should not rely upon the material or information on the website as a basis 
+              graduation requirements. Whilst we try our best to keep degree requirements up
+              to date and correct, UWPath makes no representations or guarantees that completing
+              the checklist will lead to graudation. Use this as a tool only, and when in doubt, 
+              ask your academic advisor.
+            </p>
+          </div>
+        </div>
+        <br />
         <h1 style="text-align:left">Sponsorship</h1>
         <div class="row">
           <div class="col-12" style="text-align:left">
