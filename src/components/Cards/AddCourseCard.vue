@@ -112,25 +112,21 @@
               <v-card-text class="course-description-text">{{
                 "Credits: " + selectedCourse.credit
               }}</v-card-text>
-              <v-card-text
-                class="course-description-text"
-                v-if="
-                  selectedCourse.prereqs && selectedCourse.prereqs.length > 0
-                "
-                >{{ "Prerequisites: " + selectedCourse.prereqs }}</v-card-text
-              >
-              <v-card-text
-                class="course-description-text"
-                v-if="
-                  selectedCourse.antireqs && selectedCourse.antireqs.length > 0
-                "
-                >{{ "Antirequisites: " + selectedCourse.antireqs }}</v-card-text
-              >
-              <v-card-text
-                class="course-description-text"
-                v-if="selectedCourse.coreqs && selectedCourse.coreqs.length > 0"
-                >{{ "Corequisites: " + selectedCourse.coreqs }}</v-card-text
-              >
+              <CourseConditionList
+                title="Prerequisites"
+                :rule="selectedCourse.prerequisite_rule"
+                :fallback="selectedCourse.prereqs"
+              />
+              <CourseConditionList
+                title="Antirequisites"
+                :rule="selectedCourse.antirequisite_rule"
+                :fallback="selectedCourse.antireqs"
+              />
+              <CourseConditionList
+                title="Corequisites"
+                :rule="selectedCourse.corequisite_rule"
+                :fallback="selectedCourse.coreqs"
+              />
             </v-col>
           </v-row>
         </v-container>
@@ -143,11 +139,12 @@
 import { mapMutations, mapActions } from "vuex";
 import { CourseRequirement } from "../../models/courseRequirementModel";
 import { CourseInfo } from "../../models/courseInfoModel";
+import CourseConditionList from "../CourseConditionList";
 import TrieSearch from "trie-search";
 
 export default {
   name: "AddCourseCard",
-  components: {},
+  components: { CourseConditionList },
   props: {
     termIndex: Number,
     allCourses: Object

@@ -149,30 +149,21 @@
                 <v-card-text class="course-description-text">{{
                   "Credits: " + selectedCourse.credit
                 }}</v-card-text>
-                <v-card-text
-                  class="course-description-text"
-                  v-if="
-                    selectedCourse.prereqs && selectedCourse.prereqs.length > 0
-                  "
-                  >{{ "Prerequisites: " + selectedCourse.prereqs }}</v-card-text
-                >
-                <v-card-text
-                  class="course-description-text"
-                  v-if="
-                    selectedCourse.antireqs &&
-                      selectedCourse.antireqs.length > 0
-                  "
-                  >{{
-                    "Antirequisites: " + selectedCourse.antireqs
-                  }}</v-card-text
-                >
-                <v-card-text
-                  class="course-description-text"
-                  v-if="
-                    selectedCourse.coreqs && selectedCourse.coreqs.length > 0
-                  "
-                  >{{ "Corequisites: " + selectedCourse.coreqs }}</v-card-text
-                >
+                <CourseConditionList
+                  title="Prerequisites"
+                  :rule="selectedCourse.prerequisite_rule"
+                  :fallback="selectedCourse.prereqs"
+                />
+                <CourseConditionList
+                  title="Antirequisites"
+                  :rule="selectedCourse.antirequisite_rule"
+                  :fallback="selectedCourse.antireqs"
+                />
+                <CourseConditionList
+                  title="Corequisites"
+                  :rule="selectedCourse.corequisite_rule"
+                  :fallback="selectedCourse.coreqs"
+                />
               </template>
             </v-col>
           </v-row>
@@ -191,6 +182,7 @@
 <script>
 import { mapMutations, mapActions, mapGetters } from "vuex";
 import CourseCard from "../Cards/CourseCard";
+import CourseConditionList from "../CourseConditionList";
 import axios from "axios";
 import { CourseInfo } from "../../models/courseInfoModel";
 import TrieSearch from "trie-search";
@@ -200,7 +192,8 @@ import _ from "lodash";
 export default {
   name: "RequirementOptionsModal",
   components: {
-    CourseCard
+    CourseCard,
+    CourseConditionList
   },
   data() {
     return {
@@ -618,6 +611,10 @@ export default {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   color: rgb(51, 153, 255) !important;
+}
+.course-description-col {
+  max-height: 80vh;
+  overflow-y: auto;
 }
 .course-info-subheading {
   padding-top: 0px;

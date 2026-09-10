@@ -21,6 +21,12 @@ export class CourseInfo {
           ? data.prereqs.split(",")
           : data.prereqs
         : [];
+    this.prerequisite_rule =
+      data && data.prerequisite_rule ? data.prerequisite_rule : null;
+    this.corequisite_rule =
+      data && data.corequisite_rule ? data.corequisite_rule : null;
+    this.antirequisite_rule =
+      data && data.antirequisite_rule ? data.antirequisite_rule : null;
 
     this.course_abbr = data && data.course_abbr ? data.course_abbr : "";
     this.course_code = data && data.course_code ? data.course_code : "";
