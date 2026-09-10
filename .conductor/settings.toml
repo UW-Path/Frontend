@@ -1,0 +1,15 @@
+"$schema" = "https://conductor.build/schemas/settings.repo.schema.json"
+
+[scripts]
+setup = "npm ci --no-audit --no-fund"
+run_mode = "concurrent"
+
+[scripts.run.frontend]
+available_in = [ "local" ]
+command = "VUE_APP_BACKEND_URL=\"${VUE_APP_BACKEND_URL:-http://127.0.0.1:8000}\" NODE_OPTIONS=--openssl-legacy-provider npm run serve -- --host 127.0.0.1 --port \"$CONDUCTOR_PORT\""
+default = true
+icon = "browser"
+
+[scripts.run.lint]
+command = "npm run lint"
+icon = "check-circle"

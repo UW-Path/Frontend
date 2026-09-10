@@ -815,7 +815,7 @@ const actions = {
   async export({ state }) {
     let course_table = getCoursesTable(state);
     axios
-      .post(backend_api + "/api/requirements/export", {
+      .post(backend_api + "/api/requirements/export/", {
         table: course_table,
         responseType: "blob"
       })
@@ -1245,6 +1245,11 @@ const mutations = {
   },
   validateCourses: state => {
     let listOfCoursesTaken = [];
+    const programs = [
+      ...Object.keys(state.checklistMajorRequirements),
+      ...Object.keys(state.checklistMinorRequirements),
+      ...Object.keys(state.checklistOptionRequirements)
+    ];
     for (let i = 0; i < state.table.length; i++) {
       let currentTermCourses = state.table[i].courses
         .filter(course => {
@@ -1279,6 +1284,7 @@ const mutations = {
                   params: {
                     list_of_courses_taken: listOfCoursesTaken,
                     current_term_courses: currentTermCourses,
+                    programs: programs,
                     pk: requirement.selected_course.course_code
                   }
                 })
