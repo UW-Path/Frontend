@@ -40,7 +40,7 @@ export default new Vuex.Store({
         const value = window.localStorage.getItem(key);
 
         try {
-          if (typeof value !== "undefined") {
+          if (value !== null) {
             let obj = JSON.parse(value);
             let today = new Date();
             obj["courseSelection"]["cacheTime"] = new Date(

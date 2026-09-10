@@ -101,7 +101,7 @@ import SideBar from "../components/CourseSelectionPage/SideBar.vue";
 import TrieSearch from "trie-search";
 import axios from "axios";
 import { backend_api } from "../backendAPI";
-import { mapActions } from "vuex";
+import { mapActions, mapMutations } from "vuex";
 
 export default {
   name: "CourseSelection",
@@ -123,6 +123,7 @@ export default {
   }),
   methods: {
     ...mapActions(["export"]),
+    ...mapMutations(["validateCourses"]),
     exportPDF() {
       this.export({ PDF: true, XLS: false });
     },
@@ -159,6 +160,7 @@ export default {
             return new CourseInfo(course);
           })
         );
+        this.validateCourses();
       })
       .catch(error => {
         console.error(error);
