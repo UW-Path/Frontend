@@ -178,10 +178,34 @@
             mdi-alert
           </v-icon>
         </template>
-        <span
-          >{{ courseData.validation_message }} <br />
-          Click on warning sign to override!</span
-        >
+        <span v-if="planHealthEnabled">
+          {{ validationGuidance }}<br />
+          Click only for an approved override.
+        </span>
+        <span v-else>
+          {{ courseData.validation_message }} <br />
+          Click on warning sign to override!
+        </span>
+      </v-tooltip>
+
+      <v-tooltip
+        v-if="showManualReview"
+        bottom
+        open-delay="300"
+        max-width="350px"
+      >
+        <template v-slot:activator="{ on, attrs }">
+          <v-icon
+            aria-label="Manual review recommended"
+            small
+            class="manual-review-icon"
+            v-bind="attrs"
+            v-on="on"
+          >
+            mdi-information-outline
+          </v-icon>
+        </template>
+        <span>{{ manualReviewGuidance }}</span>
       </v-tooltip>
     </template>
     <!-- for muliple unselected course cards -->
@@ -250,6 +274,11 @@
 
 <script>
 import { mapActions, mapMutations } from "vuex";
+import { isPlanHealthExperimentEnabled } from "../../utils/planHealthExperiment";
+import {
+  actionableValidationMessage,
+  manualReviewMessage
+} from "../../utils/validationGuidance";
 export default {
   name: "CourseCard",
   order: 1,
@@ -262,6 +291,25 @@ export default {
   },
   data() {
     return {};
+  },
+  computed: {
+    planHealthEnabled() {
+      return isPlanHealthExperimentEnabled();
+    },
+    validationGuidance() {
+      return actionableValidationMessage(this.courseData.validation_message);
+    },
+    manualReviewGuidance() {
+      return manualReviewMessage(this.courseData.validation_advisories);
+    },
+    showManualReview() {
+      return (
+        this.planHealthEnabled &&
+        this.courseData.validation_status === "manual_review_recommended" &&
+        !this.courseData.inRequirementBar &&
+        !this.courseData.overridden
+      );
+    }
   },
   methods: {
     ...mapMutations(["validateCourses"]),
@@ -341,11 +389,19 @@ export default {
   font-size: 0.8em;
 }
 
-.alert-icon {
+.alert-icon,
+.manual-review-icon {
   position: absolute !important;
-  color: #ffcc00;
   bottom: 0.3em;
   right: 0.7em;
+}
+
+.alert-icon {
+  color: #ffcc00;
+}
+
+.manual-review-icon {
+  color: #b27a00;
 }
 
 .course-desc {
