@@ -105,6 +105,14 @@ export class CourseRequirement {
     this.prereqs_met = data && data.prereqs_met ? data.prereqs_met : false;
     this.validation_message =
       data && data.validation_message ? data.validation_message : ""; // Error message when prereq not met
+    this.validation_status =
+      data && data.validation_status ? data.validation_status : "not_checked";
+    this.validation_advisories =
+      data && Array.isArray(data.validation_advisories)
+        ? data.validation_advisories
+        : [];
+    this.validation_request_id =
+      data && data.validation_request_id ? data.validation_request_id : 0;
     this.additional_requirements =
       data && data.additional_requirements ? data.additional_requirements : [];
     this.number_of_prereqs_met =

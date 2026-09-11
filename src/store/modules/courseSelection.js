@@ -4,6 +4,7 @@ import { CourseRequirement } from "../../models/courseRequirementModel";
 import * as download from "downloadjs";
 import { v4 as uuidv4 } from "uuid";
 import { backend_api } from "../../backendAPI";
+import { isPlanHealthExperimentEnabled } from "../../utils/planHealthExperiment";
 
 const mathCourses = [
   "ACTSC",
@@ -269,6 +270,24 @@ const languageCourses = [
   "RUSS",
   "SPAN"
 ];
+
+function hasValidationRules(course, includePlanHealthRules) {
+  return Boolean(
+    (course.prereqs && course.prereqs.length) ||
+      (includePlanHealthRules &&
+        (course.prerequisite_rule ||
+          course.corequisite_rule ||
+          course.antirequisite_rule ||
+          (course.coreqs && course.coreqs.length) ||
+          (course.antireqs && course.antireqs.length)))
+  );
+}
+
+function academicLevelForTermIndex(termIndex) {
+  return `${Math.floor(termIndex / 2) + 1}${String.fromCharCode(
+    (termIndex % 2) + 65
+  )}`;
+}
 
 const defaultTable = [
   {
@@ -1245,6 +1264,7 @@ const mutations = {
   },
   validateCourses: state => {
     let listOfCoursesTaken = [];
+    const includePlanHealthRules = isPlanHealthExperimentEnabled();
     const programs = [
       ...Object.keys(state.checklistMajorRequirements),
       ...Object.keys(state.checklistMinorRequirements),
@@ -1262,49 +1282,68 @@ const mutations = {
           return course.selected_course.course_code;
         });
       for (let requirement of state.table[i].courses) {
-        // If course has no prereq, then course can be taken
-        if (
-          requirement.selected_course.course_code !== "WAITING" &&
-          requirement.selected_course.prereqs.length === 0
-        ) {
-          requirement.prereqs_met = true;
-        }
-        //there if course has not been selected yet then dont do anything
-        else if (!requirement.selected_course) continue;
-        else if (requirement.isSelected()) {
-          if (requirement.selected_course.prereqs.length === 0) {
-            requirement.prereqs_met = true;
-          } else {
-            // if an error has appeared previously we don't call the backend again
-            // We also don't call backend if the course has been overriden
+        const course = requirement.selected_course;
+        if (!course || !requirement.isSelected()) continue;
 
-            if (!requirement.isBackendError && !requirement.overridden) {
-              axios
-                .get(backend_api + "/api/meets_prereqs/get", {
-                  params: {
-                    list_of_courses_taken: listOfCoursesTaken,
-                    current_term_courses: currentTermCourses,
-                    programs: programs,
-                    pk: requirement.selected_course.course_code
-                  }
-                })
-                .then(response => {
-                  requirement.prereqs_met = response.data.can_take;
-                  if (!requirement.prereqs_met) {
-                    requirement.validation_message = response.data.msg;
-                  }
-                })
-                .catch(err => {
-                  // eslint-disable-next-line no-console
-                  // we set a flag so we don't get 1000 emails in the backend
-                  // every time a new course is dragged and this course has prob in
-                  // the backend
-                  requirement.isBackendError = true;
-                  console.error(err);
-                });
-            }
-          }
+        const validationRequestId =
+          (requirement.validation_request_id || 0) + 1;
+        requirement.validation_request_id = validationRequestId;
+
+        if (!hasValidationRules(course, includePlanHealthRules)) {
+          requirement.prereqs_met = true;
+          requirement.validation_message = "";
+          requirement.validation_status = "not_required";
+          requirement.validation_advisories = [];
+          continue;
         }
+
+        // Avoid repeatedly requesting known backend failures, and preserve an
+        // explicit override until the user removes it.
+        if (requirement.isBackendError || requirement.overridden) continue;
+
+        requirement.validation_status = "pending";
+        requirement.validation_advisories = [];
+        axios
+          .get(backend_api + "/api/meets_prereqs/get", {
+            params: {
+              list_of_courses_taken: listOfCoursesTaken,
+              current_term_courses: currentTermCourses,
+              programs: programs,
+              pk: course.course_code,
+              academic_level: includePlanHealthRules
+                ? academicLevelForTermIndex(i)
+                : undefined
+            }
+          })
+          .then(response => {
+            if (requirement.validation_request_id !== validationRequestId) {
+              return;
+            }
+            requirement.prereqs_met = response.data.can_take;
+            requirement.validation_message = response.data.can_take
+              ? ""
+              : response.data.msg;
+            requirement.validation_status =
+              response.data.verification ||
+              (response.data.can_take
+                ? "structured_course_membership"
+                : "failed");
+            requirement.validation_advisories = Array.isArray(
+              response.data.advisories
+            )
+              ? response.data.advisories
+              : [];
+          })
+          .catch(err => {
+            if (requirement.validation_request_id !== validationRequestId) {
+              return;
+            }
+            // Avoid repeatedly requesting a course the backend cannot validate.
+            requirement.isBackendError = true;
+            requirement.validation_status = "error";
+            // eslint-disable-next-line no-console
+            console.error(err);
+          });
       }
       listOfCoursesTaken = listOfCoursesTaken.concat(currentTermCourses);
     }

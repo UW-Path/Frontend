@@ -74,8 +74,18 @@
           <v-col class="side-bar" lg="2" md="3" sm="3">
             <side-bar />
           </v-col>
-          <v-col class="main-panel" lg="10" md="9" sm="9">
-            <course-plan :allCourses="allCourses" />
+          <v-col
+            class="main-panel"
+            :class="{ 'main-panel-with-plan-health': planHealthEnabled }"
+            lg="10"
+            md="9"
+            sm="9"
+          >
+            <PlanHealthSummary v-if="planHealthEnabled" />
+            <course-plan
+              :class="{ 'plan-health-course-plan': planHealthEnabled }"
+              :allCourses="allCourses"
+            />
           </v-col>
         </v-row>
         <v-row v-show="!inTable" class="main-row" id="checklist-row">
@@ -93,6 +103,7 @@
 
 <script>
 import CoursePlan from "../components/CourseSelectionPage/CoursePlan.vue";
+import PlanHealthSummary from "../components/CourseSelectionPage/PlanHealthSummary.vue";
 import ProgramSelectionBar from "../components/CourseSelectionPage/ProgramSelectionBar.vue";
 import ProgramChecklist from "../components/ProgramChecklistPage/ProgramChecklist.vue";
 import TroubleShootModalContent from "../components/Modals/TroubleShootModalContent.vue";
@@ -102,11 +113,13 @@ import TrieSearch from "trie-search";
 import axios from "axios";
 import { backend_api } from "../backendAPI";
 import { mapActions, mapMutations } from "vuex";
+import { isPlanHealthExperimentEnabled } from "../utils/planHealthExperiment";
 
 export default {
   name: "CourseSelection",
   components: {
     CoursePlan,
+    PlanHealthSummary,
     ProgramSelectionBar,
     SideBar,
     ProgramChecklist,
@@ -115,6 +128,7 @@ export default {
   data: () => ({
     inTable: true,
     openBugModal: false,
+    planHealthEnabled: isPlanHealthExperimentEnabled(),
     allCourses: new TrieSearch(["course_code", "course_number"], {
       idFieldOrFunction: function(course) {
         return course.course_id + course.course_code;
@@ -226,6 +240,17 @@ export default {
 .main-panel {
   padding: 0;
   height: 100%;
+}
+
+.main-panel-with-plan-health {
+  display: flex;
+  flex-direction: column;
+}
+
+.plan-health-course-plan {
+  flex: 1 1 auto;
+  height: auto;
+  min-height: 0;
 }
 
 .course-selection-container {
